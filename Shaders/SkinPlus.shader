@@ -66,8 +66,8 @@
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
-			#include "cginc/KKPInput.cginc"
-			#include "cginc/KKPDiffuse.cginc"
+			#include "KKPInput.cginc"
+			#include "KKPDiffuse.cginc"
 
 			Varyings vert (VertexData v)
 			{
@@ -197,11 +197,11 @@
 			#include "Lighting.cginc"
 
 
-			#include "cginc/KKPInput.cginc"
-			#include "cginc/KKPDiffuse.cginc"
-			#include "cginc/KKPNormals.cginc"
-			#include "cginc/KKPLighting.cginc"
-			#include "cginc/KKPCoom.cginc"
+			#include "KKPInput.cginc"
+			#include "KKPDiffuse.cginc"
+			#include "KKPNormals.cginc"
+			#include "KKPLighting.cginc"
+			#include "KKPCoom.cginc"
 
 
 			Varyings vert (VertexData v)
@@ -235,14 +235,13 @@
 
 
 
-			fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
+			fixed4 frag (Varyings i) : SV_Target
 			{
 				//Clips based on alpha texture
 				AlphaClip(i.uv0);
 
 
 				//Used in various things so calculating them here
-				float3 lightPos = float3(unity_4LightPosX0[0], unity_4LightPosY0[0], unity_4LightPosZ0[0]);
 				float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
 
@@ -254,16 +253,15 @@
 
 				//Normals from texture
 				float3 normal = GetNormal(i);
-
+	
 				// Cum
 				float liquidFinalMask;
 				float3 liquidNormal;
 				GetCumVals(i.uv0, liquidFinalMask, liquidNormal);
-
+				
 				//Combines normals from cum then adjusts to usable form
 				float3 finalCombinedNormal = lerp(normal, liquidNormal, liquidFinalMask); 
-				normal = NormalAdjust(i, frontFace, finalCombinedNormal);
-
+				normal = NormalAdjust(i, finalCombinedNormal);
 				//Detailmask channels:
 				//Red 	: Specular
 				//Green : Drawn shadows
@@ -293,7 +291,7 @@
 				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
 				vertexLightRamp = _UseRampForLights ? tex2D(_RampG, vertexLightRampUV).x : 1;
 			#endif
-
+				
 
 				//Shadows used as a map for the darker shade
 				float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;

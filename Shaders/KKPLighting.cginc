@@ -84,7 +84,6 @@ float GetDrawnSpecular(Varyings i, float4 detailMask, float shadowAttenuation, f
 }
 
 
-
 float GetMeshSpecular(KKVertexLight vertexLights[4], float3 normal, float3 viewDir, float3 worldLightPos, out float3 specularColorMesh){
 	float3 halfVector = normalize(viewDir + worldLightPos);
 	float specularMesh = max(dot(halfVector, normal), 0.0);
@@ -143,7 +142,7 @@ float GetShadowAttenuation(Varyings i, float vertexLightingShadowAtten, float3 n
 	normalMask.xy = normalMask.yz * float2(_FaceNormalG, _FaceShadowG);
 	viewNorm = normalMask.x * viewNorm + normal;
 	float maskG = max(normalMask.g, 1.0);
-
+	
 	#ifdef SHADOWS_SCREEN
 		float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
 		float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
