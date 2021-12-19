@@ -1,5 +1,5 @@
-﻿#ifndef KK_COOM_INC
-#define KK_COOM_INC
+﻿#ifndef KKP_COOM_INC
+#define KKP_COOM_INC
 
 void GetCumVals(float2 uv, out float mask, out float3 normal){
 	float2 liquidUV = uv * _LiquidTiling.zw + _LiquidTiling.xy;

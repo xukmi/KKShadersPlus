@@ -1,5 +1,5 @@
-﻿#ifndef KK_DIFFUSE_INC
-#define KK_DIFFUSE_INC
+﻿#ifndef KKP_DIFFUSE_INC
+#define KKP_DIFFUSE_INC
 
 //Some color adjustment for shading
 void MapValuesMain(float3 col, out float3 a, out float3 b){

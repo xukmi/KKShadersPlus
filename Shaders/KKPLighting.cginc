@@ -1,9 +1,5 @@
-﻿#ifndef KK_LIGHTING_INC
-// Upgrade NOTE: excluded shader from DX11, OpenGL ES 2.0 because it uses unsized arrays
-#pragma exclude_renderers d3d11 gles
-#define KK_LIGHTING_INC
-
-
+﻿#ifndef KKP_LIGHTING_INC
+#define KKP_LIGHTING_INC
 
 // Vertex Lights
 //Has nothing to do with vertex lighting
@@ -96,8 +92,6 @@ float GetMeshSpecular(KKVertexLight vertexLights[4], float3 normal, float3 viewD
 	float3 specularColor = _UseLightColorSpecular ? _LightColor0.rgb * _SpecularColor.a: _SpecularColor.rgb * _SpecularColor.a;
 	specularColorMesh = specularPowerMesh * specularColor;
 
-
-//KK's specular is FUCKED lmao
 
 #ifdef VERTEXLIGHT_ON
 	[unroll]

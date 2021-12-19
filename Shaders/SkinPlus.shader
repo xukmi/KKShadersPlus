@@ -14,10 +14,14 @@
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
 		_AlphaMask ("Alpha Mask", 2D) = "white" {}
+		_EmissionMask ("Emission Mask", 2D) = "black" {}
+		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
+		_EmissionIntensity("Emission Intensity", Float) = 1
 		_RampG ("Ramp G", 2D) = "white" {}
 		_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
 		_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
-		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 0
+		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 1
+		_NormalMapScale ("NormalMapScale", Float) = 1
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
 		_SpecularPower ("Specular Power", Range(0, 1)) = 0
 		_SpecularPowerNail ("Specular Power Nail", Range(0, 1)) = 0
@@ -66,7 +70,7 @@
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
-			#include "KKPInput.cginc"
+			#include "KKPSkinInput.cginc"
 			#include "KKPDiffuse.cginc"
 
 			Varyings vert (VertexData v)
@@ -197,10 +201,11 @@
 			#include "Lighting.cginc"
 
 
-			#include "KKPInput.cginc"
+			#include "KKPSkinInput.cginc"
 			#include "KKPDiffuse.cginc"
 			#include "KKPNormals.cginc"
 			#include "KKPLighting.cginc"
+			#include "KKPEmission.cginc"
 			#include "KKPCoom.cginc"
 
 
@@ -390,7 +395,12 @@
 				lineWidth = _linetexon * lineWidth + 1.0;
 
 
-				float3 finalCol = lineWidth * specularDiffuse + diffuseAdjusted;
+				float3 finalCol = (lineWidth * specularDiffuse + diffuseAdjusted);
+
+				//Overlay Emission over everything
+				float4 emission = GetEmission(i.uv0);
+				finalCol = finalCol * (1 - emission.a) + emission.rgb;
+
 				return float4(finalCol, 1);
 			}
 

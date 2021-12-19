@@ -1,5 +1,6 @@
-﻿#ifndef KK_MAIN_INPUT
-#define KK_MAIN_INPUT
+﻿#ifndef KKP_MAIN_INPUT
+#define KKP_MAIN_INPUT
+
 	struct VertexData
 	{
 		float4 vertex : POSITION;
@@ -33,6 +34,8 @@
 	float4 _CustomAmbient;
 	bool _UseRampForLights;
 	bool _UseLightColorSpecular;
+
+	float _NormalMapScale;
 
 	//KK Inputs
 
