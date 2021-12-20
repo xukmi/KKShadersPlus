@@ -204,8 +204,9 @@
 			#include "KKPSkinInput.cginc"
 			#include "KKPDiffuse.cginc"
 			#include "KKPNormals.cginc"
+			#include "../KKPVertexLights.cginc"
 			#include "KKPLighting.cginc"
-			#include "KKPEmission.cginc"
+			#include "../KKPEmission.cginc"
 			#include "KKPCoom.cginc"
 
 
@@ -312,7 +313,7 @@
 				float drawnSpecular = GetDrawnSpecular(i, detailMask, shadowAttenuation, viewDir, drawnSpecularColor);
 				float3 specularFromDetail = drawnSpecular * specularAdjustment.xyz + 1;
 				specularFromDetail = diffuse.rgb * specularFromDetail.xyz + drawnSpecularColor;
-			
+				
 				float3 specularColorMesh;
 				float specularMesh = GetMeshSpecular(vertexLights, normal, viewDir, worldLightPos, specularColorMesh);
 				diffuse =  -specularFromDetail.xyz + diffuse;
@@ -331,7 +332,7 @@
 				float3 finalAmbientShadow = ambientShadowAdjustShow ? ambientShadowIntensity : ambientShadow.rgb;
 				finalAmbientShadow = saturate(finalAmbientShadow);
 				float3 invertFinalAmbientShadow = 1 - finalAmbientShadow;
-
+				
 				bool3 compTest = 0.555555582 < shadingAdjustment;
 				shadingAdjustment *= finalAmbientShadow;
 				shadingAdjustment *= 1.79999995;
