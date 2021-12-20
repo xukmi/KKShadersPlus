@@ -67,11 +67,13 @@ fixed4 frag (Varyings i) : SV_Target
 	GetVertexLights(vertexLights, i.posWS);	
 #endif
 	float4 vertexLighting = 0.0;
-	float vertexLightRamp = 1.0;
 #ifdef VERTEXLIGHT_ON
+	float vertexLightRamp = 1.0;
 	vertexLighting = GetVertexLighting(vertexLights, adjustedNormal);
 	float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
-	vertexLightRamp = _UseRampForLights ? tex2D(_RampG, vertexLightRampUV).x : 1;
+	vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
+	float3 rampLighting = GetRampLighting(vertexLights, adjustedNormal, vertexLightRamp);
+	vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 #endif
 
 	float3 halfVector = normalize(viewDir + worldLight);
@@ -80,9 +82,9 @@ fixed4 frag (Varyings i) : SV_Target
 	float specularPowerMesh = _SpecularHairPower * 256;
 	specularPowerMesh = specularPowerMesh * specularMesh;
 	specularPowerMesh = saturate(exp2(specularPowerMesh) * _SpecularHairPower * _SpecularColor.a);
-	float specularMask = _SpecularHairPower;
+	float specularMask = _SpecularIsHighLightsPow;
 	specularMask = specularMask * specularMesh;
-	specularMask = saturate(exp2(specularMask) * _SpecularHairPower * _SpecularColor.a);
+	specularMask = saturate(exp2(specularMask) * _SpecularColor.a);
 
 	float3 specularLightColor = _UseLightColorSpecular ? _LightColor0.rgb * _SpecularColor.a: _SpecularColor.rgb * _SpecularColor.a;
 
@@ -91,7 +93,7 @@ fixed4 frag (Varyings i) : SV_Target
 	specularColorMesh.a = specularMask;
 #ifdef VERTEXLIGHT_ON
 	float3 specularColorVertex = 0;
-	specularColorMesh += GetVertexSpecularHair(vertexLights, adjustedNormal, viewDir, _SpecularHairPower, _SpecularIsHighLightsPow);
+	specularColorMesh += GetVertexSpecularHair(vertexLights, adjustedNormal, viewDir, _SpecularIsHighLightsPow, _SpecularHairPower);
 #endif
 	float specular = specularColorMesh.a; //Mask
 	float3 specularColor = specularColorMesh.rgb; //Color
@@ -177,10 +179,13 @@ fixed4 frag (Varyings i) : SV_Target
 	float3 shading = 1 - finalAmbientShadow;
 	shading = shadowAttenuation * shading + finalAmbientShadow;
 	finalDiffuse *= shading;
-	shading = (_LightColor0.xyz + vertexLighting.rgb * vertexLightRamp)* float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
+	shading = (_LightColor0.xyz + vertexLighting.rgb * vertexLighting.a)* float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
 	shading = max(shading, _ambientshadowG.rgb);
 	finalDiffuse *= shading;
 
+	//Overlay Emission over everything
+	float4 emission = GetEmission(i.uv0);
+	finalDiffuse = finalDiffuse * (1 - emission.a) +  (emission.a * emission.rgb);
 
 	return float4(finalDiffuse, alpha);
 }

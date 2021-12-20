@@ -34,16 +34,36 @@ float LumaGrayscale(float3 col){
 	return col.r * 0.2126 + col.g * 0.7152 + col.b * 0.0722;
 }
 
+float MaxGrayscale(float3 col){
+	return max(col.r, max(col.g, col.b));
+}
+
+
+
 float4 GetVertexLighting(inout KKVertexLight lights[4], float3 normal){
 	float4 finalOutput = 0;
 	[unroll]
 	for(int i = 0; i < 4; i++){
 		KKVertexLight light = lights[i];
-		float lighting = (saturate(dot(normal, light.dir)) * light.atten);
+		float lighting = saturate(dot(normal, light.dir) * light.atten);
 		lights[i].lightVal = lighting;
 		float3 lightCol = lighting * light.col.rgb;
 		finalOutput.rgb += lightCol;
-		finalOutput.a += saturate(LumaGrayscale(lightCol));
+		finalOutput.a += saturate(MaxGrayscale(lightCol));
+	}
+	finalOutput.rgb = max(0.0, finalOutput.rgb);
+	return finalOutput;
+}
+
+float3 GetRampLighting(inout KKVertexLight lights[4], float3 normal, float ramp){
+	float3 finalOutput = 0;
+	[unroll]
+	for(int i = 0; i < 4; i++){
+		KKVertexLight light = lights[i];
+		float lighting = (saturate(dot(normal, light.dir)));
+		lighting = ramp * lighting;
+		float3 lightCol = lighting * light.col.rgb;
+		finalOutput.rgb += lightCol;
 	}
 	finalOutput.rgb = max(0.0, finalOutput.rgb);
 	return finalOutput;
@@ -86,9 +106,9 @@ float4 GetVertexSpecularHair(KKVertexLight lights[4], float3 normal, float3 view
 		vertexSpecularPower = vertexSpecularPower * vertexLightSpecular;
 		vertexSpecularPower = saturate(exp2(vertexSpecularPower) * specularPower * _SpecularColor.a);
 
-		float specularMask = specularPower * specularPoint;
+		float specularMask = specularPoint;
 		specularMask = specularMask * vertexLightSpecular;
-		specularMask = saturate(exp2(specularMask) * specularPower * _SpecularColor.a) * light.lightVal;
+		specularMask = saturate(exp2(specularMask) * _SpecularColor.a) * light.lightVal;
 
 		float3 vertexSpecularColor = _UseLightColorSpecular ? light.col.rgb * _SpecularColor.a: light.lightVal * _SpecularColor.rgb * _SpecularColor.a;
 		vertexSpecularColor = vertexSpecularPower * vertexSpecularColor * light.lightVal;

@@ -4,7 +4,6 @@
 	{
 		_AnotherRamp ("Another Ramp(ViewDir)", 2D) = "white" {}
 		_MainTex ("MainTex", 2D) = "white" {}
-		_RampG ("MainTex", 2D) = "white" {} //REMOVE WHEN EXPORTING
 		_NormalMap ("Normal Map", 2D) = "bump" {}
 		_AlphaMask ("Alpha Mask", 2D) = "white" {}
 		_DetailMask ("Detail Mask", 2D) = "black" {}
@@ -30,6 +29,9 @@
 		_SpecularIsHighlightsRange ("Specular is highlight Range", Range(0, 20)) = 5
 		[MaterialToggle] _UseMeshSpecular ("Use Mesh Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
+		_EmissionMask ("Emission Mask", 2D) = "black" {}
+		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
+		_EmissionIntensity("Emission Intensity", Float) = 1
 	}
 	SubShader
 	{

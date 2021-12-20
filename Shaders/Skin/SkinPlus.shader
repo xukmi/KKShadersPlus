@@ -291,11 +291,14 @@
 				GetVertexLights(vertexLights, i.posWS);	
 			#endif
 				float4 vertexLighting = 0.0;
-				float vertexLightRamp = 1.0;
+
 			#ifdef VERTEXLIGHT_ON
+				float vertexLightRamp = 1.0;
 				vertexLighting = GetVertexLighting(vertexLights, normal);
 				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
-				vertexLightRamp = _UseRampForLights ? tex2D(_RampG, vertexLightRampUV).x : 1;
+				vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
+				float3 rampLighting = GetRampLighting(vertexLights, normal, vertexLightRamp);
+				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 			#endif
 				
 
@@ -365,9 +368,8 @@
 				bodyShine = rimLight * _rimV + bodyShine;
 				bodyShine = bodyShine - specularDiffuse;
 				specularDiffuse = liquidFinalMask * bodyShine + specularDiffuse;
-
 				//Final lighting colors
-				bodyShine = (_LightColor0.rgb + vertexLighting.rgb * vertexLightRamp) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
+				bodyShine = (_LightColor0.rgb + vertexLighting.rgb * vertexLighting.a) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 				float3 ambientCol = max(bodyShine, _ambientshadowG.xyz);
 				specularDiffuse *= ambientCol;
 				float3 diffuseAdjusted = diffuse * shadingAdjustment;
@@ -400,7 +402,7 @@
 
 				//Overlay Emission over everything
 				float4 emission = GetEmission(i.uv0);
-				finalCol = finalCol * (1 - emission.a) + emission.rgb;
+				finalCol = finalCol * (1 - emission.a) + (emission.a*emission.rgb);
 
 				return float4(finalCol, 1);
 			}
