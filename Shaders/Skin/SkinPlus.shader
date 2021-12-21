@@ -13,11 +13,11 @@
 		_NormalMapDetail ("Normal Map Detail", 2D) = "bump" {}
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
+		_RampG ("RampG Mask", 2D) = "black" {}
 		_AlphaMask ("Alpha Mask", 2D) = "white" {}
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
-		_RampG ("Ramp G", 2D) = "white" {}
 		_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
 		_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
 		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 1
@@ -191,6 +191,7 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma shader_feature _EXPENSIVE_RAMP_LIGHT
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 
@@ -297,7 +298,11 @@
 				vertexLighting = GetVertexLighting(vertexLights, normal);
 				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
 				vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
+			#ifdef _EXPENSIVE_RAMP_LIGHT
+				float3 rampLighting = GetExpensiveRampLighting(vertexLights, normal, vertexLightRamp);
+			#else
 				float3 rampLighting = GetRampLighting(vertexLights, normal, vertexLightRamp);
+			#endif
 				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 			#endif
 				

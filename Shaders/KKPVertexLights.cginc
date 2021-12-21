@@ -69,6 +69,22 @@ float3 GetRampLighting(inout KKVertexLight lights[4], float3 normal, float ramp)
 	return finalOutput;
 }
 
+float3 GetExpensiveRampLighting(inout KKVertexLight lights[4], float3 normal, float ramp){
+	float3 finalOutput = 0;
+	[unroll]
+	for(int i = 0; i < 4; i++){
+		KKVertexLight light = lights[i];
+		float lighting = light.lightVal;
+		float2 lightRampUV = lighting * _RampG_ST.xy + _RampG_ST.zw;
+		float lightRamp = tex2D(_RampG, lightRampUV).x;
+		lighting = lightRamp;
+		float3 lightCol = lighting * light.col.rgb;
+		finalOutput.rgb += lightCol;
+	}
+	finalOutput.rgb = max(0.0, finalOutput.rgb);
+	return finalOutput;
+}
+
 //Diffuse pass uses it slightly differently
 float GetVertexSpecularDiffuse(KKVertexLight lights[4], float3 normal, float3 viewDir, float specularPower, inout float3 specularVertexMesh){
 	float specularMesh = 0;
