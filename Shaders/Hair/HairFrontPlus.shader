@@ -24,7 +24,7 @@
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
-		[MaterialToggle] _SpecularIsHighlights ("Specular is highlight", Float) = 1
+		[MaterialToggle] _SpecularIsHighlights ("Specular is highlight", Float) = 0
 		_SpecularIsHighLightsPow ("Specular is highlight", Range(0,128)) = 64
 		_SpecularIsHighlightsRange ("Specular is highlight Range", Range(0, 20)) = 5
 		[MaterialToggle] _UseMeshSpecular ("Use Mesh Specular", Float) = 0
@@ -149,7 +149,6 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma shader_feature _EXPENSIVE_RAMP_LIGHT
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 			

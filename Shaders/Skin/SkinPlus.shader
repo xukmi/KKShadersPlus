@@ -18,8 +18,8 @@
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
-		_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
-		_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
+		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
 		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 1
 		_NormalMapScale ("NormalMapScale", Float) = 1
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
@@ -184,14 +184,13 @@
 			Name "Forward"
 			LOD 600
 			Tags { "LightMode" = "ForwardBase" "Queue" = "AlphaTest-100" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
-			//Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
+			Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
 			Cull Off
 
 
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma shader_feature _EXPENSIVE_RAMP_LIGHT
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 
@@ -298,11 +297,7 @@
 				vertexLighting = GetVertexLighting(vertexLights, normal);
 				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
 				vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
-			#ifdef _EXPENSIVE_RAMP_LIGHT
 				float3 rampLighting = GetExpensiveRampLighting(vertexLights, normal, vertexLightRamp);
-			#else
-				float3 rampLighting = GetRampLighting(vertexLights, normal, vertexLightRamp);
-			#endif
 				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 			#endif
 				
