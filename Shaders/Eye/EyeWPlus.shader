@@ -46,7 +46,7 @@
 			#include "Lighting.cginc"
 
 
-			#include "KKEyeInput.cginc"
+			#include "KKPEyeInput.cginc"
 
 
 			Varyings vert (VertexData v)

@@ -10,9 +10,14 @@
 		[MaterialToggle] _isHighLight ("isHighLight", Float) = 0
 		_expression ("expression", 2D) = "black" {}
 		_exppower ("exppower", Range(0, 1)) = 1
+		_ExpressionSize ("Expression Size", Range(0, 1)) = 1
+		_ExpressionDepth ("Expression Depth", Range(0, 2)) = 1
 		[Gamma]_shadowcolor ("shadowcolor", Vector) = (0.6298235,0.6403289,0.747,1)
 		_rotation ("rotation", Range(0, 1)) = 0
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
+		_EmissionMask ("Emission Mask", 2D) = "black" {}
+		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
+		_EmissionIntensity("Emission Intensity", Float) = 1
 	}
 	SubShader
 	{
@@ -45,15 +50,17 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma multi_compile _ SHADOWS_SCREEN
-			
+			#pragma multi_compile _ VERTEXLIGHT_ON
+
 			//Unity Includes
 			#include "UnityCG.cginc"
 			#include "AutoLight.cginc"
 			#include "Lighting.cginc"
 
 
-			#include "KKEyeInput.cginc"
+			#include "KKPEyeInput.cginc"
+			#include "../KKPVertexLights.cginc"
+			#include "../KKPEmission.cginc"
 
 
 			Varyings vert (VertexData v)
@@ -115,8 +122,11 @@
 				float2 expressionUV = float2(dot(i.tanWS, viewDir),
 									   dot(i.bitanWS, viewDir));
 				//Gives some depth
-				expressionUV = expressionUV * -0.059999998 + i.uv0;
-				expressionUV = expressionUV * _expression_ST.xy + _expression_ST.zw;
+				expressionUV = expressionUV * -0.059999998 * _ExpressionDepth + i.uv0;
+				expressionUV = expressionUV * _MainTex_ST.xy + _MainTex_ST.zw; //Makes expression follow eye
+				expressionUV -= 0.5;
+				expressionUV /= max(0.1, _ExpressionSize);
+				expressionUV += 0.5;
 				float4 expression = tex2D(_expression, expressionUV);
 				expression.rgb =  expression.rgb - iris.rgb;
 				expression.a *= _exppower;
@@ -136,15 +146,26 @@
 				float3 shadedDiffuse = diffuse * finalAmbientShadow;
 				finalAmbientShadow = -diffuse * finalAmbientShadow + diffuse;
 
-				float lambert = max(dot(_WorldSpaceLightPos0.xyz, i.normalWS.xyz), 0.0);
+
+				KKVertexLight vertexLights[4];
+				#ifdef VERTEXLIGHT_ON
+					GetVertexLights(vertexLights, i.posWS);	
+				#endif
+					float4 vertexLighting = 0.0;
+				#ifdef VERTEXLIGHT_ON
+					float vertexLightRamp = 1.0;
+					vertexLighting = GetVertexLighting(vertexLights, i.normalWS);
+				#endif
+				float lambert = max(dot(_WorldSpaceLightPos0.xyz, i.normalWS.xyz), 0.0) + vertexLighting.a;
 				lambert = saturate(expression.a + overTex.a + lambert);
 				finalAmbientShadow = lambert * finalAmbientShadow + shadedDiffuse;
 
-				float3 lightCol = _LightColor0.xyz * float3(0.600000024, 0.600000024, 0.600000024) + float3(0.400000006, 0.400000006, 0.400000006);
+				float3 lightCol = (_LightColor0.xyz + vertexLighting.rgb) * float3(0.600000024, 0.600000024, 0.600000024) + float3(0.400000006, 0.400000006, 0.400000006);
 				lightCol = max(lightCol, _ambientshadowG.xyz);
 				float3 finalCol = saturate(finalAmbientShadow * lightCol);
 
-
+				float4 emission = GetEmission(expressionUV);
+				finalCol = finalCol * (1 - emission.a) +  (emission.a * emission.rgb);
 				
 				return float4(finalCol, alpha);
 			}

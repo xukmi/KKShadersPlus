@@ -160,6 +160,7 @@
 			#include "KKPHairInput.cginc"
 			#include "KKPHairDiffuse.cginc"
 			#include "../KKPVertexLights.cginc"
+			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
 			
 			#define HAIR_FRONT

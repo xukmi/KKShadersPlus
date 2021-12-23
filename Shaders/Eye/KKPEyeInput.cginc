@@ -1,5 +1,5 @@
-﻿#ifndef KK_EYE_INPUT
-#define KK_EYE_INPUT
+﻿#ifndef KKP_EYE_INPUT
+#define KKP_EYE_INPUT
 	struct VertexData
 	{
 		float4 vertex : POSITION;
@@ -43,10 +43,12 @@
 	float4 _overcolor1;
 	float4 _overcolor2;
 	float4 _Color;
-
+	
 	float4 _shadowcolor;
 	float _isHighLight;
 	float _exppower;
+	float _ExpressionSize;
+	float _ExpressionDepth;
 	float _rotation;
 
 	//Global light params set by KK

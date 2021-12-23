@@ -148,6 +148,7 @@
 			#include "KKPHairInput.cginc"
 			#include "KKPHairDiffuse.cginc"
 			#include "../KKPVertexLights.cginc"
+			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
 			
 			#include "KKPHairVertFrag.cginc" //Vert Frag here

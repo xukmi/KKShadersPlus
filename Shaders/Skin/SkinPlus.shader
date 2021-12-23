@@ -205,6 +205,7 @@
 			#include "KKPDiffuse.cginc"
 			#include "KKPNormals.cginc"
 			#include "../KKPVertexLights.cginc"
+			#include "../KKPVertexLightsSpecular.cginc"
 			#include "KKPLighting.cginc"
 			#include "../KKPEmission.cginc"
 			#include "KKPCoom.cginc"
