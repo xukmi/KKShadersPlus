@@ -33,6 +33,7 @@
 	//KKP Inputs
 	float4 _CustomAmbient;
 	bool _UseRampForLights;
+	bool _UseRampForSpecular;
 	bool _UseLightColorSpecular;
 
 	float _NormalMapScale;

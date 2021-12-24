@@ -31,6 +31,7 @@
 	float _SpecularIsHighlightsRange;
 	float _SpecularIsHighLightsPow;
 	bool _UseRampForLights;
+	bool _UseRampForSpecular;
 	bool _UseLightColorSpecular;
 	float _UseMeshSpecular;
 	

@@ -72,7 +72,7 @@ fixed4 frag (Varyings i) : SV_Target
 	vertexLighting = GetVertexLighting(vertexLights, adjustedNormal);
 	float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
 	vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
-	float3 rampLighting = GetExpensiveRampLighting(vertexLights, adjustedNormal, vertexLightRamp);
+	float3 rampLighting = GetRampLighting(vertexLights, adjustedNormal, vertexLightRamp);
 	vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 #endif
 

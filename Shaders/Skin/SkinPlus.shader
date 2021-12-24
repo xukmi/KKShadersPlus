@@ -48,6 +48,7 @@
 		_Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
+		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 	}
 	SubShader
@@ -71,7 +72,6 @@
 
 			#include "KKPSkinInput.cginc"
 			#include "KKPDiffuse.cginc"
-
 			Varyings vert (VertexData v)
 			{
 				Varyings o;
@@ -193,6 +193,7 @@
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 
+			#define KKP_EXPENSIVE_RAMP
 			
 			//Unity Includes
 			#include "UnityCG.cginc"
@@ -208,6 +209,7 @@
 			#include "KKPLighting.cginc"
 			#include "../KKPEmission.cginc"
 			#include "KKPCoom.cginc"
+
 
 
 			Varyings vert (VertexData v)
@@ -297,7 +299,7 @@
 				vertexLighting = GetVertexLighting(vertexLights, normal);
 				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
 				vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
-				float3 rampLighting = GetExpensiveRampLighting(vertexLights, normal, vertexLightRamp);
+				float3 rampLighting = GetRampLighting(vertexLights, normal, vertexLightRamp);
 				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 			#endif
 				
