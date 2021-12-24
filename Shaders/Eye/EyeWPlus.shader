@@ -6,6 +6,7 @@
 		_MainTex ("MainTex", 2D) = "white" {}
 		[Gamma]_shadowcolor ("shadowcolor", Vector) = (0.6298235,0.6403289,0.747,1)
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
+		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 	}
 	SubShader
 	{
@@ -24,7 +25,6 @@
 			  		"RenderType" = "Transparent"
 					"ShadowSupport" = "true" }
 
-			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
 			ZWrite Off
 			Stencil {
 				Ref 2
@@ -38,7 +38,7 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma multi_compile _ SHADOWS_SCREEN
+			#pragma multi_compile _ VERTEXLIGHT_ON
 			
 			//Unity Includes
 			#include "UnityCG.cginc"
@@ -47,7 +47,7 @@
 
 
 			#include "KKPEyeInput.cginc"
-
+			#include "..//KKPVertexLights.cginc"
 
 			Varyings vert (VertexData v)
 			{
@@ -104,21 +104,32 @@
 				float3 shadedDiffuse = diffuse * finalAmbientShadow;
 				float3 finalCol = mainTex.rgb * _Color.rgb - shadedDiffuse;
 
-				float lambert =	dot(_WorldSpaceLightPos0.xyz, i.normalWS.xyz);
+
+
+				KKVertexLight vertexLights[4];
+				#ifdef VERTEXLIGHT_ON
+					GetVertexLights(vertexLights, i.posWS);	
+				#endif
+					float4 vertexLighting = 0.0;
+				#ifdef VERTEXLIGHT_ON
+					float vertexLightRamp = 1.0;
+					vertexLighting = GetVertexLighting(vertexLights, i.normalWS);
+				#endif
+				float lambert =	dot(_WorldSpaceLightPos0.xyz, i.normalWS.xyz) + vertexLighting.a;;
 				float ramp = tex2D(_RampG, lambert * _RampG_ST.xy + _RampG_ST.zw);
 				finalCol = ramp * finalCol + shadedDiffuse;
 
-				float3 lightCol = _LightColor0.xyz * float3(0.600000024, 0.600000024, 0.600000024) + float3(0.400000006, 0.400000006, 0.400000006);
+				float3 lightCol = (_LightColor0.xyz + vertexLighting.rgb) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
 				lightCol = max(lightCol, _ambientshadowG.xyz);
 				finalCol *= lightCol;
 				
-				return float4(finalCol, alpha);
+				return float4(finalCol, 1);
 			}
 
 			
 			ENDCG
 		}
-		//There was a shadow pass but I don't think it really needs one since this is mainly for the eye
+
 
 		
 	}

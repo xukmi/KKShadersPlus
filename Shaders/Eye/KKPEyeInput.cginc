@@ -43,6 +43,7 @@
 	float4 _overcolor1;
 	float4 _overcolor2;
 	float4 _Color;
+	float4 _CustomAmbient;
 	
 	float4 _shadowcolor;
 	float _isHighLight;

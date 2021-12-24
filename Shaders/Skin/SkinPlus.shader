@@ -13,7 +13,6 @@
 		_NormalMapDetail ("Normal Map Detail", 2D) = "bump" {}
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
-		_RampG ("RampG Mask", 2D) = "black" {}
 		_AlphaMask ("Alpha Mask", 2D) = "white" {}
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
