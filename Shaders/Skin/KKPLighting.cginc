@@ -42,6 +42,11 @@ float GetMeshSpecular(KKVertexLight vertexLights[4], float3 normal, float3 viewD
 	specularPowerMesh = saturate(exp2(specularPowerMesh) * _SpecularPower * _SpecularColor.a);
 	specularMesh = exp2(specularMesh * 256) * 0.5;
 
+#ifdef KKP_EXPENSIVE_RAMP
+	float2 lightRampUV = specularPowerMesh * _RampG_ST.xy + _RampG_ST.zw;
+	specularPowerMesh = tex2D(_RampG, lightRampUV) * _UseRampForSpecular + specularPowerMesh * (1 - _UseRampForSpecular);
+#endif
+
 	float3 specularColor = _UseLightColorSpecular ? _LightColor0.rgb * _SpecularColor.a: _SpecularColor.rgb * _SpecularColor.a;
 	specularColorMesh = specularPowerMesh * specularColor;
 

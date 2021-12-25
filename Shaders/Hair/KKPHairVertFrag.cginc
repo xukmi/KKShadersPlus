@@ -86,6 +86,12 @@ fixed4 frag (Varyings i) : SV_Target
 	specularMask = specularMask * specularMesh;
 	specularMask = saturate(exp2(specularMask) * _SpecularColor.a);
 
+
+#ifdef KKP_EXPENSIVE_RAMP
+	float2 lightRampUV = specularPowerMesh * _RampG_ST.xy + _RampG_ST.zw;
+	specularPowerMesh = tex2D(_RampG, lightRampUV) * _UseRampForSpecular + specularPowerMesh * (1 - _UseRampForSpecular);
+#endif
+
 	float3 specularLightColor = _UseLightColorSpecular ? _LightColor0.rgb * _SpecularColor.a: _SpecularColor.rgb * _SpecularColor.a;
 
 	float4 specularColorMesh;
