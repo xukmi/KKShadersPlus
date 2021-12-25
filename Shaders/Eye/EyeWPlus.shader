@@ -129,6 +129,53 @@
 			
 			ENDCG
 		}
+		//ShadowCaster
+		Pass
+		{
+			Name "ShadowCaster"
+			LOD 600
+			Tags { "IgnoerProjector" = "true" "LightMode" = "ShadowCaster" "Queue" = "Transparent--1" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Offset 1, 1
+			Cull Back
+
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			#pragma multi_compile_shadowcaster
+
+			#include "UnityCG.cginc"
+
+			sampler2D _MainTex;
+			float4 _MainTex_ST;
+
+            struct v2f { 
+				float2 uv0 : TEXCOORD1;
+                V2F_SHADOW_CASTER;
+            };
+
+            v2f vert(appdata_base v)
+            {
+                v2f o;
+				o.uv0 = v.texcoord;
+                TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+                return o;
+            }
+
+            float4 frag(v2f i) : SV_Target
+            {
+
+				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float alphaVal = mainTex.a;
+				float clipVal = (alphaVal.x - 0.5) < 0.0f;
+				if(clipVal * int(0xffffffffu) != 0)
+					discard;
+
+                SHADOW_CASTER_FRAGMENT(i)
+            }
+
+			
+			ENDCG
+		}
 
 
 		
