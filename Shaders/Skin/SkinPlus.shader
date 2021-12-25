@@ -267,7 +267,7 @@
 				float3 liquidNormal;
 				GetCumVals(i.uv0, liquidFinalMask, liquidNormal);
 				
-				//Combines normals from cum then adjusts to usable form
+				//Combines normals from cum then adjusts to WS from TS
 				float3 finalCombinedNormal = lerp(normal, liquidNormal, liquidFinalMask); 
 				normal = NormalAdjust(i, finalCombinedNormal);
 				//Detailmask channels:

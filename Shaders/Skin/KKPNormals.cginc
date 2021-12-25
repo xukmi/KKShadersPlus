@@ -12,14 +12,19 @@ float3 GetNormal(Varyings i){
 }
 
 float3 NormalAdjust(Varyings i, float3 finalCombinedNormal){
-	//Adjusting normals from tangent space
-	float3 adjustedYNormal = finalCombinedNormal.y * i.bitanWS.xyz;
-	float4 adjustedNormal = float4(finalCombinedNormal, 1);
-	adjustedNormal.xyw = finalCombinedNormal.x * i.tanWS.xyz + adjustedYNormal;
-	float3 worldNormal = normalize(i.normalWS);
-	adjustedNormal.xyz = adjustedNormal.z * worldNormal.xyz + adjustedNormal.xyw;
-	float3 finalNormal = normalize(adjustedNormal.xyz);
-	return finalNormal;
+
+	float3 normal = finalCombinedNormal;
+
+    float3 tspace0 = float3(i.tanWS.x, i.bitanWS.x, i.normalWS.x);
+	float3 tspace1 = float3(i.tanWS.y, i.bitanWS.y, i.normalWS.y);
+    float3 tspace2 = float3(i.tanWS.z, i.bitanWS.z, i.normalWS.z);
+	
+	float3 adjustedNormal;
+    adjustedNormal.x = dot(tspace0, normal);
+    adjustedNormal.y = dot(tspace1, normal);
+    adjustedNormal.z = dot(tspace2, normal);
+
+	return adjustedNormal;
 }
 
 #endif

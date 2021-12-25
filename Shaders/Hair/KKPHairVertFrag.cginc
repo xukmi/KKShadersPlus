@@ -40,15 +40,16 @@ fixed4 frag (Varyings i) : SV_Target
 	AmbientShadowAdjust(ambientShadowExtendAdjust);
 
 	float2 normalUV = i.uv0 * _NormalMap_ST.xy + _NormalMap_ST.zw;
-	float4 normal = tex2D(_NormalMap, normalUV);
-	//Adjust to WS
-	float2 adjustNormal = normal.wy * 2 - 1;
-	float3 adjustedNormal = adjustNormal.y * i.bitanWS;
-	adjustedNormal = adjustNormal.x * i.tanWS + adjustedNormal;
-	float adjustMagn = dot(adjustNormal, adjustNormal);
-	adjustMagn = sqrt(1 - min(adjustMagn, 1.0));
-	adjustedNormal = adjustMagn * i.normalWS + adjustedNormal;
-	adjustedNormal = normalize(adjustedNormal);
+	float3 normal = UnpackNormal(tex2D(_NormalMap, normalUV));
+
+    float3 tspace0 = float3(i.tanWS.x, i.bitanWS.x, i.normalWS.x);
+	float3 tspace1 = float3(i.tanWS.y, i.bitanWS.y, i.normalWS.y);
+    float3 tspace2 = float3(i.tanWS.z, i.bitanWS.z, i.normalWS.z);
+	
+	float3 adjustedNormal;
+    adjustedNormal.x = dot(tspace0, normal);
+    adjustedNormal.y = dot(tspace1, normal);
+    adjustedNormal.z = dot(tspace2, normal);
 
 	float fresnel = max(0.0, dot(viewDir, adjustedNormal));
 	float anotherRamp = tex2D(_AnotherRamp, fresnel * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw).x;
@@ -109,7 +110,6 @@ fixed4 frag (Varyings i) : SV_Target
 	float bitanFres = dot(viewDir, i.bitanWS);
 	float specularHeight = _SpeclarHeight - 1.0;
 	float3 hairGlossVal;
-
 	//Slightly different values for hair front
 #ifdef HAIR_FRONT 
 	hairGlossVal.x = lambert * 0.0199999809 + i.uv1.x;
@@ -188,7 +188,6 @@ fixed4 frag (Varyings i) : SV_Target
 	shading = (_LightColor0.xyz + vertexLighting.rgb * vertexLighting.a)* float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
 	shading = max(shading, _ambientshadowG.rgb);
 	finalDiffuse *= shading;
-
 	//Overlay Emission over everything
 	float4 emission = GetEmission(i.uv0);
 	finalDiffuse = finalDiffuse * (1 - emission.a) +  (emission.a * emission.rgb);
