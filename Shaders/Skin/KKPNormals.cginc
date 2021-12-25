@@ -24,7 +24,7 @@ float3 NormalAdjust(Varyings i, float3 finalCombinedNormal){
     adjustedNormal.y = dot(tspace1, normal);
     adjustedNormal.z = dot(tspace2, normal);
 
-	return adjustedNormal;
+	return normalize(adjustedNormal);
 }
 
 #endif

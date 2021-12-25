@@ -50,7 +50,7 @@ fixed4 frag (Varyings i) : SV_Target
     adjustedNormal.x = dot(tspace0, normal);
     adjustedNormal.y = dot(tspace1, normal);
     adjustedNormal.z = dot(tspace2, normal);
-
+	adjustedNormal = normalize(adjustedNormal);
 	float fresnel = max(0.0, dot(viewDir, adjustedNormal));
 	float anotherRamp = tex2D(_AnotherRamp, fresnel * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw).x;
 	fresnel = 1 - fresnel;
