@@ -321,9 +321,8 @@
 				
 				float3 specularColorMesh;
 				float specularMesh = GetMeshSpecular(vertexLights, normal, viewDir, worldLightPos, specularColorMesh);
-				diffuse =  -specularFromDetail.xyz + diffuse;
-				float3 specularDiffuse = saturate(diffuse + specularFromDetail.xyz) + (_notusetexspecular * specularColorMesh);	
-
+				float3 specularDiffuse = saturate((1 - _notusetexspecular) * specularFromDetail.xyz) + (_notusetexspecular * (specularColorMesh + diffuse));	
+			
 				//Shading
 				float3 diffuseShaded = shadingAdjustment * 0.899999976 - 0.5;
 				diffuseShaded = -diffuseShaded * 2 + 1;
