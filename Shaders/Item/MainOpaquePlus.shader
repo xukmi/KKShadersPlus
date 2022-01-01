@@ -269,6 +269,8 @@
 
 				float3 cumCol = (lambert + 0.5 + vertexLighting.a) * float3(0.149999976, 0.199999988, 0.300000012) + float3(0.850000024, 0.800000012, 0.699999988);
 
+
+
 				float specular = dot(halfDir, normal);
 				float fresnel = 1 - max(dot(viewDir, normal), 0.0);
 
@@ -285,7 +287,17 @@
 				float2 rampUV = saturate(lightRamp) * _RampG_ST.xy + _RampG_ST.zw;
 				float ramp = tex2D(_RampG, rampUV);
 				
-				float2 anotherRampUV = abs(specular) * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw;
+				float anotherRampSpecularVertex = 0.0;
+			#ifdef VERTEXLIGHT_ON
+				[unroll]
+				for(int j = 0; j < 4; j++){
+					KKVertexLight light = vertexLights[j];
+					float3 halfVector = normalize(viewDir + light.dir);
+					anotherRampSpecularVertex = max(anotherRampSpecularVertex, dot(halfVector, normal));
+				}
+			#endif
+
+				float2 anotherRampUV = abs(max(specular, anotherRampSpecularVertex)) * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw;
 				float anotherRamp = tex2D(_AnotherRamp, anotherRampUV);
 				float finalRamp = anotherRamp - ramp;
 

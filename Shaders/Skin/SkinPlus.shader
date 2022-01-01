@@ -4,6 +4,7 @@
 	{
 		_MainTex ("MainTex", 2D) = "white" {}
 		[Gamma]_overcolor1 ("Over Color1", Vector) = (1,1,1,1)
+		_overtex1 ("Over Tex1", 2D) = "black" {}
 		[Gamma]_overcolor2 ("Over Color2", Vector) = (1,1,1,1)
 		_overtex2 ("Over Tex2", 2D) = "black" {}
 		[Gamma]_overcolor3 ("Over Color3", Vector) = (1,1,1,1)
