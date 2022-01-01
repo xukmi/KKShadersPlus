@@ -10,6 +10,9 @@
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
 		_AlphaMask ("Alpha Mask", 2D) = "white" {}
+		_EmissionMask ("Emission Mask", 2D) = "black" {}
+		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
+		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
 		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
@@ -34,6 +37,10 @@
 		_liquidbbot ("liquidbbot", Range(0, 2)) = 0
 		_liquidface ("liquidface", Range(0, 2)) = 0
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
+		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
+		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
+		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
+		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 	}
 	SubShader
 	{
@@ -153,9 +160,9 @@
 
 				finalDiffuse = 0.5 < _LineColorG.w ? finalDiffuse : halfDiffuse;
 				finalDiffuse = saturate(finalDiffuse);
-				float3 outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + float3(0.400000006, 0.400000006, 0.400000006);
+				float3 outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 
-				return float4(finalDiffuse * outLineCol, 0.0);
+				return float4(finalDiffuse * outLineCol, 1.0);
 
 
 			}
@@ -177,6 +184,7 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 			
 			//Unity Includes
@@ -184,11 +192,16 @@
 			#include "AutoLight.cginc"
 			#include "Lighting.cginc"
 
+			#define KKP_EXPENSIVE_RAMP
 
 			#include "KKPItemInput.cginc"
 			#include "KKPItemDiffuse.cginc"
 			#include "KKPItemNormals.cginc"
 			#include "KKPItemCoom.cginc"
+			#include "../KKPVertexLights.cginc"
+			#include "../KKPVertexLightsSpecular.cginc"
+			#include "../KKPEmission.cginc"
+
 
 
 			Varyings vert (VertexData v)
@@ -236,14 +249,40 @@
 				normal = lerp(normal, liquidNormal, liquidFinalMask);
 				normal = NormalAdjust(i, normal, faceDir);
 
-				float lambert = dot(worldLightPos, normal);
 
-				float3 cumCol = (lambert + 0.5) * float3(0.149999976, 0.199999988, 0.300000012) + float3(0.850000024, 0.800000012, 0.699999988);
+
+				KKVertexLight vertexLights[4];
+			#ifdef VERTEXLIGHT_ON
+				GetVertexLights(vertexLights, i.posWS);	
+			#endif
+				float4 vertexLighting = 0.0;
+				float vertexLightRamp = 1.0;
+			#ifdef VERTEXLIGHT_ON
+				vertexLighting = GetVertexLighting(vertexLights, normal);
+				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
+				vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
+				float3 rampLighting = GetRampLighting(vertexLights, normal, vertexLightRamp);
+				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
+			#endif
+
+				float lambert = saturate(dot(worldLightPos, normal));
+
+				float3 cumCol = (lambert + 0.5 + vertexLighting.a) * float3(0.149999976, 0.199999988, 0.300000012) + float3(0.850000024, 0.800000012, 0.699999988);
 
 				float specular = dot(halfDir, normal);
 				float fresnel = 1 - max(dot(viewDir, normal), 0.0);
 
-				float2 rampUV = lambert * _RampG_ST.xy + _RampG_ST.zw;
+
+				#ifdef SHADOWS_SCREEN
+					float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
+					float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
+					float shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0);
+					lambert *= shadowAttenuation;
+				#endif
+
+				float lightRamp = max(lambert, vertexLighting.a);
+
+				float2 rampUV = saturate(lightRamp) * _RampG_ST.xy + _RampG_ST.zw;
 				float ramp = tex2D(_RampG, rampUV);
 				
 				float2 anotherRampUV = abs(specular) * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw;
@@ -259,14 +298,6 @@
 				lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;
 				finalRamp = lineMask.r * finalRamp + ramp;
 				
-				#ifdef SHADOWS_SCREEN
-					float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
-					float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
-					float shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0);
-					finalRamp *= shadowAttenuation;
-				#endif
-
-
 				float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;
 
 				lineMask.rb = 1 - lineMask.rb;
@@ -328,8 +359,24 @@
 				drawnSpecular *= specular;
 				specular *= 256;
 				specular = exp2(specular);
+
+
+
+				float specularVertex = 0.0;
+				float3 specularVertexCol = 0.0;
+			#ifdef VERTEXLIGHT_ON
+				specularVertex = GetVertexSpecularDiffuse(vertexLights, normal, viewDir, _SpecularPower, specularVertexCol);
+			#endif
+
+				
 				specular = min(specular, 1);
 				drawnSpecular = exp2(drawnSpecular);
+			#ifdef KKP_EXPENSIVE_RAMP
+				float2 lightRampUV = drawnSpecular * _RampG_ST.xy + _RampG_ST.zw;
+				drawnSpecular = tex2D(_RampG, lightRampUV) * _UseRampForSpecular + drawnSpecular * (1 - _UseRampForSpecular);
+			#endif
+				drawnSpecular += specularVertex;
+
 				drawnSpecular *= _SpecularPower * _SpecularColor.w;
 				drawnSpecular = saturate(drawnSpecular);
 
@@ -340,24 +387,25 @@
 				drawnSpecularSquared = detailMaskAdjust.y * drawnSpecular;
 
 				float3 specularDiffuse = _SpecularColor.xyz * drawnSpecularSquared + diffuse;
-				float3 specularColor = finalDrawnSpecular * _SpecularColor.xyz;
+				float3 specularColor = (finalDrawnSpecular * _SpecularColor.xyz) + specularVertexCol;
 				specularColor = diffuse * remappedShading + specularColor;
 				diffuse *= shaded;
 				float3 finalSpecularColor = specularDiffuse - specularColor;
 				float3 mergedSpecularDiffuse = saturate(_notusetexspecular * finalSpecularColor + specularColor);
+				
 
 				float3 shadedSpecular = mergedSpecularDiffuse * shaded;
 				mergedSpecularDiffuse = -mergedSpecularDiffuse * shaded + mergedSpecularDiffuse;
 				mergedSpecularDiffuse = finalRamp * mergedSpecularDiffuse + shadedSpecular;
 				float3 liquidDiffuse =  liquidFinalMask * float3(0.300000012, 0.402941108, 0.557352901) + float3(0.5, 0.397058904, 0.242647097);
-				liquidDiffuse = liquidDiffuse * cumCol + specular;
+				liquidDiffuse = liquidDiffuse * cumCol + drawnSpecular;
+
 
 				float fresnelAdjust = saturate(fresnel * 2 - 0.800000012);
 				fresnel = log2(fresnel);
 				float3 fresnelLiquid = saturate(liquidDiffuse + fresnelAdjust);
 				fresnelLiquid -= mergedSpecularDiffuse;
 				mergedSpecularDiffuse = liquidFinalMask * fresnelLiquid + mergedSpecularDiffuse;
-
 				float rimPow = _rimpower * 9 + 1;
 				rimPow *= fresnel;
 				rimPow = exp2(rimPow);
@@ -372,7 +420,7 @@
 				drawnLines = drawnLines - lineMask.y;
 				drawnLines = _DetailBLineG * drawnLines + lineMask.y;
 
-				float3 lightCol =  _LightColor0.xyz * float3(0.600000024, 0.600000024, 0.600000024) + float3(0.400000006, 0.400000006, 0.400000006);
+				float3 lightCol =  (_LightColor0.xyz + vertexLighting.rgb * vertexLightRamp) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 				float3 ambientCol = max(lightCol, _ambientshadowG.xyz);
 				diffuseSpecRim = diffuseSpecRim * ambientCol;
 			
@@ -398,6 +446,9 @@
 				lineWidth = exp2(lineWidth);
 
 				finalDiffuse = lineWidth * finalDiffuse + diffuse;
+
+				float4 emission = GetEmission(i.uv0);
+				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
 
 				return float4(finalDiffuse,1 );
 			}

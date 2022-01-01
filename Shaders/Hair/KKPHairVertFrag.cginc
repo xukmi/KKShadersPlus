@@ -68,8 +68,8 @@ fixed4 frag (Varyings i) : SV_Target
 	GetVertexLights(vertexLights, i.posWS);	
 #endif
 	float4 vertexLighting = 0.0;
-#ifdef VERTEXLIGHT_ON
 	float vertexLightRamp = 1.0;
+#ifdef VERTEXLIGHT_ON
 	vertexLighting = GetVertexLighting(vertexLights, adjustedNormal);
 	float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
 	vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
@@ -185,7 +185,7 @@ fixed4 frag (Varyings i) : SV_Target
 	float3 shading = 1 - finalAmbientShadow;
 	shading = shadowAttenuation * shading + finalAmbientShadow;
 	finalDiffuse *= shading;
-	shading = (_LightColor0.xyz + vertexLighting.rgb * vertexLighting.a)* float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
+	shading = (_LightColor0.xyz + vertexLighting.rgb * vertexLightRamp)* float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 	shading = max(shading, _ambientshadowG.rgb);
 	finalDiffuse *= shading;
 	//Overlay Emission over everything

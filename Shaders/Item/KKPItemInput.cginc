@@ -21,6 +21,12 @@
 		float3 bitanWS  : TEXCOORD4;
 	};
 
+
+	float4 _CustomAmbient;
+	bool _UseRampForLights;
+	bool _UseRampForSpecular;
+	bool _UseLightColorSpecular;
+
 	//Input Textures
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;

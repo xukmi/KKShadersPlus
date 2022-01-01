@@ -4,7 +4,6 @@
 	{
 		_MainTex ("MainTex", 2D) = "white" {}
 		[Gamma]_overcolor1 ("Over Color1", Vector) = (1,1,1,1)
-		_overtex1 ("Over Tex1", 2D) = "black" {}
 		[Gamma]_overcolor2 ("Over Color2", Vector) = (1,1,1,1)
 		_overtex2 ("Over Tex2", 2D) = "black" {}
 		[Gamma]_overcolor3 ("Over Color3", Vector) = (1,1,1,1)
@@ -166,9 +165,9 @@
 
 				finalDiffuse = 0.5 < _LineColorG.w ? outLineCol : finalDiffuse;
 				finalDiffuse = saturate(finalDiffuse);
-				outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + float3(0.400000006, 0.400000006, 0.400000006);
+				outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 
-				return float4(finalDiffuse * outLineCol, 0.0);
+				return float4(finalDiffuse * outLineCol, 1.0);
 
 
 			}
@@ -293,9 +292,8 @@
 				GetVertexLights(vertexLights, i.posWS);	
 			#endif
 				float4 vertexLighting = 0.0;
-
-			#ifdef VERTEXLIGHT_ON
 				float vertexLightRamp = 1.0;
+			#ifdef VERTEXLIGHT_ON
 				vertexLighting = GetVertexLighting(vertexLights, normal);
 				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
 				vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
@@ -370,7 +368,7 @@
 				bodyShine = bodyShine - specularDiffuse;
 				specularDiffuse = liquidFinalMask * bodyShine + specularDiffuse;
 				//Final lighting colors
-				bodyShine = (_LightColor0.rgb + vertexLighting.rgb * vertexLighting.a) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
+				bodyShine = (_LightColor0.rgb + vertexLighting.rgb * vertexLightRamp) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 				float3 ambientCol = max(bodyShine, _ambientshadowG.xyz);
 				specularDiffuse *= ambientCol;
 				float3 diffuseAdjusted = diffuse * shadingAdjustment;

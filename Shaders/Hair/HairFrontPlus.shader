@@ -119,7 +119,7 @@
 					diffuse = hlslcc_movcTemp;
 				}	
 				diffuse = saturate(diffuse);
-				float3 lightCol = _LightColor0.xyz * float3(0.600000024, 0.600000024, 0.600000024) + float3(0.400000006, 0.400000006, 0.400000006);
+				float3 lightCol = _LightColor0.xyz * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 				diffuse *= lightCol;
 
 				return float4(diffuse, 1);

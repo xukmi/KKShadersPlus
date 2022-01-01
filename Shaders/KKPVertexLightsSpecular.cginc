@@ -13,7 +13,7 @@ float GetVertexSpecularDiffuse(KKVertexLight lights[4], float3 normal, float3 vi
 		float vertexSpecularPower = specularPower * 256;
 		vertexSpecularPower = vertexSpecularPower * vertexLightSpecular;
 		vertexSpecularPower = saturate(exp2(vertexSpecularPower) * specularPower * _SpecularColor.a);
-		vertexLightSpecular = exp2(vertexLightSpecular * 256) * 0.5;
+		vertexLightSpecular = exp2(vertexLightSpecular * 256) * 1;
 
 		float3 vertexSpecularColor = _UseLightColorSpecular ? light.col.rgb * _SpecularColor.a: light.lightVal * _SpecularColor.rgb * _SpecularColor.a;
 	#ifdef KKP_EXPENSIVE_RAMP
