@@ -10,6 +10,7 @@ struct KKVertexLight{
 	float4 col;
 	float atten;
 	float lightVal;
+	float lightValNoAtten;
 };
 
 
@@ -45,8 +46,10 @@ float4 GetVertexLighting(inout KKVertexLight lights[4], float3 normal){
 	[unroll]
 	for(int i = 0; i < 4; i++){
 		KKVertexLight light = lights[i];
-		float lighting = saturate(dot(normal, light.dir) * light.atten);
-		lights[i].lightVal = lighting;
+		float dotProduct = dot(normal, light.dir);
+		float lighting = dotProduct * light.atten;
+		lights[i].lightVal = saturate(lighting);
+		lights[i].lightValNoAtten = saturate(dotProduct);
 		float3 lightCol = lighting * light.col.rgb;
 		finalOutput.rgb += lightCol;
 		finalOutput.a += saturate(MaxGrayscale(lightCol));
@@ -61,12 +64,13 @@ float3 GetRampLighting(inout KKVertexLight lights[4], float3 normal, float ramp)
 	for(int i = 0; i < 4; i++){
 		KKVertexLight light = lights[i];
 	#ifdef KKP_EXPENSIVE_RAMP
-		float lighting = light.lightVal;
+		float lighting = light.lightValNoAtten;
 		float2 lightRampUV = lighting * _RampG_ST.xy + _RampG_ST.zw;
 		float lightRamp = tex2D(_RampG, lightRampUV).x;
-		lighting = lightRamp;
+		float atten = smoothstep(0.04, 0.041, light.atten); 
+		lighting = saturate(lightRamp * atten);
 	#else
-		float lighting = (saturate(dot(normal, light.dir)));
+		float lighting = light.lightValNoAtten;
 		lighting = ramp * lighting;
 	#endif
 		float3 lightCol = lighting * light.col.rgb;
