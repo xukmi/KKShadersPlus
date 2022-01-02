@@ -1,11 +1,9 @@
-﻿Shader "xukmi/MainOpaquePlus"
+﻿Shader "xukmi/MainAlphaPlus"
 {
 	Properties
 	{
 		_AnotherRamp ("Another Ramp(LineR)", 2D) = "white" {}
 		_MainTex ("MainTex", 2D) = "white" {}
-		_RampG ("Ramp", 2D) = "white" {} //TEMP REMOVE
-		_linewidthG ("Line", Range(0, 1)) = 0 //TEMPREMOVE
 		_NormalMap ("Normal Map", 2D) = "bump" {}
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
@@ -41,18 +39,19 @@
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
+		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 	}
 	SubShader
 	{
 		LOD 600
-		Tags { "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" }
+		Tags { "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" }
 		//Outline
 		Pass
 		{
 			Name "Outline"
 			LOD 600
-			Tags {"Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Tags {"Queue" = "Transparent" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
 			Cull Front
 
 			CGPROGRAM
@@ -68,7 +67,6 @@
 			Varyings vert (VertexData v)
 			{
 				Varyings o;
-				
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 				float3 viewDir = _WorldSpaceCameraPos.xyz - o.posWS.xyz;
 				float viewVal = dot(viewDir, viewDir);
@@ -163,7 +161,7 @@
 				finalDiffuse = saturate(finalDiffuse);
 				float3 outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 
-				return float4(finalDiffuse * outLineCol, 1.0);
+				return float4(finalDiffuse * outLineCol, 1);
 
 
 			}
@@ -177,11 +175,10 @@
 		{
 			Name "Forward"
 			LOD 600
-			Tags { "LightMode" = "ForwardBase" "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
-			Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
+			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
 			Cull Off
-
-
+			ZWrite [_AlphaOptionZWrite]
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -233,7 +230,6 @@
 				//Clips based on alpha texture
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				AlphaClip(i.uv0, mainTex.a);
-
 
 				float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
@@ -463,7 +459,7 @@
 				float4 emission = GetEmission(i.uv0);
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
 
-				return float4(finalDiffuse,1 );
+				return float4(finalDiffuse, mainTex.a);
 			}
 
 			
@@ -475,10 +471,10 @@
 		{
 			Name "ShadowCaster"
 			LOD 600
-			Tags { "LightMode" = "ShadowCaster" "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ShadowCaster" "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
 			Offset 1, 1
 			Cull Off
-
+		
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -493,7 +489,8 @@
 
 			float _alpha_a;
 			float _alpha_b;
-
+			float _Cutoff;
+			bool _AlphaOptionCutoff;
 
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
@@ -518,8 +515,8 @@
 				alphaVal = min(alphaVal.y, alphaVal.x);
 				alphaVal *= mainTexAlpha;
 				alphaVal.x -= 0.5f;
-				float clipVal = alphaVal.x < 0.0f;
-				if(clipVal * int(0xffffffffu) != 0)
+				float clipVal = alphaVal.x < _Cutoff;
+				if(clipVal * int(0xffffffffu) != 0 && _AlphaOptionCutoff)
 					discard;
 
                 SHADOW_CASTER_FRAGMENT(i)

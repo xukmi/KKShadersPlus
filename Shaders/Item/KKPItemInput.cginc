@@ -26,7 +26,7 @@
 	bool _UseRampForLights;
 	bool _UseRampForSpecular;
 	bool _UseLightColorSpecular;
-
+	bool _AlphaOptionCutoff;
 	//Input Textures
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;

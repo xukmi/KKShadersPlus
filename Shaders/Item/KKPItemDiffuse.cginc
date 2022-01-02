@@ -58,9 +58,9 @@ void AlphaClip(float2 uv, float texAlpha){
 	alphaVal = max(alphaVal, alphaMask.xy);
 	alphaVal = min(alphaVal.y, alphaVal.x);
 	alphaVal = min(alphaVal, texAlpha);
-	alphaVal.x -= 0.5f;
+	alphaVal.x -= _Cutoff;
 	float clipVal = alphaVal.x < 0.0f;
-	if(clipVal * int(0xffffffffu) != 0)
+	if(clipVal * int(0xffffffffu) != 0 && _AlphaOptionCutoff)
 		discard;
 }
 #endif
