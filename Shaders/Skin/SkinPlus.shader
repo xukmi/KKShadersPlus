@@ -51,6 +51,7 @@
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		_LineWidthS ("LineWidthS", Float) = 1
+		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 	}
 	SubShader
 	{
@@ -120,7 +121,7 @@
 			fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 			{
 				//Defined in Diffuse.cginc
-				AlphaClip(i.uv0);	
+				AlphaClip(i.uv0, _OutlineOn ? 1 : 0);	
 				float3 diffuse = GetDiffuse(i);
 				float3 u_xlat1;
 				MapValuesOutline(diffuse, u_xlat1);
@@ -247,7 +248,7 @@
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				//Clips based on alpha texture
-				AlphaClip(i.uv0);
+				AlphaClip(i.uv0, _OutlineOn ? 1 : 0);
 
 
 				//Used in various things so calculating them here

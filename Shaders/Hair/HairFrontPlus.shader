@@ -34,6 +34,7 @@
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		_LineWidthS ("LineWidthS", Float) = 1
+		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 	}
 	SubShader
 	{
@@ -100,7 +101,7 @@
 			{
 				
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
-				float alpha = AlphaClip(i.uv0, mainTex.a);
+				float alpha = AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
 
 				float3 diffuse = GetDiffuse(i.uv0);
 				float3 diffuseMainTex = -diffuse * mainTex.xyz + 1;

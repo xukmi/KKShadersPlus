@@ -98,7 +98,7 @@
 	float _tex1mask;
 
 	float _LineWidthS;
-
+	bool _OutlineOn;
 	//Global light params set by KK 
 	float4 _LineColorG;
 	float _linewidthG; 

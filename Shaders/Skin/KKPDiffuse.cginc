@@ -98,13 +98,13 @@ void MapValuesOutline(float3 col, out float3 a){
 	a = u_xlat1.xyz;
 }
 
-void AlphaClip(float2 uv){
+void AlphaClip(float2 uv, bool outline){
 	//Body alpha mask from outfits
 	float2 alphaUV = uv * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
 	float4 alphaMask = tex2D(_AlphaMask, alphaUV);
 	float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
 	alphaVal = max(alphaVal, alphaMask.xy);
-	alphaVal = min(alphaVal.y, alphaVal.x);
+	alphaVal = min(alphaVal.y, alphaVal.x) * outline;
 	alphaVal.x -= 0.5f;
 	float clipVal = alphaVal.x < 0.0f;
 	if(clipVal * int(0xffffffffu) != 0)

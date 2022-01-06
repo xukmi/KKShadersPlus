@@ -42,6 +42,7 @@
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
+		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 		_LineWidthS ("LineWidthS", Float) = 1
 	}
 	SubShader
@@ -110,7 +111,7 @@
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
-				AlphaClip(i.uv0, mainTex.a);
+				AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
 
 				float3 diffuse = mainTex.rgb;
 				float3 shadingAdjustment = ShadeAdjust(diffuse);

@@ -27,6 +27,7 @@
 	bool _UseRampForSpecular;
 	bool _UseLightColorSpecular;
 	bool _AlphaOptionCutoff;
+	bool _OutlineOn;
 	//Input Textures
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;
@@ -80,6 +81,7 @@
 
 
 	float _LineWidthS;
+	float _Alpha;
 	//Global light params set by KK 
 	float4 _LineColorG;
 	float _linewidthG; 

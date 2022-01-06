@@ -41,7 +41,9 @@
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
+		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 		_LineWidthS ("LineWidthS", Float) = 1
+		_Alpha ("AlphaValue", Float) = 1
 	}
 	SubShader
 	{
@@ -108,7 +110,7 @@
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
-				AlphaClip(i.uv0, mainTex.a);
+				AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
 
 				float3 diffuse = mainTex.rgb;
 				float3 shadingAdjustment = ShadeAdjust(diffuse);
@@ -162,7 +164,7 @@
 				finalDiffuse = saturate(finalDiffuse);
 				float3 outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 
-				return float4(finalDiffuse * outLineCol, 1);
+				return float4(finalDiffuse * outLineCol, 1 * _Alpha);
 
 
 			}
@@ -460,7 +462,7 @@
 				float4 emission = GetEmission(i.uv0);
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
 
-				return float4(finalDiffuse, mainTex.a);
+				return float4(finalDiffuse, mainTex.a * _Alpha);
 			}
 
 			

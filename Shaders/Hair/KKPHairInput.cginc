@@ -69,7 +69,7 @@
 	float _ShadowExtend;
 
 	float _LineWidthS;
-
+	bool _OutlineOn;
 	//Global light params set by KK 
 	float _linewidthG; 
 	float4 _ambientshadowG;
