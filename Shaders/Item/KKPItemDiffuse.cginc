@@ -50,6 +50,54 @@ float3 ShadeAdjust(float3 col){
 						
 }
 
+
+float3 ShadeAdjustItem(float3 col){
+	float4 u_xlat0;
+	float4 u_xlat1;
+	float4 u_xlat2;
+	float4 u_xlat3;
+	float u_xlat11;
+	float u_xlat30;
+	bool u_xlatb30;
+
+	u_xlat0.xyz = col;
+
+	u_xlat1.xyw = u_xlat0.yzx * _ShadowColor.yzx;
+	u_xlat2.xy = u_xlat1.yx;
+	u_xlat3.xy = u_xlat0.yz * _ShadowColor.yz + (-u_xlat2.xy);
+	u_xlatb30 = u_xlat2.y>=u_xlat1.y;
+	u_xlat30 = u_xlatb30 ? 1.0 : float(0.0);
+	u_xlat2.z = float(-1.0);
+	u_xlat2.w = float(0.666666687);
+	u_xlat3.z = float(1.0);
+	u_xlat3.w = float(-1.0);
+	u_xlat2 = (u_xlat30) * u_xlat3 + u_xlat2;
+	u_xlatb30 = u_xlat1.w>=u_xlat2.x;
+	u_xlat30 = u_xlatb30 ? 1.0 : float(0.0);
+	u_xlat1.xyz = u_xlat2.xyw;
+	u_xlat2.xyw = u_xlat1.wyx;
+	u_xlat2 = (-u_xlat1) + u_xlat2;
+	u_xlat1 = (u_xlat30) * u_xlat2 + u_xlat1;
+	u_xlat30 = min(u_xlat1.y, u_xlat1.w);
+	u_xlat30 = (-u_xlat30) + u_xlat1.x;
+	u_xlat2.x = u_xlat30 * 6.0 + 1.00000001e-10;
+	u_xlat11 = (-u_xlat1.y) + u_xlat1.w;
+	u_xlat11 = u_xlat11 / u_xlat2.x;
+	u_xlat11 = u_xlat11 + u_xlat1.z;
+	u_xlat1.x = u_xlat1.x + 1.00000001e-10;
+	u_xlat30 = u_xlat30 / u_xlat1.x;
+	u_xlat30 = u_xlat30 * 0.5;
+	u_xlat1.xyz = abs((u_xlat11)) + float3(0.0, -0.333333343, 0.333333343);
+	u_xlat1.xyz = frac(u_xlat1.xyz);
+	u_xlat1.xyz = (-u_xlat1.xyz) * float3(2.0, 2.0, 2.0) + float3(1.0, 1.0, 1.0);
+	u_xlat1.xyz = abs(u_xlat1.xyz) * float3(3.0, 3.0, 3.0) + float3(-1.0, -1.0, -1.0);
+	u_xlat1.xyz = clamp(u_xlat1.xyz, 0.0, 1.0);
+	u_xlat1.xyz = u_xlat1.xyz + float3(-1.0, -1.0, -1.0);
+	u_xlat1.xyz = (u_xlat30) * u_xlat1.xyz + float3(1.0, 1.0, 1.0);
+	return u_xlat1.xyz;
+}
+
+
 void AlphaClip(float2 uv, float texAlpha){
 	//Body alpha mask from outfits
 	float2 alphaUV = uv * _AlphaMask_ST.xy + _AlphaMask_ST.zw;

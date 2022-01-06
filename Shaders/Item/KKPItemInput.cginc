@@ -42,6 +42,8 @@
 	sampler2D _RampG;
 	sampler2D _LineMask;
 
+	sampler2D _ColorMask;
+
 	//UV Offsets
 	float4 _MainTex_ST;
 	float4 _AlphaMask_ST;
@@ -56,6 +58,8 @@
 
 	float4 _RampG_ST;
 	float4 _LineMask_ST;
+	
+	float4 _ColorMask_ST;
 	
 	float _Cutoff;
 	float4 _ShadowColor;
@@ -79,7 +83,12 @@
 	float _DetailRLineR;
 	float _DetailBLineG;
 
-
+	float4 _TimeEditor;
+	float4 _Clock;
+	float4 _Color;
+	float4 _Color2;
+	float4 _Color3;
+	float _AnotherRampFull;
 	float _LineWidthS;
 	float _Alpha;
 	//Global light params set by KK 
