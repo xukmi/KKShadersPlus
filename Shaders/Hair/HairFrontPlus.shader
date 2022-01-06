@@ -33,6 +33,7 @@
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
+		_LineWidthS ("LineWidthS", Float) = 1
 	}
 	SubShader
 	{
@@ -76,7 +77,7 @@
 				viewVal = sqrt(viewVal);
 				viewVal = viewVal * 0.0999999866 + 0.300000012;
 				float lineVal = _linewidthG * 0.00499999989;
-				viewVal *= lineVal;
+				viewVal *= lineVal * _LineWidthS;
 				alpha *= viewVal;
 
 				float4 detailMask = tex2Dlod(_DetailMask, float4(v.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw, 0, 0));

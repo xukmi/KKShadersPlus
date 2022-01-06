@@ -42,6 +42,7 @@
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
+		_LineWidthS ("LineWidthS", Float) = 1
 	}
 	SubShader
 	{
@@ -79,7 +80,7 @@
 				float2 detailMaskUV = v.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 				float4 detailMask = tex2Dlod(_DetailMask, float4(detailMaskUV, 0, 0));
 				float detailB = 1 - detailMask.b;
-				viewVal *= detailB;
+				viewVal *= detailB * _LineWidthS;
 				float3 invertSquare;
 				float3 x;
 				float3 y;
@@ -328,7 +329,7 @@
 				detailSpecularOffset.y = dot(i.bitanWS, viewDir);
 				float2 detailMaskUV2 = specularHeight * detailSpecularOffset + i.uv0;
 				detailMaskUV2 = detailMaskUV2 * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float drawnSpecular = tex2D(_DetailMask, detailMaskUV2);
+				float drawnSpecular = tex2D(_DetailMask, detailMaskUV2).x;
 				float drawnSpecularSquared = min(drawnSpecular * drawnSpecular, 1.0);
 				drawnSpecular = drawnSpecular - drawnSpecularSquared;
 				drawnSpecular = saturate(drawnSpecular);

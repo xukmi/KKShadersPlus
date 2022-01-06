@@ -68,6 +68,8 @@
 	float _SpeclarHeight;
 	float _ShadowExtend;
 
+	float _LineWidthS;
+
 	//Global light params set by KK 
 	float _linewidthG; 
 	float4 _ambientshadowG;

@@ -78,6 +78,8 @@
 	float _DetailRLineR;
 	float _DetailBLineG;
 
+
+	float _LineWidthS;
 	//Global light params set by KK 
 	float4 _LineColorG;
 	float _linewidthG; 

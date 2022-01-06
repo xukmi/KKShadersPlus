@@ -50,6 +50,7 @@
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
+		_LineWidthS ("LineWidthS", Float) = 1
 	}
 	SubShader
 	{
@@ -81,7 +82,7 @@
 				viewVal = sqrt(viewVal);
 				viewVal = viewVal * 0.0999999866 + 0.300000012;
 				float lineVal = _linewidthG * 0.00499999989;
-				viewVal *= lineVal;
+				viewVal *= lineVal * _LineWidthS;
 				float2 detailMaskUV = v.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 				float4 detailMask = tex2Dlod(_DetailMask, float4(detailMaskUV, 0, 0));
 				float detailB = 1 - detailMask.b;
