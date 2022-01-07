@@ -35,7 +35,7 @@
 	bool _UseRampForLights;
 	bool _UseRampForSpecular;
 	bool _UseLightColorSpecular;
-
+	bool _UseDetailRAsSpecularMap;
 	float _NormalMapScale;
 
 	//KK Inputs

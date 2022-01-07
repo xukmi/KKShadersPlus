@@ -33,6 +33,7 @@
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
+		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 	}
@@ -135,6 +136,10 @@
 
 				float2 detailUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 				float4 detailMask = tex2D(_DetailMask, detailUV);
+				
+				float specularMap = _UseDetailRAsSpecularMap ? detailMask.r : 1;
+				_SpecularPower *= specularMap;
+
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
 				float4 lineMask = tex2D(_LineMask, lineMaskUV);
 				lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;

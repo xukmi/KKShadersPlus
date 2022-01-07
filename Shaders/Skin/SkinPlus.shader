@@ -50,6 +50,7 @@
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
+		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		_LineWidthS ("LineWidthS", Float) = 1
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 	}
@@ -279,6 +280,9 @@
 				//Alpha : Specular Intensity, Black = Nails White = body
 				float2 detailMaskUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 				float4 detailMask = tex2D(_DetailMask, detailMaskUV);
+
+				float specularMap = _UseDetailRAsSpecularMap ? detailMask.r : 1;
+				_SpecularPower *= specularMap;
 				detailMask.xyz = 1 - detailMask.ywz;
 
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;

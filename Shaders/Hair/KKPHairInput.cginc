@@ -34,7 +34,7 @@
 	bool _UseRampForSpecular;
 	bool _UseLightColorSpecular;
 	float _UseMeshSpecular;
-	
+	bool _UseDetailRAsSpecularMap;
 	//Input Textures
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;

@@ -37,6 +37,7 @@
 		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		_Alpha ("AlphaValue", Float) = 1
+		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 	}
 	SubShader
 	{
@@ -328,6 +329,10 @@
 
 				float2 detailUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 				float4 detailMask = tex2D(_DetailMask, detailUV);
+
+				float specularMap = _UseDetailRAsSpecularMap ? detailMask.r : 1;
+				_SpecularPower *= specularMap;
+
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
 				float4 lineMask = tex2D(_LineMask, lineMaskUV);
 				lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;

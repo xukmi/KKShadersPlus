@@ -165,6 +165,8 @@ fixed4 frag (Varyings i) : SV_Target
 	#endif
 	
 	float4 detailMask = tex2D(_DetailMask, i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw);
+	float specularMap = _UseDetailRAsSpecularMap ? detailMask.r : 1;
+	_SpecularHairPower *= specularMap;
 	float2 invertDetailGB = 1 - detailMask.gb;
 	float shadowMasked = shadowAttenuation * invertDetailGB.x;
 	shadowAttenuation = max(shadowAttenuation, invertDetailGB.x);

@@ -28,6 +28,7 @@
 	bool _UseLightColorSpecular;
 	bool _AlphaOptionCutoff;
 	bool _OutlineOn;
+	bool _UseDetailRAsSpecularMap;
 	//Input Textures
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;
