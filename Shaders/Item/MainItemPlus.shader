@@ -440,7 +440,7 @@
 			#ifdef VERTEXLIGHT_ON
 				specularVertex = GetVertexSpecularDiffuse(vertexLights, normal, viewDir, _SpecularPower, specularVertexCol);
 			#endif
-				float3 specularCol = saturate(specular) * _SpecularColor.rgb + saturate(specularVertex) * specularVertexCol;
+				float3 specularCol = saturate(specular) * _SpecularColor.rgb + saturate(specularVertex) * specularVertexCol * _notusetexspecular;
 				specularCol *= _SpecularColor.a;
 
 				float3 ambientShadowAdjust2 = AmbientShadowAdjust();

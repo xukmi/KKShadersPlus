@@ -1,4 +1,4 @@
-﻿Shader "xukmi/MainAlphaPlus"
+Shader "xukmi/MainAlphaPlus"
 {
 	Properties
 	{
@@ -41,7 +41,7 @@
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
-		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
+		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
 		_LineWidthS ("LineWidthS", Float) = 1
 		_Alpha ("AlphaValue", Float) = 1
 	}
@@ -264,7 +264,6 @@
 				float3 rampLighting = GetRampLighting(vertexLights, normal, vertexLightRamp);
 				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 			#endif
-
 				float lambert = saturate(dot(worldLightPos, normal));
 
 				float3 cumCol = (lambert + 0.5 + vertexLighting.a) * float3(0.149999976, 0.199999988, 0.300000012) + float3(0.850000024, 0.800000012, 0.699999988);

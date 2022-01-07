@@ -7,7 +7,6 @@
 		_NormalMap ("Normal Map", 2D) = "bump" {}
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
-		_RampG ("Line Mask", 2D) = "black" {}
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
@@ -443,7 +442,7 @@
 			#ifdef VERTEXLIGHT_ON
 				specularVertex = GetVertexSpecularDiffuse(vertexLights, normal, viewDir, _SpecularPower, specularVertexCol);
 			#endif
-				float3 specularCol = saturate(specular) * _SpecularColor.rgb + saturate(specularVertex) * specularVertexCol;
+				float3 specularCol = saturate(specular) * _SpecularColor.rgb + saturate(specularVertex) * specularVertexCol * _notusetexspecular;
 				specularCol *= _SpecularColor.a;
 
 				float3 ambientShadowAdjust2 = AmbientShadowAdjust();

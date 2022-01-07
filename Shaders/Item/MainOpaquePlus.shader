@@ -4,8 +4,6 @@
 	{
 		_AnotherRamp ("Another Ramp(LineR)", 2D) = "white" {}
 		_MainTex ("MainTex", 2D) = "white" {}
-		_RampG ("Ramp", 2D) = "white" {} //TEMP REMOVE
-		_linewidthG ("Line", Range(0, 1)) = 0 //TEMPREMOVE
 		_NormalMap ("Normal Map", 2D) = "bump" {}
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
