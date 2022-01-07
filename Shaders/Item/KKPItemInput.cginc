@@ -29,6 +29,9 @@
 	bool _AlphaOptionCutoff;
 	bool _OutlineOn;
 	bool _UseDetailRAsSpecularMap;
+
+	int _CullOption;
+
 	//Input Textures
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;

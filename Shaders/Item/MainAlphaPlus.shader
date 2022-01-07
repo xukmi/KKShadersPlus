@@ -43,6 +43,7 @@ Shader "xukmi/MainAlphaPlus"
 		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
+		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 2
 		_LineWidthS ("LineWidthS", Float) = 1
 		_Alpha ("AlphaValue", Float) = 1
 	}
@@ -185,7 +186,7 @@ Shader "xukmi/MainAlphaPlus"
 			LOD 600
 			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
 			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
-			Cull Off
+			Cull [_CullOption]
 			ZWrite [_AlphaOptionZWrite]
 			CGPROGRAM
 			#pragma vertex vert

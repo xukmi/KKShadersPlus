@@ -42,6 +42,7 @@
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
+		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 		_LineWidthS ("LineWidthS", Float) = 1
 	}
 	SubShader
@@ -184,7 +185,7 @@
 			LOD 600
 			Tags { "LightMode" = "ForwardBase" "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
 			Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
-			Cull Off
+			Cull [_CullOption]
 
 
 			CGPROGRAM
