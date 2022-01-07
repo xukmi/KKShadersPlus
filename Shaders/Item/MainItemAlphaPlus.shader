@@ -1,4 +1,4 @@
-﻿Shader "xukmi/MainItemPlus"
+﻿Shader "xukmi/MainItemAlphaPlus"
 {
 	Properties
 	{
@@ -34,18 +34,21 @@
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
-		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
+		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
+		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
+		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
+		_Alpha ("AlphaValue", Float) = 1
 	}
 	SubShader
 	{
 		LOD 600
-		Tags { "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" }
+		Tags { "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" }
 		//Outline
 		Pass
 		{
 			Name "Outline"
 			LOD 600
-			Tags {"Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Tags {"Queue" = "Transparent" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
 			Cull Front
 
 			CGPROGRAM
@@ -185,7 +188,7 @@
 
 
 
-				return float4(finalDiffuse, 1);
+				return float4(finalDiffuse, mainTex.a * _Alpha);
 
 
 			}
@@ -199,10 +202,10 @@
 		{
 			Name "Forward"
 			LOD 600
-			Tags { "LightMode" = "ForwardBase" "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
-			Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
+			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
 			Cull Off
-
+			ZWrite [_AlphaOptionZWrite]
 
 			CGPROGRAM
 			#pragma vertex vert
@@ -489,7 +492,7 @@
 				float4 emission = GetEmission(i.uv0);
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
 
-				return float4(finalDiffuse, 1);
+				return float4(finalDiffuse, mainTex.a * _Alpha);
 
 
 			}
@@ -504,7 +507,7 @@
 		{
 			Name "ShadowCaster"
 			LOD 600
-			Tags { "LightMode" = "ShadowCaster" "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ShadowCaster" "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
 			Offset 1, 1
 			Cull Off
 
