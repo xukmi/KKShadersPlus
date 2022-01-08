@@ -110,7 +110,7 @@
 			{
 				//Clips based on alpha texture
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
-				AlphaClip(i.uv0,  _OutlineOn ? mainTex.a : 0);
+				AlphaClip(i.uv0,  _OutlineOn ? mainTex.a * _Alpha : 0);
 
 				float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);

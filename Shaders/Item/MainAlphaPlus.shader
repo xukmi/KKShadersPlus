@@ -117,7 +117,7 @@ Shader "xukmi/MainAlphaPlus"
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
-				AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
+				AlphaClip(i.uv0, _OutlineOn ? mainTex.a * _Alpha : 0);
 
 				float3 diffuse = mainTex.rgb;
 				float3 shadingAdjustment = ShadeAdjust(diffuse);
