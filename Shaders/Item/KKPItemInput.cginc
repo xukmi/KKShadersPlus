@@ -31,6 +31,7 @@
 	bool _UseDetailRAsSpecularMap;
 
 	int _CullOption;
+	float _UseKKMetal;
 
 	//Input Textures
 	sampler2D _MainTex;

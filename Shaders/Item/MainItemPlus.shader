@@ -37,6 +37,10 @@
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
+		_Reflective("Reflective", Range(0, 1)) = 0.75
+		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
+		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
+		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
 	}
 	SubShader
 	{
@@ -230,6 +234,7 @@
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
+			#include "../KKPReflect.cginc"
 
 
 			float3 AmbientShadowAdjust(){
@@ -310,7 +315,7 @@
 				color = colorMask.g * (_Color2.rgb - color) + color;
 				color = colorMask.b * (_Color3.rgb - color) + color;
 				float3 diffuse = mainTex * color;
-
+				
 				float3 normal = NormalAdjust(i, GetNormal(i), 1);
 
 				//Apparently can rotate?
@@ -362,6 +367,9 @@
 				float shadowExtendAnother = 1 - _ShadowExtendAnother;
 				float kkMetal = _AnotherRampFull * (1 - lineMask.r) + lineMask.r;
 
+				float kkMetalMap = kkMetal;
+				kkMetal *= _UseKKMetal;
+
 				shadowExtendAnother -= kkMetal;
 				shadowExtendAnother += 1;
 				shadowExtendAnother = saturate(shadowExtendAnother) * 0.670000017 + 0.330000013;
@@ -400,15 +408,13 @@
 				[unroll]
 				for(int j = 0; j < 4; j++){
 					KKVertexLight light = vertexLights[j];
-					float3 halfVector = normalize(viewDir + light.dir);
+					float3 halfVector = normalize(viewDir + light.dir) * saturate(MaxGrayscale(light.col));
 					anotherRampSpecularVertex = max(anotherRampSpecularVertex, dot(halfVector, normal));
 				}
 			#endif
-
 				float2 anotherRampUV = max(specular, anotherRampSpecularVertex) * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw;
 				float anotherRamp = tex2D(_AnotherRamp, anotherRampUV);
 				specular = log2(specular);
-
 				anotherRamp -= ramp;
 				float finalRamp = kkMetal * anotherRamp + ramp;
 
@@ -492,6 +498,9 @@
 
 				float3 finalDiffuse = detailLineShadow * diffuse + shadingAdjustment;
 				finalDiffuse += specularCol;
+			
+				finalDiffuse = GetBlendReflections(finalDiffuse, normal, viewDir, kkMetalMap);
+
 				float4 emission = GetEmission(i.uv0);
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
 

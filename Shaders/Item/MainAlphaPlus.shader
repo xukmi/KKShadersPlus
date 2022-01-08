@@ -45,6 +45,11 @@ Shader "xukmi/MainAlphaPlus"
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 2
 		_LineWidthS ("LineWidthS", Float) = 1
+		_Reflective("Reflective", Range(0, 1)) = 0.75
+		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
+		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
+		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
+		_AnotherRampFull("Another Ramp", Range(0, 1)) = 0
 		_Alpha ("AlphaValue", Float) = 1
 	}
 	SubShader
@@ -208,6 +213,7 @@ Shader "xukmi/MainAlphaPlus"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
+			#include "../KKPReflect.cginc"
 
 
 
@@ -240,6 +246,7 @@ Shader "xukmi/MainAlphaPlus"
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				AlphaClip(i.uv0, mainTex.a);
 
+
 				float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
 				float3 halfDir = normalize(viewDir + worldLightPos);
@@ -270,6 +277,7 @@ Shader "xukmi/MainAlphaPlus"
 				float3 rampLighting = GetRampLighting(vertexLights, normal, vertexLightRamp);
 				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 			#endif
+
 				float lambert = saturate(dot(worldLightPos, normal));
 
 				float3 cumCol = (lambert + 0.5 + vertexLighting.a) * float3(0.149999976, 0.199999988, 0.300000012) + float3(0.850000024, 0.800000012, 0.699999988);
@@ -297,7 +305,7 @@ Shader "xukmi/MainAlphaPlus"
 				[unroll]
 				for(int j = 0; j < 4; j++){
 					KKVertexLight light = vertexLights[j];
-					float3 halfVector = normalize(viewDir + light.dir);
+					float3 halfVector = normalize(viewDir + light.dir) * saturate(MaxGrayscale(light.col));
 					anotherRampSpecularVertex = max(anotherRampSpecularVertex, dot(halfVector, normal));
 				}
 			#endif
@@ -306,6 +314,8 @@ Shader "xukmi/MainAlphaPlus"
 				float anotherRamp = tex2D(_AnotherRamp, anotherRampUV);
 				float finalRamp = anotherRamp - ramp;
 
+
+
 				specular = log2(max(specular, 0.0));
 
 				float2 detailUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
@@ -313,6 +323,12 @@ Shader "xukmi/MainAlphaPlus"
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
 				float4 lineMask = tex2D(_LineMask, lineMaskUV);
 				lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;
+
+				lineMask.r = _AnotherRampFull * (1 - lineMask.r) + lineMask.r;
+
+				float kkMetalMap = lineMask.r;
+				lineMask.r *= _UseKKMetal;
+
 				finalRamp = lineMask.r * finalRamp + ramp;
 				
 				float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;
@@ -463,6 +479,7 @@ Shader "xukmi/MainAlphaPlus"
 				lineWidth = exp2(lineWidth);
 
 				finalDiffuse = lineWidth * finalDiffuse + diffuse;
+				finalDiffuse = GetBlendReflections(finalDiffuse, normal, viewDir, kkMetalMap);
 
 				float4 emission = GetEmission(i.uv0);
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
