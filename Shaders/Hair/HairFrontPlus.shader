@@ -35,6 +35,7 @@
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		_LineWidthS ("LineWidthS", Float) = 1
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
+		[Enum(Off,0,On,1)]_SpecularHeightInvert ("Specular Height Invert", Float) = 0
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 	}
 	SubShader

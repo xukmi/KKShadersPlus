@@ -35,6 +35,7 @@
 	bool _UseLightColorSpecular;
 	float _UseMeshSpecular;
 	bool _UseDetailRAsSpecularMap;
+	bool _SpecularHeightInvert;
 	//Input Textures
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;

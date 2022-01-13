@@ -26,6 +26,11 @@ Varyings vert (VertexData v)
 }
 			
 
+float3 CreateBinormal (float3 normal, float3 tangent, float binormalSign) {
+	return cross(normal, tangent.xyz) *
+		(binormalSign * unity_WorldTransformParams.w);
+}
+
 fixed4 frag (Varyings i) : SV_Target
 {
 	float3 viewDir = normalize(_WorldSpaceCameraPos - i.posWS);
@@ -42,15 +47,14 @@ fixed4 frag (Varyings i) : SV_Target
 	float2 normalUV = i.uv0 * _NormalMap_ST.xy + _NormalMap_ST.zw;
 	float3 normal = UnpackNormal(tex2D(_NormalMap, normalUV));
 
-    float3 tspace0 = float3(i.tanWS.x, i.bitanWS.x, i.normalWS.x);
-	float3 tspace1 = float3(i.tanWS.y, i.bitanWS.y, i.normalWS.y);
-    float3 tspace2 = float3(i.tanWS.z, i.bitanWS.z, i.normalWS.z);
-	
-	float3 adjustedNormal;
-    adjustedNormal.x = dot(tspace0, normal);
-    adjustedNormal.y = dot(tspace1, normal);
-    adjustedNormal.z = dot(tspace2, normal);
-	adjustedNormal = normalize(adjustedNormal);
+	float3 binormal = CreateBinormal(i.normalWS, i.tanWS.xyz, i.tanWS.w);
+	normal = normalize(
+		normal.x * i.tanWS +
+		normal.y * binormal +
+		normal.z * i.normalWS
+	);
+	float3 adjustedNormal = normalize(normal);
+
 	float fresnel = max(0.0, dot(viewDir, adjustedNormal));
 	float anotherRamp = tex2D(_AnotherRamp, fresnel * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw).x;
 	fresnel = 1 - fresnel;
@@ -117,7 +121,9 @@ fixed4 frag (Varyings i) : SV_Target
 #else
 	hairGlossVal.x = lambert * 0.00499999989 + i.uv1.x;
 #endif
-	hairGlossVal.z = specularHeight * bitanFres + i.uv1.y;
+	//For some reason hair gloss is fucked on some hairs unless you invert
+	float invertSpecularHeight = _SpecularHeightInvert ? -1 : 1;
+	hairGlossVal.z = invertSpecularHeight * specularHeight * bitanFres + i.uv1.y;
 	hairGlossVal.y = hairGlossVal.z + 0.00800000038;
 
 	float4 hairGlossUV = hairGlossVal.xyxz * _HairGloss_ST.xyxy + _HairGloss_ST.zwzw;
