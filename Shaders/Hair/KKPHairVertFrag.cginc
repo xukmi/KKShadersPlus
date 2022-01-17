@@ -8,8 +8,22 @@ Varyings vert (VertexData v)
 	o.posCS = mul(UNITY_MATRIX_VP, o.posWS);
 	o.normalWS = UnityObjectToWorldNormal(v.normal);
 	o.tanWS = float4(UnityObjectToWorldDir(v.tangent.xyz), v.tangent.w);
-	float3 biTan = cross(o.tanWS, o.normalWS);
-	o.bitanWS = normalize(biTan);
+
+
+	float3 u_xlat0 = o.normalWS;
+	float3 u_xlat1 = o.tanWS;
+	float3 u_xlat2;
+	float u_xlat9;
+	u_xlat2.xyz = u_xlat0.zxy * u_xlat1.yzx;
+	u_xlat0.xyz = u_xlat0.yzx * u_xlat1.zxy + (-u_xlat2.xyz);
+	u_xlat0.xyz = u_xlat0.xyz * v.tangent.www;
+	u_xlat9 = dot(u_xlat0.xyz, u_xlat0.xyz);
+	u_xlat9 = rsqrt(u_xlat9);
+	o.bitanWS = (u_xlat9) * u_xlat0.xyz;
+	
+	//float3 biTan = cross(o.tanWS, o.normalWS);
+	//o.bitanWS = normalize(biTan);
+	
 	o.uv0 = v.uv0;
 	o.uv1 = v.uv1;
 				
