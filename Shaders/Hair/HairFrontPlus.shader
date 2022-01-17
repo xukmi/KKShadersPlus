@@ -22,6 +22,7 @@
 		[Gamma]_LineColor ("LineColor", Vector) = (0.5,0.5,0.5,1)
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
+		_NormalMapScale ("NormalMapScale", Float) = 1
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0

@@ -33,6 +33,8 @@
 	int _CullOption;
 	float _UseKKMetal;
 
+	float _NormalMapScale;
+
 	//Input Textures
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;

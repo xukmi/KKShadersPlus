@@ -4,7 +4,7 @@
 float3 GetNormal(Varyings i){	
 	//Normals
 	float2 normalUV = i.uv0 + _NormalMap_ST.xy + _NormalMap_ST.zw;
-	float3 normalMap = UnpackScaleNormal(tex2D(_NormalMap, normalUV), 1);
+	float3 normalMap = UnpackScaleNormal(tex2D(_NormalMap, normalUV), _NormalMapScale);
 	return normalMap;
 }
 

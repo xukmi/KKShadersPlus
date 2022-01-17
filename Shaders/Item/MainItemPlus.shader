@@ -29,6 +29,7 @@
 		[Gamma]_Color2 ("Color2", Color) = (0.1172419,0,1,1)
 		[Gamma]_Color3 ("Color3", Color) = (0.5,0.5,0.5,1)
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
+		_NormalMapScale ("NormalMapScale", Float) = 1
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1

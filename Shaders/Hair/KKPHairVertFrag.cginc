@@ -23,7 +23,7 @@ Varyings vert (VertexData v)
 	
 	//float3 biTan = cross(o.tanWS, o.normalWS);
 	//o.bitanWS = normalize(biTan);
-	
+
 	o.uv0 = v.uv0;
 	o.uv1 = v.uv1;
 				
@@ -59,7 +59,7 @@ fixed4 frag (Varyings i) : SV_Target
 	AmbientShadowAdjust(ambientShadowExtendAdjust);
 
 	float2 normalUV = i.uv0 * _NormalMap_ST.xy + _NormalMap_ST.zw;
-	float3 normal = UnpackNormal(tex2D(_NormalMap, normalUV));
+	float3 normal = UnpackScaleNormal(tex2D(_NormalMap, normalUV), _NormalMapScale);
 
 	float3 binormal = CreateBinormal(i.normalWS, i.tanWS.xyz, i.tanWS.w);
 	normal = normalize(
