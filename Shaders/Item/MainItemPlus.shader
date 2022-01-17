@@ -30,7 +30,7 @@
 		[Gamma]_Color3 ("Color3", Color) = (0.5,0.5,0.5,1)
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
-		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 1
+		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
