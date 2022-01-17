@@ -31,7 +31,7 @@ Varyings vert (VertexData v)
 	float4 projPos = o.posCS;
 	projPos.y *= _ProjectionParams.x;
 	float4 projbiTan;
-	projbiTan.xyz = biTan;
+	projbiTan.xyz = o.bitanWS;
 	projbiTan.xzw = projPos.xwy * 0.5;
 	o.shadowCoordinate.zw = projPos.zw;
 	o.shadowCoordinate.xy = projbiTan.zz + projbiTan.xw;

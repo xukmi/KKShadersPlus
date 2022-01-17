@@ -7,6 +7,8 @@ float GetVertexSpecularDiffuse(KKVertexLight lights[4], float3 normal, float3 vi
 	[unroll]
 	for(int i = 0; i < 4; i++){
 		KKVertexLight light = lights[i];
+		bool lightExists = light.pos == 0.0  ? 0 : 1;
+
 		float3 halfVector = normalize(viewDir + light.dir);
 		float vertexLightSpecular = max(dot(halfVector, normal), 0.0);
 		vertexLightSpecular = log2(vertexLightSpecular);
@@ -22,8 +24,8 @@ float GetVertexSpecularDiffuse(KKVertexLight lights[4], float3 normal, float3 vi
 	#endif
 		vertexSpecularColor = vertexSpecularPower * vertexSpecularColor;
 
-		specularVertexMesh += vertexSpecularColor * light.lightVal;
-		specularMesh += vertexLightSpecular * light.lightVal;
+		specularVertexMesh += vertexSpecularColor * light.lightVal * lightExists;
+		specularMesh += vertexLightSpecular * light.lightVal * lightExists;
 	}
 
 	return specularMesh;
@@ -35,6 +37,7 @@ float4 GetVertexSpecularHair(KKVertexLight lights[4], float3 normal, float3 view
 	[unroll]
 	for(int i = 0; i < 4; i++){
 		KKVertexLight light = lights[i];
+		bool lightExists = light.pos == 0.0  ? 0 : 1;
 		float3 halfVector = normalize(viewDir + light.dir);
 		float vertexLightSpecular = max(dot(halfVector, normal), 0.0);
 		vertexLightSpecular = log2(vertexLightSpecular);
@@ -53,8 +56,8 @@ float4 GetVertexSpecularHair(KKVertexLight lights[4], float3 normal, float3 view
 	#endif
 		vertexSpecularColor = vertexSpecularPower * vertexSpecularColor * light.lightVal;
 		
-		specularMesh.rgb += vertexSpecularColor;
-		specularMesh.a += specularMask * light.lightVal * LumaGrayscale(light.col.rgb);
+		specularMesh.rgb += vertexSpecularColor * lightExists;
+		specularMesh.a += specularMask * light.lightVal * LumaGrayscale(light.col.rgb) * lightExists;
 	}
 	return specularMesh;
 
@@ -65,6 +68,7 @@ float4 GetVertexSpecular(KKVertexLight lights[4], float3 normal, float3 viewDir,
 	[unroll]
 	for(int i = 0; i < 4; i++){
 		KKVertexLight light = lights[i];
+		bool lightExists = light.pos == 0.0  ? 0 : 1;
 		float3 halfVector = normalize(viewDir + light.dir);
 		float vertexLightSpecular = max(dot(halfVector, normal), 0.0);
 		vertexLightSpecular = log2(vertexLightSpecular);
@@ -79,8 +83,8 @@ float4 GetVertexSpecular(KKVertexLight lights[4], float3 normal, float3 viewDir,
 	#endif
 		vertexSpecularColor = vertexSpecularPower * vertexSpecularColor * light.lightVal;
 		
-		specularMesh.rgb += vertexSpecularColor;
-		specularMesh.a += LumaGrayscale(vertexSpecularColor);
+		specularMesh.rgb += vertexSpecularColor * lightExists;
+		specularMesh.a += LumaGrayscale(vertexSpecularColor) * lightExists;
 	}
 	return specularMesh;
 

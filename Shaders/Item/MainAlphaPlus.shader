@@ -68,7 +68,7 @@ Shader "xukmi/MainAlphaPlus"
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			
+
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
@@ -195,6 +195,8 @@ Shader "xukmi/MainAlphaPlus"
 			Cull [_CullOption]
 			ZWrite [_AlphaOptionZWrite]
 			CGPROGRAM
+			#pragma target 3.0
+
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile _ VERTEXLIGHT_ON
@@ -387,10 +389,11 @@ Shader "xukmi/MainAlphaPlus"
 				lineMask.x = max(lineMask.x, shadowExtendAnother);
 				float3 shaded = saturate(lineMask.x * shadingAdjustment);
 
-				float3 remappedShading = lineMask.xzw * 2 - 2;
+				float3 remappedShading = shaded * 2 - 2;
 				remappedShading = drawnSpecular * remappedShading + 1;
-				drawnSpecular = _SpecularPower * 256;
-				drawnSpecular *= specular;
+				
+				float meshSpecular = _SpecularPower * 256;
+				meshSpecular *= specular;
 				specular *= 256;
 				specular = exp2(specular);
 
@@ -404,35 +407,37 @@ Shader "xukmi/MainAlphaPlus"
 
 				
 				specular = min(specular, 1);
-				drawnSpecular = exp2(drawnSpecular);
+				meshSpecular = exp2(meshSpecular);
 			#ifdef KKP_EXPENSIVE_RAMP
-				float2 lightRampUV = drawnSpecular * _RampG_ST.xy + _RampG_ST.zw;
-				drawnSpecular = tex2D(_RampG, lightRampUV) * _UseRampForSpecular + drawnSpecular * (1 - _UseRampForSpecular);
+				float2 lightRampUV = meshSpecular * _RampG_ST.xy + _RampG_ST.zw;
+				meshSpecular = tex2D(_RampG, lightRampUV) * _UseRampForSpecular + meshSpecular * (1 - _UseRampForSpecular);
 			#endif
-				drawnSpecular += specularVertex;
+				meshSpecular += specularVertex;
 
-				drawnSpecular *= _SpecularPower * _SpecularColor.w;
-				drawnSpecular = saturate(drawnSpecular);
+				meshSpecular *= _SpecularPower * _SpecularColor.w;
+				meshSpecular = saturate(meshSpecular);
 
 				float specularPower = max(detailMaskAdjust.z, _SpecularPower);
 				drawnSpecularSquared = min(drawnSpecularSquared, specularPower);
 				specularNail = min(specularNail, drawnSpecularSquared);
-				float finalDrawnSpecular = drawnSpecular * detailMaskAdjust.y + specularNail;
-				drawnSpecularSquared = detailMaskAdjust.y * drawnSpecular;
+				float finalDrawnSpecular = meshSpecular * detailMaskAdjust.y * _notusetexspecular + specularNail;
+				
+				drawnSpecularSquared = meshSpecular * _notusetexspecular;
+				
 
-				float3 specularDiffuse = _SpecularColor.xyz * drawnSpecularSquared + diffuse;
-				float3 specularColor = (finalDrawnSpecular * _SpecularColor.xyz) + specularVertexCol;
+				float3 specularDiffuse = _SpecularColor.xyz * drawnSpecularSquared + diffuse + specularVertexCol;
+				float3 specularColor = (finalDrawnSpecular * _SpecularColor.xyz);
+
 				specularColor = diffuse * remappedShading + specularColor;
+
 				diffuse *= shaded;
 				float3 finalSpecularColor = specularDiffuse - specularColor;
 				float3 mergedSpecularDiffuse = saturate(_notusetexspecular * finalSpecularColor + specularColor);
-				
-
 				float3 shadedSpecular = mergedSpecularDiffuse * shaded;
 				mergedSpecularDiffuse = -mergedSpecularDiffuse * shaded + mergedSpecularDiffuse;
 				mergedSpecularDiffuse = finalRamp * mergedSpecularDiffuse + shadedSpecular;
 				float3 liquidDiffuse =  liquidFinalMask * float3(0.300000012, 0.402941108, 0.557352901) + float3(0.5, 0.397058904, 0.242647097);
-				liquidDiffuse = liquidDiffuse * cumCol + drawnSpecular;
+				liquidDiffuse = liquidDiffuse * cumCol + meshSpecular;
 
 
 				float fresnelAdjust = saturate(fresnel * 2 - 0.800000012);
