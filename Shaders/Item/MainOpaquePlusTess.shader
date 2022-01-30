@@ -1,4 +1,4 @@
-Shader "xukmi/MainAlphaPlus"
+﻿Shader "xukmi/MainOpaquePlusTess"
 {
 	Properties
 	{
@@ -41,43 +41,62 @@ Shader "xukmi/MainAlphaPlus"
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
-		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
-		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
-		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 2
+		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
+		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 		_LineWidthS ("LineWidthS", Float) = 1
 		_Reflective("Reflective", Range(0, 1)) = 0.75
 		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
 		_AnotherRampFull("Another Ramp", Range(0, 1)) = 0
-		_Alpha ("AlphaValue", Float) = 1
+
+		_TessTex ("Tess Tex", 2D) = "white" {}
+		_TessMax("Tess Max", Range(1, 25)) = 12
+		_TessMin("Tess Min", Range(1, 25)) = 1
+		_TessBias("Tess Distance Bias", Range(1, 100)) = 75
+		_TessSmooth("Tess Smooth", Range(0, 1)) = 0
+		_Tolerance("Tolerance", Range(0.0, 0.0005)) = 0.0005
+		_DisplaceTex("DisplacementTex", 2D) = "gray" {}
+		_DisplaceMultiplier("DisplaceMultiplier", float) = 0
+		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1
 	}
 	SubShader
 	{
 		LOD 600
-		Tags { "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" }
+		Tags { "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" }
 		//Outline
 		Pass
 		{
 			Name "Outline"
 			LOD 600
-			Tags {"Queue" = "Transparent" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Tags {"Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
 			Cull Front
 
 			CGPROGRAM
-			#pragma vertex vert
+			#pragma target 5.0
+
+			#pragma vertex TessVert
 			#pragma fragment frag
+			#pragma hull hull
+			#pragma domain domain
 
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
 			#include "KKPItemInput.cginc"
+			#include "../KKPDisplace.cginc"
 			#include "KKPItemDiffuse.cginc"
 
 			Varyings vert (VertexData v)
 			{
+				float4 vertex = v.vertex;
+				float3 normal = v.normal;
+				DisplacementValues(v, vertex, normal);
+				v.vertex = vertex;
+				v.normal = normal;
 				Varyings o;
+				
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 				float3 viewDir = _WorldSpaceCameraPos.xyz - o.posWS.xyz;
 				float viewVal = dot(viewDir, viewDir);
@@ -113,12 +132,12 @@ Shader "xukmi/MainAlphaPlus"
 			}
 			
 
-			
+			#include "KKPItemTess.cginc"
 
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
-				AlphaClip(i.uv0, _OutlineOn ? mainTex.a * _Alpha : 0);
+				AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
 
 				float3 diffuse = mainTex.rgb;
 				float3 shadingAdjustment = ShadeAdjust(diffuse);
@@ -152,12 +171,15 @@ Shader "xukmi/MainAlphaPlus"
 
 				float specularMap = _UseDetailRAsSpecularMap ? detailMask.r : 1;
 				_SpecularPower *= specularMap;
-				
+
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
 				float4 lineMask = tex2D(_LineMask, lineMaskUV);
 
 				float detailLine = detailMask.x - lineMask.x;
 				detailLine = _DetailRLineR * detailLine + lineMask;
+
+
+
 				detailLine = 1 - detailLine;
 				float shadowExtendAnother = 1 - _ShadowExtendAnother;
 				detailLine = max(detailLine, shadowExtendAnother);
@@ -176,7 +198,7 @@ Shader "xukmi/MainAlphaPlus"
 				finalDiffuse = saturate(finalDiffuse);
 				float3 outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 
-				return float4(finalDiffuse * outLineCol, 1 * _Alpha);
+				return float4(finalDiffuse * outLineCol, 1.0);
 
 
 			}
@@ -190,27 +212,30 @@ Shader "xukmi/MainAlphaPlus"
 		{
 			Name "Forward"
 			LOD 600
-			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
-			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
+			Tags { "LightMode" = "ForwardBase" "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
 			Cull [_CullOption]
-			ZWrite [_AlphaOptionZWrite]
-			CGPROGRAM
-			#pragma target 3.0
 
-			#pragma vertex vert
+
+			CGPROGRAM
+			#pragma target 5.0
+
+			#pragma vertex TessVert
 			#pragma fragment frag
+			#pragma hull hull
+			#pragma domain domain
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 			
-			#define KKP_EXPENSIVE_RAMP
-			#define ALPHA_SHADER
-
 			//Unity Includes
 			#include "UnityCG.cginc"
 			#include "AutoLight.cginc"
 			#include "Lighting.cginc"
 
+			#define KKP_EXPENSIVE_RAMP
+
 			#include "KKPItemInput.cginc"
+			#include "../KKPDisplace.cginc"
 			#include "KKPItemDiffuse.cginc"
 			#include "KKPItemNormals.cginc"
 			#include "KKPItemCoom.cginc"
@@ -218,11 +243,18 @@ Shader "xukmi/MainAlphaPlus"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
 			#include "../KKPReflect.cginc"
+
 			#include "KKPItemFrag.cginc"
 
 
 			Varyings vert (VertexData v)
 			{
+				float4 vertex = v.vertex;
+				float3 normal = v.normal;
+				DisplacementValues(v, vertex, normal);
+				v.vertex = vertex;
+				v.normal = normal;
+
 				Varyings o;
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 				o.posCS = mul(UNITY_MATRIX_VP, o.posWS);
@@ -243,9 +275,9 @@ Shader "xukmi/MainAlphaPlus"
 			#endif
 				return o;
 			}
-
-
 			
+			#include "KKPItemTess.cginc"
+
 			ENDCG
 		}
 
@@ -254,40 +286,43 @@ Shader "xukmi/MainAlphaPlus"
 		{
 			Name "ShadowCaster"
 			LOD 600
-			Tags { "LightMode" = "ShadowCaster" "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ShadowCaster" "Queue" = "AlphaTest" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
 			Offset 1, 1
 			Cull Off
-		
+
 			CGPROGRAM
-			#pragma vertex vert
+			#pragma target 5.0
+
+			#pragma vertex TessVert
 			#pragma fragment frag
+			#pragma hull hull
+			#pragma domain domain
 			#pragma multi_compile_shadowcaster
 
+			#define SHADOW_CASTER_PASS
+
 			#include "UnityCG.cginc"
-
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			sampler2D _AlphaMask;
-			float4 _AlphaMask_ST;
-
-			float _alpha_a;
-			float _alpha_b;
-			float _Cutoff;
-			bool _AlphaOptionCutoff;
+			#include "KKPItemInput.cginc"
+			#include "../KKPDisplace.cginc"
 
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
                 V2F_SHADOW_CASTER;
             };
 
-            v2f vert(appdata_base v)
+            v2f vert(VertexData v)
             {
                 v2f o;
-				o.uv0 = v.texcoord;
+				float4 vertex = v.vertex;
+				float3 normal = v.normal;
+				DisplacementValues(v, vertex, normal);
+				v.vertex = vertex;
+				v.normal = normal;
+				o.uv0 = v.uv0;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
                 return o;
             }
-
+			#include "KKPItemTess.cginc"
             float4 frag(v2f i) : SV_Target
             {
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
@@ -298,8 +333,8 @@ Shader "xukmi/MainAlphaPlus"
 				alphaVal = min(alphaVal.y, alphaVal.x);
 				alphaVal *= mainTexAlpha;
 				alphaVal.x -= 0.5f;
-				float clipVal = alphaVal.x < _Cutoff;
-				if(clipVal * int(0xffffffffu) != 0 && _AlphaOptionCutoff)
+				float clipVal = alphaVal.x < 0.0f;
+				if(clipVal * int(0xffffffffu) != 0)
 					discard;
 
                 SHADOW_CASTER_FRAGMENT(i)

@@ -1,5 +1,5 @@
-#ifndef KKP_TESS_INC
-#define KKP_TESS_INC
+#ifndef KKP_ITEMTESS_INC
+#define KKP_ITEMTESS_INC
 
 #define NUM_BEZ_POINTS
 
@@ -10,11 +10,7 @@ struct TessellationControlPoint
     float4 posWS : WORLDPOS;
 	float3 normal : NORMAL;
 	float4 tangent : TANGENT;
-	float4 color : COLOR;
 	float2 uv0 : TEXCOORD0;
-	float2 uv1 : TEXCOORD1;
-	float2 uv2 : TEXCOORD2;
-	float2 uv3 : TEXCOORD3;
 };
 
 
@@ -31,11 +27,7 @@ TessellationControlPoint TessVert(VertexData v){
     p.posCS = mul(UNITY_MATRIX_VP, p.posWS);
     p.normal = v.normal;
     p.tangent = v.tangent;
-    p.color = v.color;
     p.uv0 = v.uv0;
-    p.uv1 = v.uv1;
-    p.uv2 = v.uv2;
-    p.uv3 = v.uv3;
     return p;
 }
 
@@ -195,11 +187,7 @@ v2f domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3
 
     INTERPOLATE_TRI(normal);
     INTERPOLATE_TRI(tangent);
-    INTERPOLATE_TRI(color);
     INTERPOLATE_TRI(uv0);
-    INTERPOLATE_TRI(uv1);
-    INTERPOLATE_TRI(uv2);
-    INTERPOLATE_TRI(uv3);
 
     return vert(data);
 }
@@ -218,11 +206,7 @@ Varyings domain(TessellationFactors factors, OutputPatch<TessellationControlPoin
 
     INTERPOLATE_TRI(normal);
     INTERPOLATE_TRI(tangent);
-    INTERPOLATE_TRI(color);
     INTERPOLATE_TRI(uv0);
-    INTERPOLATE_TRI(uv1);
-    INTERPOLATE_TRI(uv2);
-    INTERPOLATE_TRI(uv3);
 
     return vert(data);
 }

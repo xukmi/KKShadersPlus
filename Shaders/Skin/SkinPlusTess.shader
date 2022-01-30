@@ -3,7 +3,6 @@
 	Properties
 	{
 		_MainTex ("MainTex", 2D) = "white" {}
-		_RampG ("MainTex", 2D) = "white" {}
 		[Gamma]_overcolor1 ("Over Color1", Vector) = (1,1,1,1)
 		_overtex1 ("Over Tex1", 2D) = "black" {}
 		[Gamma]_overcolor2 ("Over Color2", Vector) = (1,1,1,1)
@@ -56,13 +55,13 @@
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 
 		_TessTex ("Tess Tex", 2D) = "white" {}
-		_TessMax("Tess Max", Range(1, 25)) = 5
+		_TessMax("Tess Max", Range(1, 25)) = 12
 		_TessMin("Tess Min", Range(1, 25)) = 1
-		_TessBias("Tess Distance Bias", Range(1, 100)) = 50
-		_TessSmooth("Tess Smooth", Range(0, 1)) = 0.5
+		_TessBias("Tess Distance Bias", Range(1, 100)) = 75
+		_TessSmooth("Tess Smooth", Range(0, 1)) = 0
 		_Tolerance("Tolerance", Range(0.0, 0.0005)) = 0.0005
 		_DisplaceTex("DisplacementTex", 2D) = "gray" {}
-		_DisplaceMultiplier("DisplaceMultiplier", float) = 1
+		_DisplaceMultiplier("DisplaceMultiplier", float) = 0
 		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1
 	}
 	SubShader
@@ -88,7 +87,7 @@
 			#include "Lighting.cginc"
 
 			#include "KKPSkinInput.cginc"
-			#include "KKPDisplace.cginc"
+			#include "../KKPDisplace.cginc"
 			#include "KKPDiffuse.cginc"
 
 			Varyings vert (VertexData v)
@@ -230,7 +229,7 @@
 
 
 			#include "KKPSkinInput.cginc"
-			#include "KKPDisplace.cginc"
+			#include "../KKPDisplace.cginc"
 
 			#include "KKPDiffuse.cginc"
 			#include "KKPNormals.cginc"
@@ -307,7 +306,7 @@
 
 			#include "UnityCG.cginc"
 			#include "KKPSkinInput.cginc"
-			#include "KKPDisplace.cginc"
+			#include "../KKPDisplace.cginc"
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
                 V2F_SHADOW_CASTER;

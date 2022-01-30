@@ -10,6 +10,8 @@ float _DisplaceNormalMultiplier;
 float DisplaceVal(float2 uv, float2 offset, float2 texelSize){
 	float4 displaceTex = tex2Dlod(_DisplaceTex, float4(uv, 0, 0) + float4(texelSize * offset, 0, 0));
 	float displaceVal = displaceTex.r;
+	//Gamma correction
+	displaceVal = pow(displaceVal, 0.454545);
 	displaceVal = (displaceVal - 0.5) * 2.0 * displaceTex.a;
 	return displaceVal;
 }
@@ -33,7 +35,7 @@ float3 normalsFromHeight(sampler2D heightTex, float2 uv, float2 texelSize)
 
 
 void DisplacementValues(VertexData v, inout float4 vertex, inout float3 normal){
-	float3 displace = DisplaceVal(v.uv0, 0, 0);
+	float3 displace = DisplaceVal(v.uv0 * _DisplaceTex_ST.xy + _DisplaceTex_ST.zw, 0, 0);
 #ifndef SHADOW_CASTER_PASS
 	float3 bumpnormal = normalsFromHeight(_DisplaceTex, v.uv0 * _DisplaceTex_ST.xy + _DisplaceTex_ST.zw, _DisplaceTex_TexelSize.xy);
 	bumpnormal.xyz = bumpnormal.xzy;
