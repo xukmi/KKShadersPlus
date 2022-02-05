@@ -52,7 +52,7 @@ fixed4 frag (Varyings i) : SV_Target
 
 	float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 	float alpha = AlphaClip(i.uv0, mainTex.a);
-
+	mainTex.rgb = _AdjustGamma ? pow(mainTex.rgb, 0.454545) : mainTex.rgb;
 	float3 diffuse = GetDiffuse(i.uv0) * mainTex.rgb;
 
 	float3 ambientShadowExtendAdjust;

@@ -41,6 +41,7 @@
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
+		[MaterialToggle] _AdjustGamma ("Adjust Gamma", Float) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
@@ -119,7 +120,7 @@
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
 
-				float3 diffuse = mainTex.rgb;
+				float3 diffuse = _AdjustGamma ? pow(mainTex.rgb, 0.454545) : mainTex.rgb;
 				float3 shadingAdjustment = ShadeAdjust(diffuse);
 
 
@@ -256,7 +257,7 @@
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
 				float3 halfDir = normalize(viewDir + worldLightPos);
 
-				float3 diffuse = mainTex.rgb;
+				float3 diffuse = _AdjustGamma ? pow(mainTex.rgb, 0.454545) : mainTex.rgb;
 				float3 shadingAdjustment = ShadeAdjust(diffuse);
 				float3 normal = GetNormal(i);
 

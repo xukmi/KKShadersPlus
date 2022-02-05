@@ -137,6 +137,7 @@ float3 GetDiffuse(Varyings i){
 	//Maintex and blend overTex1
 	float2 mainTexUV = i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw;
 	float4 mainTex = tex2D(_MainTex, mainTexUV);
+	mainTex.rgb = _AdjustGamma ? pow(mainTex.rgb, 0.454545) : mainTex.rgb;
 	overTex1.rgb -= mainTex.rgb;
 	overTex1.rgb = overTex1Col.a * overTex1.rgb + mainTex.rgb;
 

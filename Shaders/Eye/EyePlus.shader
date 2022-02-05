@@ -19,6 +19,8 @@
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
+		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
+		[MaterialToggle] _AdjustGamma ("Adjust Gamma", Float) = 0
 	}
 	SubShader
 	{
@@ -52,6 +54,8 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile _ VERTEXLIGHT_ON
+
+			#define KKP_EXPENSIVE_RAMP
 
 			//Unity Includes
 			#include "UnityCG.cginc"
@@ -119,6 +123,7 @@
 				uv = dotRot + 0.5;
 				uv = uv * _MainTex_ST.xy + _MainTex_ST.zw;
 				float4 iris = tex2D(_MainTex, uv);
+				iris.rgb = _AdjustGamma ? pow(iris.rgb, 0.454545) : iris.rgb;
 				float3 viewDir = normalize(_WorldSpaceCameraPos - i.posWS);
 				float2 expressionUV = float2(dot(i.tanWS, viewDir),
 									   dot(i.bitanWS, viewDir));
@@ -149,19 +154,23 @@
 
 
 				KKVertexLight vertexLights[4];
-				#ifdef VERTEXLIGHT_ON
-					GetVertexLights(vertexLights, i.posWS);	
-				#endif
-					float4 vertexLighting = 0.0;
-				#ifdef VERTEXLIGHT_ON
-					float vertexLightRamp = 1.0;
-					vertexLighting = GetVertexLighting(vertexLights, i.normalWS);
-				#endif
+			#ifdef VERTEXLIGHT_ON
+				GetVertexLights(vertexLights, i.posWS);	
+			#endif
+				float4 vertexLighting = 0.0;
+				float vertexLightRamp = 1.0;
+			#ifdef VERTEXLIGHT_ON
+				vertexLighting = GetVertexLighting(vertexLights, i.normalWS);
+				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
+				vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
+				float3 rampLighting = GetRampLighting(vertexLights, i.normalWS, vertexLightRamp);
+				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
+			#endif
 				float lambert = max(dot(_WorldSpaceLightPos0.xyz, i.normalWS.xyz), 0.0) + vertexLighting.a;
 				lambert = saturate(expression.a + overTex.a + lambert);
 				finalAmbientShadow = lambert * finalAmbientShadow + shadedDiffuse;
 
-				float3 lightCol = (_LightColor0.xyz + vertexLighting.rgb) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
+				float3 lightCol = (_LightColor0.xyz + vertexLighting.rgb * vertexLightRamp) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
 				lightCol = max(lightCol, _ambientshadowG.xyz);
 				float3 finalCol = saturate(finalAmbientShadow * lightCol);
 

@@ -7,6 +7,7 @@
 		[Gamma]_shadowcolor ("shadowcolor", Vector) = (0.6298235,0.6403289,0.747,1)
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
+		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 	}
 	SubShader
 	{
@@ -39,6 +40,8 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile _ VERTEXLIGHT_ON
+			
+			#define KKP_EXPENSIVE_RAMP
 			
 			//Unity Includes
 			#include "UnityCG.cginc"
@@ -111,15 +114,20 @@
 					GetVertexLights(vertexLights, i.posWS);	
 				#endif
 					float4 vertexLighting = 0.0;
-				#ifdef VERTEXLIGHT_ON
 					float vertexLightRamp = 1.0;
+				#ifdef VERTEXLIGHT_ON
 					vertexLighting = GetVertexLighting(vertexLights, i.normalWS);
+					float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
+					vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
+					float3 rampLighting = GetRampLighting(vertexLights, i.normalWS, vertexLightRamp);
+					vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 				#endif
+
 				float lambert =	dot(_WorldSpaceLightPos0.xyz, i.normalWS.xyz) + vertexLighting.a;;
 				float ramp = tex2D(_RampG, lambert * _RampG_ST.xy + _RampG_ST.zw);
 				finalCol = ramp * finalCol + shadedDiffuse;
 
-				float3 lightCol = (_LightColor0.xyz + vertexLighting.rgb) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
+				float3 lightCol = (_LightColor0.xyz + vertexLighting.rgb * vertexLightRamp) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
 				lightCol = max(lightCol, _ambientshadowG.xyz);
 				finalCol *= lightCol;
 				

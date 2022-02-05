@@ -41,6 +41,7 @@
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
+		[MaterialToggle] _AdjustGamma ("Adjust Gamma", Float) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
@@ -56,7 +57,7 @@
 		_TessMin("Tess Min", Range(1, 25)) = 1
 		_TessBias("Tess Distance Bias", Range(1, 100)) = 75
 		_TessSmooth("Tess Smooth", Range(0, 1)) = 0
-		_Tolerance("Tolerance", Range(0.0, 0.0005)) = 0.0005
+		_Tolerance("Tolerance", Range(0.0, 0.05)) = 0.0005
 		_DisplaceTex("DisplacementTex", 2D) = "gray" {}
 		_DisplaceMultiplier("DisplaceMultiplier", float) = 0
 		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1
@@ -139,7 +140,7 @@
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
 
-				float3 diffuse = mainTex.rgb;
+				float3 diffuse = _AdjustGamma ? pow(mainTex.rgb, 0.454545) : mainTex.rgb;
 				float3 shadingAdjustment = ShadeAdjust(diffuse);
 
 

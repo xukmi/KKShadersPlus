@@ -51,6 +51,7 @@
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
+		[MaterialToggle] _AdjustGamma ("Adjust Gamma", Float) = 0
 		_LineWidthS ("LineWidthS", Float) = 1
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 
@@ -59,7 +60,7 @@
 		_TessMin("Tess Min", Range(1, 25)) = 1
 		_TessBias("Tess Distance Bias", Range(1, 100)) = 75
 		_TessSmooth("Tess Smooth", Range(0, 1)) = 0
-		_Tolerance("Tolerance", Range(0.0, 0.0005)) = 0.0005
+		_Tolerance("Tolerance", Range(0.0, 0.05)) = 0.0005
 		_DisplaceTex("DisplacementTex", 2D) = "gray" {}
 		_DisplaceMultiplier("DisplaceMultiplier", float) = 0
 		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1

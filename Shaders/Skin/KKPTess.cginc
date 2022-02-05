@@ -184,7 +184,7 @@ float3 CalculateBezierPosition(float3 bary, float smoothing, float3 bezierPoints
 [UNITY_domain("tri")]
 v2f domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3> patch, float3 barycentricCoordinates : SV_DomainLocation){
     VertexData data;
-    float smoothing = _TessSmooth;
+    float smoothing = _TessSmooth * 0.5;
     float3 pos = CalculatePhongPosition(barycentricCoordinates, smoothing, 
       patch[0].vertex, patch[0].normal, 
       patch[1].vertex, patch[1].normal, 
@@ -207,7 +207,7 @@ v2f domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3
 [UNITY_domain("tri")]
 Varyings domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3> patch, float3 barycentricCoordinates : SV_DomainLocation){
     VertexData data;
-    float smoothing = _TessSmooth;
+    float smoothing = _TessSmooth * 0.5;
     float3 pos = CalculatePhongPosition(barycentricCoordinates, smoothing, 
       patch[0].vertex, patch[0].normal, 
       patch[1].vertex, patch[1].normal, 

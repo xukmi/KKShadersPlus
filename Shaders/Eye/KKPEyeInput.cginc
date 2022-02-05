@@ -34,6 +34,8 @@
 
 	sampler2D _RampG;
 
+	bool _UseRampForLights;
+	bool _AdjustGamma;
 	//UV Offsets
 	float4 _MainTex_ST;
 	float4 _overtex1_ST;
