@@ -51,6 +51,8 @@
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
 		_AnotherRampFull("Another Ramp", Range(0, 1)) = 0
+		_UseMatCapReflection("Use Mat Cap", Range(0, 1)) = 1
+ 		_ReflectionMapCap("Mat Cap", 2D) = "black" {}
 
 		_TessTex ("Tess Tex", 2D) = "white" {}
 		_TessMax("Tess Max", Range(1, 25)) = 12
@@ -61,6 +63,10 @@
 		_DisplaceTex("DisplacementTex", 2D) = "gray" {}
 		_DisplaceMultiplier("DisplaceMultiplier", float) = 0
 		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1
+
+		_ShrinkVal("ShrinkVal", Range(0, 1)) = 1
+		_ShrinkVerticalAdjust("Vertical Pos", Range(-1, 1)) = 0
+
 	}
 	SubShader
 	{

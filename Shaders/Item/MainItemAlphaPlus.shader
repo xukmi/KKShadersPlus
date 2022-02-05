@@ -45,6 +45,8 @@
 		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
+		_UseMatCapReflection("Use Mat Cap", Range(0, 1)) = 1
+ 		_ReflectionMapCap("Mat Cap", 2D) = "black" {}
 	}
 	SubShader
 	{

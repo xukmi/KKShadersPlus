@@ -1,5 +1,5 @@
-#ifndef KKP_ITEMTESS_INC
-#define KKP_ITEMTESS_INC
+#ifndef KKP_TESS_DEBUG_INC
+#define KKP_TESS_DEBUG_INC
 
 #define NUM_BEZ_POINTS
 
@@ -9,8 +9,7 @@ struct TessellationControlPoint
     float4 posCS : CLIPPOS;
     float4 posWS : WORLDPOS;
 	float3 normal : NORMAL;
-	float4 tangent : TANGENT;
-	float2 uv0 : TEXCOORD0;
+    float2 uv0 : TEXCOORD0;
 };
 
 
@@ -19,10 +18,10 @@ struct TessellationFactors {
     float inside : SV_InsideTessFactor;
     float3 bezierPoints[7] : BEZIERPOS;
 };
-
 float _ShrinkVal;
 float _ShrinkVerticalAdjust;
-TessellationControlPoint TessVert(VertexData v){
+
+TessellationControlPoint TessVert(appdata v){
     TessellationControlPoint p;
     v.vertex.xyz *= _ShrinkVal;
     v.vertex.y += _ShrinkVerticalAdjust;
@@ -30,7 +29,6 @@ TessellationControlPoint TessVert(VertexData v){
     p.posWS = mul(unity_ObjectToWorld, v.vertex);
     p.posCS = mul(UNITY_MATRIX_VP, p.posWS);
     p.normal = v.normal;
-    p.tangent = v.tangent;
     p.uv0 = v.uv0;
     return p;
 }
@@ -176,45 +174,21 @@ float3 CalculateBezierPosition(float3 bary, float smoothing, float3 bezierPoints
 
 #define INTERPOLATE_TRI(param) data.param = patch[0].param * barycentricCoordinates.x + patch[1].param * barycentricCoordinates.y + patch[2].param * barycentricCoordinates.z;
 
-#ifdef SHADOW_CASTER_PASS
 [UNITY_domain("tri")]
-v2f domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3> patch, float3 barycentricCoordinates : SV_DomainLocation){
-    VertexData data;
-    float smoothing = _TessSmooth;
+v2g domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3> patch, float3 barycentricCoordinates : SV_DomainLocation){
+    appdata data;
+    float smoothing = _TessSmooth * 0.5;
     float3 pos = CalculatePhongPosition(barycentricCoordinates, smoothing, 
       patch[0].vertex, patch[0].normal, 
       patch[1].vertex, patch[1].normal, 
       patch[2].vertex, patch[2].normal);
     float4 vertex = float4(pos, 1);
     data.vertex = vertex;
-
-
     INTERPOLATE_TRI(normal);
-    INTERPOLATE_TRI(tangent);
     INTERPOLATE_TRI(uv0);
 
     return vert(data);
 }
-#else
-[UNITY_domain("tri")]
-Varyings domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3> patch, float3 barycentricCoordinates : SV_DomainLocation){
-    VertexData data;
-    float smoothing = _TessSmooth;
-    float3 pos = CalculatePhongPosition(barycentricCoordinates, smoothing, 
-      patch[0].vertex, patch[0].normal, 
-      patch[1].vertex, patch[1].normal, 
-      patch[2].vertex, patch[2].normal);
-    float4 vertex = float4(pos, 1);
-    data.vertex = vertex;
-
-
-    INTERPOLATE_TRI(normal);
-    INTERPOLATE_TRI(tangent);
-    INTERPOLATE_TRI(uv0);
-
-    return vert(data);
-}
-#endif
 
 
 

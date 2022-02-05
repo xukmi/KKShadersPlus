@@ -53,6 +53,8 @@ Shader "xukmi/MainAlphaPlus"
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
 		_AnotherRampFull("Another Ramp", Range(0, 1)) = 0
 		_Alpha ("AlphaValue", Float) = 1
+		_UseMatCapReflection("Use Mat Cap", Range(0, 1)) = 1
+ 		_ReflectionMapCap("Mat Cap", 2D) = "black" {}
 	}
 	SubShader
 	{
