@@ -51,7 +51,6 @@
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
-		[MaterialToggle] _AdjustGamma ("Adjust Gamma", Float) = 0
 		_LineWidthS ("LineWidthS", Float) = 1
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 	}

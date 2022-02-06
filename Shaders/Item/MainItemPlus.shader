@@ -34,7 +34,6 @@
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
-		[MaterialToggle] _AdjustGamma ("Adjust Gamma", Float) = 0
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
@@ -123,7 +122,6 @@
 				color = colorMask.r * (_Color.rgb - 1) + 1;
 				color = colorMask.g * (_Color2.rgb - color) + color;
 				color = colorMask.b * (_Color3.rgb - color) + color;
-				mainTex.rgb = _AdjustGamma ? pow(mainTex.rgb, 0.454545) : mainTex.rgb;
 				float3 diffuse = mainTex * color;
 
 
@@ -321,7 +319,6 @@
 				color = colorMask.r * (_Color.rgb - 1) + 1;
 				color = colorMask.g * (_Color2.rgb - color) + color;
 				color = colorMask.b * (_Color3.rgb - color) + color;
-				mainTex.rgb = _AdjustGamma ? pow(mainTex.rgb, 0.454545) : mainTex.rgb;
 				float3 diffuse = mainTex * color;
 				
 				float3 normal = NormalAdjust(i, GetNormal(i), 1);

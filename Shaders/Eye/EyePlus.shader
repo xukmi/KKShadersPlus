@@ -20,7 +20,6 @@
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
-		[MaterialToggle] _AdjustGamma ("Adjust Gamma", Float) = 0
 	}
 	SubShader
 	{
@@ -123,7 +122,6 @@
 				uv = dotRot + 0.5;
 				uv = uv * _MainTex_ST.xy + _MainTex_ST.zw;
 				float4 iris = tex2D(_MainTex, uv);
-				iris.rgb = _AdjustGamma ? pow(iris.rgb, 0.454545) : iris.rgb;
 				float3 viewDir = normalize(_WorldSpaceCameraPos - i.posWS);
 				float2 expressionUV = float2(dot(i.tanWS, viewDir),
 									   dot(i.bitanWS, viewDir));

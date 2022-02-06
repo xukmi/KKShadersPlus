@@ -10,7 +10,7 @@
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
 				float3 halfDir = normalize(viewDir + worldLightPos);
 
-				float3 diffuse = _AdjustGamma ? pow(mainTex.rgb, 0.454545) : mainTex.rgb;
+				float3 diffuse = mainTex.rgb;
 				float3 shadingAdjustment = ShadeAdjust(diffuse);
 				float3 normal = GetNormal(i);
 

@@ -31,7 +31,6 @@
 		_SpecularIsHighlightsRange ("Specular is highlight Range", Range(0, 20)) = 5
 		[MaterialToggle] _UseMeshSpecular ("Use Mesh Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
-		[MaterialToggle] _AdjustGamma ("Adjust Gamma", Float) = 0
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
@@ -104,7 +103,6 @@
 
 				float3 diffuse = GetDiffuse(i.uv0);
 				float3 diffuseMainTex = -diffuse * mainTex.xyz + 1;
-				mainTex.rgb = _AdjustGamma ? pow(mainTex.rgb, 0.454545) : mainTex.rgb;
 				diffuse = mainTex * diffuse;
 				diffuse *= _LineColor.rgb;
 				diffuse += diffuse;

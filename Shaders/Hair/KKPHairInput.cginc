@@ -36,7 +36,6 @@
 	float _UseMeshSpecular;
 	bool _UseDetailRAsSpecularMap;
 	bool _SpecularHeightInvert;
-	bool _AdjustGamma;
 
 	float _NormalMapScale;
 

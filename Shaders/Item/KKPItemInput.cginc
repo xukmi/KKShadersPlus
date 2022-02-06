@@ -29,7 +29,6 @@
 	bool _AlphaOptionCutoff;
 	bool _OutlineOn;
 	bool _UseDetailRAsSpecularMap;
-	bool _AdjustGamma;
 
 	int _CullOption;
 	float _UseKKMetal;
