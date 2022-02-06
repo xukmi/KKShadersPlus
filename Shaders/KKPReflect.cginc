@@ -18,6 +18,7 @@ float3 GetBlendReflections(float3 diffuse, float3 normal, float3 viewDir, float 
 	float3 viewNormal = mul((float3x3)UNITY_MATRIX_V, normal);
 	float2 matcapUV = viewNormal.xy * 0.5 + 0.5;
 	float3 matcap = tex2D(_ReflectionMapCap, matcapUV).rgb * _ReflectiveBlend;
+	matcap = pow(matcap, 0.454545);
 	env = lerp(env, matcap, _UseMatCapReflection);
 
 	//Yes, this is dumb
