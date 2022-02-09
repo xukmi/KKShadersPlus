@@ -11,7 +11,7 @@
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
-		[Gamma]_SpecularColor ("Specular Color", Color) = (1,1,1,0)
+		[Gamma]_SpecularColor ("Specular Color", Color) = (1,1,1,1)
 		_SpecularPower ("Specular Power", Range(0, 1)) = 0
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
 		_rimpower ("Rim Width", Range(0, 1)) = 0.5
@@ -33,7 +33,7 @@
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
-		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
+		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 1
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
@@ -442,9 +442,12 @@
 				float drawnSpecular = tex2D(_DetailMask, detailMaskUV2).x;
 				float drawnSpecularSquared = min(drawnSpecular * drawnSpecular, 1.0);
 
+				_SpecularPower *= _UseDetailRAsSpecularMap ? detailMask.x : 1;
+
 				float specularPower = _SpecularPower * 256.0;
 				specular *= specularPower;
 				specular = exp2(specular) * 5.0 - 4.0;
+				drawnSpecular = saturate(specular * _SpecularPower + drawnSpecularSquared);
 			#ifdef KKP_EXPENSIVE_RAMP
 				float2 lightRampUV = specular * _RampG_ST.xy + _RampG_ST.zw;
 				specular = tex2D(_RampG, lightRampUV) * _UseRampForSpecular + specular * (1 - _UseRampForSpecular);

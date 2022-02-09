@@ -93,6 +93,9 @@
 				float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;
 
 				lineMask.rb = 1 - lineMask.rb;
+
+				_SpecularPower *= _UseDetailRAsSpecularMap ? detailMask.x : 1;
+
 				float4 detailMaskAdjust = 1 - detailMask.yxwz;
 
 				float specularNail = max(detailMask.w, _SpecularPowerNail);
