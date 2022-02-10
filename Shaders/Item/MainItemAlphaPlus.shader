@@ -102,6 +102,9 @@
 				float3 view = viewVal / float3(xLen, yLen,zLen);
 				view = v.normal * view + v.vertex;
 				o.posCS = UnityObjectToClipPos(view);
+				//Big brain place offscreen
+				if(!_OutlineOn)
+					o.posCS = float4(2,2,2,1);
 				o.uv0 = v.uv0;
 				return o;
 			}
