@@ -39,7 +39,7 @@
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 2
 		_Alpha ("AlphaValue", Float) = 1
-		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 1
+		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		_Reflective("Reflective", Range(0, 1)) = 0.75
 		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
