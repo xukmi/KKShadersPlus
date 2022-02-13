@@ -85,11 +85,11 @@ float GetShadowAttenuation(Varyings i, float vertexLightingShadowAtten, float3 n
 	#else
 		float shadowAttenuation = maskG;
 	#endif
-    float lambertShadows = GetLambert(worldLightPos, normal) * shadowAttenuation;
+    float lambertShadows = GetLambert(worldLightPos, normal);
     float vertexShadows = vertexLightingShadowAtten;
 	float blendShadows = max(vertexShadows, lambertShadows);
 	float2 rampUV = blendShadows * _RampG_ST.xy + _RampG_ST.zw;
-	float ramp = tex2D(_RampG, rampUV).x;
+	float ramp = tex2D(_RampG, rampUV).x * shadowAttenuation;
 
 
 

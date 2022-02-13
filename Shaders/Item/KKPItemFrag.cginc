@@ -46,18 +46,16 @@
 				float specular = dot(halfDir, normal);
 				float fresnel = 1 - max(dot(viewDir, normal), 0.0);
 
-
+				float shadowAttenuation = 1;
 				#ifdef SHADOWS_SCREEN
 					float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
 					float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
-					float shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0);
-					lambert *= shadowAttenuation;
+					shadowAttenuation = saturate(shadowMap.x);
 				#endif
-
 				float lightRamp = max(lambert, vertexLighting.a);
 
 				float2 rampUV = saturate(lightRamp) * _RampG_ST.xy + _RampG_ST.zw;
-				float ramp = tex2D(_RampG, rampUV);
+				float ramp = tex2D(_RampG, rampUV) * shadowAttenuation;
 				
 				float anotherRampSpecularVertex = 0.0;
 			#ifdef VERTEXLIGHT_ON
