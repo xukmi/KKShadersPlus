@@ -64,6 +64,7 @@
 		_DisplaceTex("DisplacementTex", 2D) = "gray" {}
 		_DisplaceMultiplier("DisplaceMultiplier", float) = 0
 		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1
+		_DisplaceFull("Displace Full", Range(-1, 1)) = 0
 	}
 	SubShader
 	{

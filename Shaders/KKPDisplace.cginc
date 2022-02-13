@@ -6,6 +6,7 @@ float4 _DisplaceTex_ST;
 float4 _DisplaceTex_TexelSize;
 float _DisplaceMultiplier;
 float _DisplaceNormalMultiplier;
+float _DisplaceFull;
 
 float DisplaceVal(float2 uv, float2 offset, float2 texelSize){
 	float4 displaceTex = tex2Dlod(_DisplaceTex, float4(uv, 0, 0) + float4(texelSize * offset, 0, 0));
@@ -13,6 +14,7 @@ float DisplaceVal(float2 uv, float2 offset, float2 texelSize){
 	//Gamma correction
 	displaceVal = pow(displaceVal, 0.454545);
 	displaceVal = (displaceVal - 0.5) * 2.0 * displaceTex.a;
+	displaceVal += _DisplaceFull;
 	return displaceVal;
 }
 
