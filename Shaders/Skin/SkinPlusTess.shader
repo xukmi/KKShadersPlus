@@ -53,6 +53,7 @@
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		_LineWidthS ("LineWidthS", Float) = 1
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
+		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 
 		_TessTex ("Tess Tex", 2D) = "white" {}
 		_TessMax("Tess Max", Range(1, 25)) = 12
@@ -147,7 +148,7 @@
 				float3 u_xlat1;
 				MapValuesOutline(diffuse, u_xlat1);
 
-
+		
 
 				bool3 compTest = 0.555555582 < u_xlat1.xyz;
 				float3 diffuseShaded = u_xlat1.xyz * 0.899999976 - 0.5;
@@ -191,7 +192,9 @@
 				finalDiffuse = saturate(finalDiffuse);
 				outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 
-				return float4(finalDiffuse * outLineCol, 1.0);
+				float3 finalColor = finalDiffuse * outLineCol;
+				finalColor = lerp(finalColor, _OutlineColor.rgb, _OutlineColor.a);
+				return float4(finalColor, 1.0);
 
 
 			}

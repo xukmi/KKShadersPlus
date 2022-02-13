@@ -38,6 +38,7 @@
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
+		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 		_Reflective("Reflective", Range(0, 1)) = 0.75
 		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
@@ -197,10 +198,7 @@
 				diffuse *= lineAlpha;
 				diffuse = 0.5 < _LineColorG.w ? lineCol : diffuse;
 
-				float3 finalDiffuse =  diffuse;
-
-
-
+				float3 finalDiffuse = lerp(diffuse, _OutlineColor.rgb, _OutlineColor.a);
 				return float4(finalDiffuse, 1);
 
 

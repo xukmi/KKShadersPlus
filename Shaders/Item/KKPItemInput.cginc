@@ -35,6 +35,8 @@
 
 	float _NormalMapScale;
 
+	float4 _OutlineColor;
+
 	//Input Textures
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;

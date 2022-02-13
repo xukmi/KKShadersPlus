@@ -35,6 +35,7 @@
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
+		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
 		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 2
@@ -195,10 +196,7 @@
 				diffuse *= lineAlpha;
 				diffuse = 0.5 < _LineColorG.w ? lineCol : diffuse;
 
-				float3 finalDiffuse =  diffuse;
-
-
-
+				float3 finalDiffuse = lerp(diffuse, _OutlineColor.rgb, _OutlineColor.a);
 				return float4(finalDiffuse, mainTex.a * _Alpha);
 
 

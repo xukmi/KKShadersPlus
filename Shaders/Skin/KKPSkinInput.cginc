@@ -37,7 +37,8 @@
 	bool _UseLightColorSpecular;
 	bool _UseDetailRAsSpecularMap;
 	float _NormalMapScale;
-
+	
+	float4 _OutlineColor;
 	//KK Inputs
 
 	//Input Textures
