@@ -34,6 +34,7 @@
 	float _UseKKMetal;
 
 	float _NormalMapScale;
+	float _DetailNormalMapScale;
 
 	float4 _OutlineColor;
 
@@ -41,6 +42,7 @@
 	sampler2D _MainTex;
 	sampler2D _AlphaMask;
 	sampler2D _NormalMap;
+	sampler2D _NormalMapDetail;
 	sampler2D _liquidmask;
 	sampler2D _Texture2; //Liquid Tex
 	sampler2D _Texture3; //Liquid Normal
@@ -57,6 +59,8 @@
 	float4 _MainTex_ST;
 	float4 _AlphaMask_ST;
 	float4 _NormalMap_ST;
+	float4 _NormalMapDetail_ST;
+
 	float4 _liquidmask_ST;
 	float4 _Texture2_ST; //Liquid Tex
 	float4 _Texture3_ST; //Liquid Normal

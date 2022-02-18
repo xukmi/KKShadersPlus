@@ -5,6 +5,7 @@
 		_AnotherRamp ("Another Ramp(LineR)", 2D) = "white" {}
 		_MainTex ("MainTex", 2D) = "white" {}
 		_NormalMap ("Normal Map", 2D) = "bump" {}
+		_NormalMapDetail ("Normal Map Detail", 2D) = "bump" {}
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
@@ -30,6 +31,7 @@
 		[Gamma]_Color3 ("Color3", Color) = (0.5,0.5,0.5,1)
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		_NormalMapScale ("NormalMapScale", Float) = 1
+		_DetailNormalMapScale ("Detail Normal Scale", Float) = 1
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
