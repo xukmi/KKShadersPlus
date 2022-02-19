@@ -107,7 +107,8 @@
 					hlslcc_movcTemp.x = (compTest.x) ? diffuseShaded.x : shadingAdjustment.x;
 					hlslcc_movcTemp.y = (compTest.y) ? diffuseShaded.y : shadingAdjustment.y;
 					hlslcc_movcTemp.z = (compTest.z) ? diffuseShaded.z : shadingAdjustment.z;
-					shadingAdjustment = saturate(hlslcc_movcTemp);
+					float3 shadowCol = lerp(1, _ShadowColor.rgb, 1 - saturate(_ShadowColor.a));
+					shadingAdjustment = saturate(hlslcc_movcTemp * shadowCol);
 				}
 				float3 finalDiffuse = specularDiffuse * shadingAdjustment;
 				specularDiffuse = -specularDiffuse * shadingAdjustment + specularDiffuse;

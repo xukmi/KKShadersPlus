@@ -8,6 +8,11 @@ float _DisplaceMultiplier;
 float _DisplaceNormalMultiplier;
 float _DisplaceFull;
 
+#ifndef DEFINED_CLOCK
+#define DEFINED_CLOCK
+float4 _Clock;
+#endif
+
 float DisplaceVal(float2 uv, float2 offset, float2 texelSize){
 	float4 displaceTex = tex2Dlod(_DisplaceTex, float4(uv, 0, 0) + float4(texelSize * offset, 0, 0));
 	float displaceVal = displaceTex.r;
@@ -15,7 +20,10 @@ float DisplaceVal(float2 uv, float2 offset, float2 texelSize){
 	displaceVal = pow(displaceVal, 0.454545);
 	displaceVal = (displaceVal - 0.5) * 2.0 * displaceTex.a;
 	displaceVal += _DisplaceFull;
-	return displaceVal;
+
+	//Can animate via rendereditor since _Clock is an exposed variable
+	float displacementAnimation = _Clock.w;
+	return displaceVal * displacementAnimation;
 }
 
 float3 normalsFromHeight(sampler2D heightTex, float2 uv, float2 texelSize)

@@ -97,7 +97,11 @@
 	float _DetailBLineG;
 
 	float4 _TimeEditor;
+#ifndef DEFINED_CLOCK
+#define DEFINED_CLOCK
 	float4 _Clock;
+#endif
+
 	float4 _Color;
 	float4 _Color2;
 	float4 _Color3;

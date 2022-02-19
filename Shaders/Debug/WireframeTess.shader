@@ -19,6 +19,7 @@ Shader "xukmi/Debug/WireframeTess"
 		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1
 		_ShrinkVal("ShrinkVal", Range(0, 1)) = 1
 		_ShrinkVerticalAdjust("Vertical Pos", Float) = 0
+		_Clock ("W is for displacement multiplier for animation", Vector) = (0,0,0,1)
  }
 
 	SubShader
