@@ -193,6 +193,7 @@ fixed4 frag (Varyings i) : SV_Target
 	
 	//Add hair gloss
 	hairGloss2.x = _SpecularIsHighlights ? min(hairGloss2.x, specular * _SpecularIsHighlightsRange) : hairGloss2.x; 
+	hairGloss2.x *= specularMap;
 	float hairGlossMask = hairGloss2.x * rampAdjust * _GlossColor.a;
 	float3 hairGlossColor = hairGlossMask * _GlossColor.rgb * _GlossColor.a;
 	diffuse = hairGlossColor + saturate(1 - hairGlossMask) * diffuse;

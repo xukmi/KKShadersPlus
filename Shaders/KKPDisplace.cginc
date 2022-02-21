@@ -45,7 +45,7 @@ float3 normalsFromHeight(sampler2D heightTex, float2 uv, float2 texelSize)
 
 
 void DisplacementValues(VertexData v, inout float4 vertex, inout float3 normal){
-	float3 displace = DisplaceVal(v.uv0 * _DisplaceTex_ST.xy + _DisplaceTex_ST.zw, 0, 0);
+	float3 displace = DisplaceVal(v.uv0 * _DisplaceTex_ST.xy + _DisplaceTex_ST.zw + _Clock.xy, 0, 0);
 #ifndef SHADOW_CASTER_PASS
 	float3 bumpnormal = normalsFromHeight(_DisplaceTex, v.uv0 * _DisplaceTex_ST.xy + _DisplaceTex_ST.zw, _DisplaceTex_TexelSize.xy);
 	bumpnormal.xyz = bumpnormal.xzy;
