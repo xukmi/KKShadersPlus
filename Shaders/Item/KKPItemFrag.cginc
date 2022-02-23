@@ -50,12 +50,16 @@
 				#ifdef SHADOWS_SCREEN
 					float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
 					float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
-					shadowAttenuation = saturate(shadowMap.x);
+					shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0));
 				#endif
-				float lightRamp = max(lambert, vertexLighting.a);
+
+				float shadowAttenLambert = _UseRampForShadows ? shadowAttenuation : 1;
+				float rampAtten = _UseRampForShadows ? 1 : shadowAttenuation;
+
+				float lightRamp = max(lambert * shadowAttenLambert, vertexLighting.a);
 
 				float2 rampUV = saturate(lightRamp) * _RampG_ST.xy + _RampG_ST.zw;
-				float ramp = tex2D(_RampG, rampUV) * shadowAttenuation;
+				float ramp = tex2D(_RampG, rampUV) * rampAtten;
 				
 				float anotherRampSpecularVertex = 0.0;
 			#ifdef VERTEXLIGHT_ON

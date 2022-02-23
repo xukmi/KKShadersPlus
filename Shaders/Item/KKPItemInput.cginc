@@ -25,6 +25,7 @@
 	float4 _CustomAmbient;
 	bool _UseRampForLights;
 	bool _UseRampForSpecular;
+	bool _UseRampForShadows;
 	bool _UseLightColorSpecular;
 	bool _AlphaOptionCutoff;
 	bool _OutlineOn;
