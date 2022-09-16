@@ -1,6 +1,23 @@
 #ifndef KKP_ITEMFRAG_INC
 #define KKP_ITEMFRAG_INC
 
+
+float3x3 AngleAxis3x3(float angle, float3 axis)
+{
+    float c, s;
+    sincos(angle, s, c);
+
+    float t = 1 - c;
+    float x = axis.x;
+    float y = axis.y;
+    float z = axis.z;
+
+    return float3x3(
+        t * x * x + c,      t * x * y - s * z,  t * x * z + s * y,
+        t * x * y + s * z,  t * y * y + c,      t * y * z - s * x,
+        t * x * z - s * y,  t * y * z + s * x,  t * z * z + c
+    );
+}
 			fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target{
 				//Clips based on alpha texture
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
@@ -14,6 +31,9 @@
 				float3 shadingAdjustment = ShadeAdjust(diffuse);
 				float3 normal = GetNormal(i);
 
+
+
+
 				float liquidFinalMask;
 				float3 liquidNormal;
 				GetCumVals(i.uv0, liquidFinalMask, liquidNormal);
@@ -21,7 +41,15 @@
 				normal = lerp(normal, liquidNormal, liquidFinalMask);
 				normal = NormalAdjust(i, normal, faceDir);
 
+				float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
+				float3x3 rotY = AngleAxis3x3(_KKPRimRotateY, float3(1, 0, 0));
+				float3 rotView = mul(viewDir, mul(rotX, rotY));
+				float kkpFres = dot(normal, rotView);
+				kkpFres = saturate(pow(1-kkpFres, _KKPRimSoft) * _KKPRimIntensity);
+				_KKPRimColor.a *= (_UseKKPRim);
+				float3 kkpFresCol = kkpFres * _KKPRimColor;
 
+				diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse);
 
 				KKVertexLight vertexLights[4];
 			#ifdef VERTEXLIGHT_ON
@@ -214,7 +242,8 @@
 				rimPow *= rimMask;
 				rimPow = min(max(rimPow, 0.0), 0.60000024);
 				float3 rimCol = rimPow * _SpecularColor.xyz;
-				rimCol *= _rimV;
+				rimCol *= _rimV * (1-_UseKKPRim);
+				
 				float3 diffuseSpecRim = saturate(rimCol * detailMaskAdjust.x + mergedSpecularDiffuse);
 
 				float drawnLines = 1 - detailMaskAdjust.w;
@@ -248,6 +277,8 @@
 
 				finalDiffuse = lineWidth * finalDiffuse + diffuse;
 				finalDiffuse = GetBlendReflections(finalDiffuse, normal, viewDir, kkMetalMap);
+
+				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
 
 				float4 emission = GetEmission(i.uv0);
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);

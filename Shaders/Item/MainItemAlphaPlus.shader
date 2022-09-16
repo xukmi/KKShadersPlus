@@ -49,6 +49,13 @@
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
 		_UseMatCapReflection("Use Mat Cap", Range(0, 1)) = 1
  		_ReflectionMapCap("Mat Cap", 2D) = "black" {}
+		_UseKKPRim ("Use KKP Rim", Range(0 ,1)) = 0
+		_KKPRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 0)
+		_KKPRimSoft ("Body Rim Softness", Float) = 1.5
+		_KKPRimIntensity ("Body Rim Intensity", Float) = 0.75
+		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
+		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
+		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
 	}
 	SubShader
 	{
@@ -305,6 +312,23 @@
 				return o;
 			}
 
+float3x3 AngleAxis3x3(float angle, float3 axis)
+{
+    float c, s;
+    sincos(angle, s, c);
+
+    float t = 1 - c;
+    float x = axis.x;
+    float y = axis.y;
+    float z = axis.z;
+
+    return float3x3(
+        t * x * x + c,      t * x * y - s * z,  t * x * z + s * y,
+        t * x * y + s * z,  t * y * y + c,      t * y * z - s * x,
+        t * x * z - s * y,  t * y * z + s * x,  t * z * z + c
+    );
+}
+
 			fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target
 			{
 				//Clips based on alpha texture
@@ -323,6 +347,18 @@
 				float3 diffuse = mainTex * color;
 				
 				float3 normal = NormalAdjust(i, GetNormal(i), 1);
+
+
+				float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
+				float3x3 rotY = AngleAxis3x3(_KKPRimRotateY, float3(1, 0, 0));
+				float3 rotView = mul(viewDir, mul(rotX, rotY));
+				float kkpFres = dot(normal, rotView);
+				kkpFres = saturate(pow(1-kkpFres, _KKPRimSoft) * _KKPRimIntensity);
+				_KKPRimColor.a *= (_UseKKPRim);
+				float3 kkpFresCol = kkpFres * _KKPRimColor;
+
+				diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse);
+
 
 				//Apparently can rotate?
 				float time = _TimeEditor.y + _Time.y;
@@ -509,6 +545,8 @@
 				finalDiffuse += specularCol;
 			
 				finalDiffuse = GetBlendReflections(finalDiffuse, normal, viewDir, kkMetalMap);
+
+				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
 
 				float4 emission = GetEmission(i.uv0);
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);

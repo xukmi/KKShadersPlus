@@ -58,6 +58,13 @@ Shader "xukmi/MainAlphaPlus"
 		_Alpha ("AlphaValue", Float) = 1
 		_UseMatCapReflection("Use Mat Cap", Range(0, 1)) = 1
  		_ReflectionMapCap("Mat Cap", 2D) = "black" {}
+		_UseKKPRim ("Use KKP Rim", Range(0 ,1)) = 0
+		_KKPRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 0)
+		_KKPRimSoft ("Body Rim Softness", Float) = 1.5
+		_KKPRimIntensity ("Body Rim Intensity", Float) = 0.75
+		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
+		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
+		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
 	}
 	SubShader
 	{

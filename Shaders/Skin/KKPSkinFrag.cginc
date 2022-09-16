@@ -1,6 +1,22 @@
 ﻿#ifndef KKP_SKINFRAG_INC
 #define KKP_SKINFRAG_INC
+// Rotation with angle (in radians) and axis
+float3x3 AngleAxis3x3(float angle, float3 axis)
+{
+    float c, s;
+    sincos(angle, s, c);
 
+    float t = 1 - c;
+    float x = axis.x;
+    float y = axis.y;
+    float z = axis.z;
+
+    return float3x3(
+        t * x * x + c,      t * x * y - s * z,  t * x * z + s * y,
+        t * x * y + s * z,  t * y * y + c,      t * y * z - s * x,
+        t * x * z - s * y,  t * y * z + s * x,  t * z * z + c
+    );
+}
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				//Clips based on alpha texture
@@ -50,14 +66,15 @@
 				lineMask.xz = -lineMask.zx * _DetailNormalMapScale + 1;
 
 
-
-
-				float fresnel = dot(normal, viewDir);
+				float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
+				float3x3 rotY = AngleAxis3x3(_KKPRimRotateY, float3(1, 0, 0));
+				float3 rotView = mul(viewDir, mul(rotX, rotY));
+				float fresnel = dot(normal, rotView);
 				float bodyFres = fresnel;
-				bodyFres = saturate(pow(1-bodyFres, _BodyRimSoft) * _BodyRimIntensity);
-				float3 bodyFresCol = bodyFres * _BodyRimColor;
+				bodyFres = saturate(pow(1-bodyFres, _KKPRimSoft) * _KKPRimIntensity);
+				float3 bodyFresCol = bodyFres * _KKPRimColor;
 
-				diffuse = lerp(diffuse, bodyFresCol, _BodyRimColor.a * bodyFres * _BodyRimAsDiffuse);
+				diffuse = lerp(diffuse, bodyFresCol, _KKPRimColor.a * bodyFres * _KKPRimAsDiffuse);
 
 				//Lighting begins here
 
@@ -179,7 +196,7 @@
 				float3 finalCol = (lineWidth * specularDiffuse + diffuseAdjusted);
 
 
-				finalCol = lerp(finalCol, bodyFresCol, _BodyRimColor.a * bodyFres * (1 - _BodyRimAsDiffuse));
+				finalCol = lerp(finalCol, bodyFresCol, _KKPRimColor.a * bodyFres * (1 - _KKPRimAsDiffuse));
 
 				//Overlay Emission over everything
 				float4 emission = GetEmission(i.uv0);

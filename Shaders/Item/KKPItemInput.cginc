@@ -30,7 +30,7 @@
 	bool _AlphaOptionCutoff;
 	bool _OutlineOn;
 	bool _UseDetailRAsSpecularMap;
-
+	bool _UseKKPRim;
 	int _CullOption;
 	float _UseKKMetal;
 
@@ -38,6 +38,14 @@
 	float _DetailNormalMapScale;
 
 	float4 _OutlineColor;
+
+
+	float4 _KKPRimColor;
+	float _KKPRimSoft;
+	float _KKPRimIntensity;
+	float _KKPRimAsDiffuse;
+	float _KKPRimRotateX;
+	float _KKPRimRotateY;
 
 	//Input Textures
 	sampler2D _MainTex;

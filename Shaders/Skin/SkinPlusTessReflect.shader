@@ -56,10 +56,12 @@
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 
-		_BodyRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 0)
-		_BodyRimSoft ("Body Rim Softness", Float) = 2.5
-		_BodyRimIntensity ("Body Rim Intensity", Float) = 0.5
-		_BodyRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
+		_KKPRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 0)
+		_KKPRimSoft ("Body Rim Softness", Float) = 1.5
+		_KKPRimIntensity ("Body Rim Intensity", Float) = 0.75
+		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
+		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
+		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
 		_ReflectMap ("Reflect Body Map", 2D) = "white" {}
 		_Roughness ("Roughness", Range(0, 1)) = 0.0
 		_ReflectionVal ("ReflectionVal", Range(0, 1)) = 1.0
