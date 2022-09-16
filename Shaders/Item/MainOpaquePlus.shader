@@ -1,4 +1,4 @@
-﻿Shader "xukmi/MainOpaquePlus"
+Shader "xukmi/MainOpaquePlus"
 {
 	Properties
 	{

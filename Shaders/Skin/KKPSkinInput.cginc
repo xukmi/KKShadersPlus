@@ -39,6 +39,7 @@
 	bool _UseDetailRAsSpecularMap;
 	float _NormalMapScale;
 	
+	bool _UseKKPRim;
 	float4 _KKPRimColor;
 	float _KKPRimSoft;
 	float _KKPRimIntensity;

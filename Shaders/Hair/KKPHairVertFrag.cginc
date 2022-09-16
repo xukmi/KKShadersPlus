@@ -45,6 +45,23 @@ float3 CreateBinormal (float3 normal, float3 tangent, float binormalSign) {
 		(binormalSign * unity_WorldTransformParams.w);
 }
 
+float3x3 AngleAxis3x3(float angle, float3 axis)
+{
+    float c, s;
+    sincos(angle, s, c);
+
+    float t = 1 - c;
+    float x = axis.x;
+    float y = axis.y;
+    float z = axis.z;
+
+    return float3x3(
+        t * x * x + c,      t * x * y - s * z,  t * x * z + s * y,
+        t * x * y + s * z,  t * y * y + c,      t * y * z - s * x,
+        t * x * z - s * y,  t * y * z + s * x,  t * z * z + c
+    );
+}
+
 fixed4 frag (Varyings i) : SV_Target
 {
 	float3 viewDir = normalize(_WorldSpaceCameraPos - i.posWS);
@@ -68,6 +85,16 @@ fixed4 frag (Varyings i) : SV_Target
 	);
 	float3 adjustedNormal = normalize(normal);
 
+
+	float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
+	float3x3 rotY = AngleAxis3x3(_KKPRimRotateY, float3(1, 0, 0));
+	float3 rotView = mul(viewDir, mul(rotX, rotY));
+	float kkpFres = dot(normal, rotView);
+	kkpFres = saturate(pow(1-kkpFres, _KKPRimSoft) * _KKPRimIntensity);
+	_KKPRimColor.a *= (_UseKKPRim);
+	float3 kkpFresCol = kkpFres * _KKPRimColor;
+	diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse);
+	
 	float fresnel = max(0.0, dot(viewDir, adjustedNormal));
 	float anotherRamp = tex2D(_AnotherRamp, fresnel * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw).x;
 	fresnel = 1 - fresnel;
@@ -75,7 +102,7 @@ fixed4 frag (Varyings i) : SV_Target
 	float rimPow = _rimpower * 9.0 + 1.0;
 	fresnel *= rimPow;
 	fresnel = exp2(fresnel);
-	fresnel = saturate(fresnel * 5.0 - 1.5);
+	fresnel = saturate(fresnel * 5.0 - 1.5) * (1-_UseKKPRim);
 				
 	ambientShadowExtendAdjust = min(ambientShadowExtendAdjust * fresnel, 0.5);
 				
@@ -210,6 +237,9 @@ fixed4 frag (Varyings i) : SV_Target
 	shading = (_LightColor0.xyz + vertexLighting.rgb * vertexLightRamp)* float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 	shading = max(shading, _ambientshadowG.rgb);
 	finalDiffuse *= shading;
+
+	finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
+
 	//Overlay Emission over everything
 	float4 emission = GetEmission(i.uv0);
 	finalDiffuse = finalDiffuse * (1 - emission.a) +  (emission.a * emission.rgb);

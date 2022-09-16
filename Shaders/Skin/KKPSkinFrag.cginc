@@ -72,6 +72,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float fresnel = dot(normal, rotView);
 				float bodyFres = fresnel;
 				bodyFres = saturate(pow(1-bodyFres, _KKPRimSoft) * _KKPRimIntensity);
+				_KKPRimColor.a *= (_UseKKPRim);
 				float3 bodyFresCol = bodyFres * _KKPRimColor;
 
 				diffuse = lerp(diffuse, bodyFresCol, _KKPRimColor.a * bodyFres * _KKPRimAsDiffuse);
@@ -157,7 +158,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				rimLight *= exp2(fresnel) * 5 - 2;
 				float2 detailMaskAdjusted = detailMask.xz * float2(0.5, 2.5) + float2(0.5, -1.5);
 				rimLight = saturate(min(rimLight, detailMaskAdjusted.y));
-				rimLight *= detailMask.x;
+				rimLight *= detailMask.x * (1-_UseKKPRim);
 
 				bodyShine = rimLight * _rimV + bodyShine;
 				bodyShine = bodyShine - specularDiffuse;
