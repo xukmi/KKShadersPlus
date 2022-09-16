@@ -100,7 +100,7 @@
 			#include "KKPItemInput.cginc"
 			#include "../KKPDisplace.cginc"
 			#include "KKPItemDiffuse.cginc"
-
+			#define TESS_MID
 			Varyings vert (VertexData v)
 			{
 				float4 vertex = v.vertex;
@@ -323,7 +323,7 @@
 			#include "UnityCG.cginc"
 			#include "KKPItemInput.cginc"
 			#include "../KKPDisplace.cginc"
-
+			#define TESS_LOW
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
                 V2F_SHADOW_CASTER;

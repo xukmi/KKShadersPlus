@@ -91,7 +91,14 @@ float EdgeTessellationFactor(float3 p0PositionWS, float2 p0UV, float3 p1Position
     float tessTex = tex2Dlod(_TessTex, float4((p0UV + p1UV) * 0.5, 0, 0)).x;
     float factor = length / (distanceToCamera * distanceToCamera);
     factor = min(_TessMax, factor);
-    return max(_TessMin, factor * tessTex);
+    float multiplier = 1.0;
+    #ifdef TESS_MID
+        multiplier = 0.35;
+    #endif
+    #ifdef TESS_LOW
+        multiplier = 0.1;
+    #endif
+    return max(_TessMin, factor * tessTex * multiplier);
 }
 
 

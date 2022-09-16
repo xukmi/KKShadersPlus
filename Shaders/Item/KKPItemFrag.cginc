@@ -50,7 +50,7 @@
 				#ifdef SHADOWS_SCREEN
 					float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
 					float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
-					shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0));
+					shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0);
 				#endif
 
 				float shadowAttenLambert = _UseRampForShadows ? shadowAttenuation : 1;

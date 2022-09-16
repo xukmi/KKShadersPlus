@@ -39,8 +39,15 @@
 	bool _UseDetailRAsSpecularMap;
 	float _NormalMapScale;
 	
+	float4 _BodyRimColor;
+	float _BodyRimSoft;
+	float _BodyRimIntensity;
+	float _BodyRimAsDiffuse;
+
 	float4 _ShadowColor;
 	float4 _OutlineColor;
+
+
 	//KK Inputs
 
 	//Input Textures

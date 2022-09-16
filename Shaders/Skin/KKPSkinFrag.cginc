@@ -4,7 +4,7 @@
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				//Clips based on alpha texture
-				AlphaClip(i.uv0, _OutlineOn ? 1 : 0);
+				AlphaClip(i.uv0, 1);
 
 
 				//Used in various things so calculating them here
@@ -16,6 +16,10 @@
 				float3 specularAdjustment; //Adjustments for specular from detailmap
 				float3 shadingAdjustment; //Adjustments for shading
 				MapValuesMain(diffuse, specularAdjustment, shadingAdjustment);
+
+
+
+
 
 				//Normals from texture
 				float3 normal = GetNormal(i);
@@ -45,6 +49,15 @@
 				float4 lineMask = tex2D(_LineMask, lineMaskUV);
 				lineMask.xz = -lineMask.zx * _DetailNormalMapScale + 1;
 
+
+
+
+				float fresnel = dot(normal, viewDir);
+				float bodyFres = fresnel;
+				bodyFres = saturate(pow(1-bodyFres, _BodyRimSoft) * _BodyRimIntensity);
+				float3 bodyFresCol = bodyFres * _BodyRimColor;
+
+				diffuse = lerp(diffuse, bodyFresCol, _BodyRimColor.a * bodyFres * _BodyRimAsDiffuse);
 
 				//Lighting begins here
 
@@ -114,13 +127,13 @@
 				specularDiffuse = -specularDiffuse * shadingAdjustment + specularDiffuse;
 				specularDiffuse = specularDiffuse * shadowAttenuation + finalDiffuse;
 				finalDiffuse = liquidFinalMask * float3(0.350000024, 0.45294112, 0.607352912) + float3(0.5, 0.397058904, 0.242647097);
-
 				
 				float3 cumCol = (GetLambert(worldLightPos, normal) + vertexLighting.a + 0.5) * float3(0.149999976, 0.199999988, 0.300000012) + float3(.850000024, 0.800000012, 0.699999988);
 				float3 bodyShine = finalDiffuse * cumCol + specularMesh;
 
 				//Rimlight
-				float fresnel = dot(normal, viewDir);
+				
+
 				fresnel = max(fresnel, 0.0);
 				fresnel = log2(1 - fresnel);
 				float rimLight = _rimpower * 9 + 1;
@@ -137,6 +150,7 @@
 				float3 ambientCol = max(bodyShine, _ambientshadowG.xyz);
 				specularDiffuse *= ambientCol;
 				float3 diffuseAdjusted = diffuse * shadingAdjustment;
+
 
 				//Final combine with drawn lines
 				float3 coolVal = -diffuseAdjusted * detailMaskAdjusted.x + 1;
@@ -163,6 +177,9 @@
 
 
 				float3 finalCol = (lineWidth * specularDiffuse + diffuseAdjusted);
+
+
+				finalCol = lerp(finalCol, bodyFresCol, _BodyRimColor.a * bodyFres * (1 - _BodyRimAsDiffuse));
 
 				//Overlay Emission over everything
 				float4 emission = GetEmission(i.uv0);

@@ -56,6 +56,10 @@
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 
+		_BodyRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 0)
+		_BodyRimSoft ("Body Rim Softness", Float) = 2.5
+		_BodyRimIntensity ("Body Rim Intensity", Float) = 0.5
+		_BodyRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
 		_TessTex ("Tess Tex", 2D) = "white" {}
 		_TessMax("Tess Max", Range(1, 25)) = 12
 		_TessMin("Tess Min", Range(1, 25)) = 1
@@ -93,7 +97,7 @@
 			#include "KKPSkinInput.cginc"
 			#include "../KKPDisplace.cginc"
 			#include "KKPDiffuse.cginc"
-
+			#define TESS_MID
 			Varyings vert (VertexData v)
 			{
 				float4 vertex = v.vertex;
@@ -313,6 +317,7 @@
 			#include "UnityCG.cginc"
 			#include "KKPSkinInput.cginc"
 			#include "../KKPDisplace.cginc"
+			#define TESS_LOW
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
                 V2F_SHADOW_CASTER;
