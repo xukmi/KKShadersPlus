@@ -40,7 +40,7 @@
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 
 		_UseKKPRim ("Use KKP Rim", Range(0 ,1)) = 0
-		_KKPRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 1.0)
+		[Gamma]_KKPRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 1.0)
 		_KKPRimSoft ("Body Rim Softness", Float) = 1.5
 		_KKPRimIntensity ("Body Rim Intensity", Float) = 0.75
 		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0

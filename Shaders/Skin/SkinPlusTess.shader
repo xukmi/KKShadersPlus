@@ -57,14 +57,14 @@
 		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 
 		_UseKKPRim ("Use KKP Rim", Range(0 ,1)) = 0
-		_KKPRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 1.0)
+		[Gamma]_KKPRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 1.0)
 		_KKPRimSoft ("Body Rim Softness", Float) = 1.5
 		_KKPRimIntensity ("Body Rim Intensity", Float) = 0.75
 		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
 		_TessTex ("Tess Tex", 2D) = "white" {}
-		_TessMax("Tess Max", Range(1, 25)) = 12
+		_TessMax("Tess Max", Range(1, 25)) = 4
 		_TessMin("Tess Min", Range(1, 25)) = 1
 		_TessBias("Tess Distance Bias", Range(1, 100)) = 75
 		_TessSmooth("Tess Smooth", Range(0, 1)) = 0

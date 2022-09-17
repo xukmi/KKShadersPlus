@@ -62,7 +62,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
     );
 }
 
-fixed4 frag (Varyings i) : SV_Target
+fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 {
 	float3 viewDir = normalize(_WorldSpaceCameraPos - i.posWS);
 	float3 worldLight = normalize(_WorldSpaceLightPos0.xyz); //Directional light
@@ -88,8 +88,9 @@ fixed4 frag (Varyings i) : SV_Target
 
 	float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
 	float3x3 rotY = AngleAxis3x3(_KKPRimRotateY, float3(1, 0, 0));
-	float3 rotView = mul(viewDir, mul(rotX, rotY));
-	float kkpFres = dot(normal, rotView);
+	float3 adjustedViewDir = frontFace == 1 ? viewDir : -viewDir;
+	float3 rotView = mul(adjustedViewDir, mul(rotX, rotY));
+	float kkpFres = max(0.1, dot(normal, rotView));
 	kkpFres = saturate(pow(1-kkpFres, _KKPRimSoft) * _KKPRimIntensity);
 	_KKPRimColor.a *= (_UseKKPRim);
 	float3 kkpFresCol = kkpFres * _KKPRimColor;

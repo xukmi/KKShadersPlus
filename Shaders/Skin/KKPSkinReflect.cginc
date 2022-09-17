@@ -1,6 +1,7 @@
 ﻿#ifndef KKP_SKIN_REFLECT
 #define KKP_SKIN_REFLECT
 			sampler2D _ReflectMap;
+			float4 _ReflectMap_ST;
 			sampler2D _ReflectionMapCap;
 			float _Roughness;
 			float _ReflectionVal;
@@ -14,7 +15,7 @@
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
 				float3 normal = GetNormal(i);
 				normal = NormalAdjust(i, normal);
-				float reflectMap = tex2D(_ReflectMap, i.uv0).r;
+				float reflectMap = tex2D(_ReflectMap, (i.uv0 *_ReflectMap_ST.xy) + _ReflectMap_ST.zw).r;
 
 
 				float3 reflectionDir = reflect(-viewDir, normal);
@@ -28,7 +29,7 @@
 
 				float3 matcap = tex2D(_ReflectionMapCap, matcapUV).rgb;
 				matcap = pow(matcap, 0.454545);
-				env = lerp(matcap, env, _UseMatCapReflection);
+				env = lerp(matcap, env, 1-_UseMatCapReflection);
 
 				float reflectMulOrAdd = 1.0;
 				float src = floor(_ReflBlendSrc);

@@ -17,7 +17,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
         t * x * z - s * y,  t * y * z + s * x,  t * z * z + c
     );
 }
-			fixed4 frag (Varyings i) : SV_Target
+			fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 			{
 				//Clips based on alpha texture
 				AlphaClip(i.uv0, 1);
@@ -68,7 +68,8 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 				float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
 				float3x3 rotY = AngleAxis3x3(_KKPRimRotateY, float3(1, 0, 0));
-				float3 rotView = mul(viewDir, mul(rotX, rotY));
+				float3 adjustedViewDir = frontFace == 1 ? viewDir : -viewDir;
+				float3 rotView = mul(adjustedViewDir, mul(rotX, rotY));
 				float fresnel = dot(normal, rotView);
 				float bodyFres = fresnel;
 				bodyFres = saturate(pow(1-bodyFres, _KKPRimSoft) * _KKPRimIntensity);
