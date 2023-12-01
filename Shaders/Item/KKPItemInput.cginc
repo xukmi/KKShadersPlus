@@ -39,7 +39,6 @@
 
 	float4 _OutlineColor;
 
-
 	float4 _KKPRimColor;
 	float _KKPRimSoft;
 	float _KKPRimIntensity;
@@ -106,6 +105,9 @@
 	float _DetailBLineG;
 
 	float4 _TimeEditor;
+	
+	float _DisablePointLights;
+	
 #ifndef DEFINED_CLOCK
 #define DEFINED_CLOCK
 	float4 _Clock;

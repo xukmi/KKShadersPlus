@@ -46,6 +46,7 @@
 		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
+		_DisablePointLights ("Disable Point Lights", Float) = 0.0
 	}
 	SubShader
 	{

@@ -54,7 +54,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 				KKVertexLight vertexLights[4];
 			#ifdef VERTEXLIGHT_ON
-				GetVertexLights(vertexLights, i.posWS);	
+				GetVertexLightsTwo(vertexLights, i.posWS, _DisablePointLights);	
 			#endif
 				float4 vertexLighting = 0.0;
 				float vertexLightRamp = 1.0;

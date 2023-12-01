@@ -84,7 +84,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				//It's are limited to 4 pointlights + 1 directional light because we're using Unity's vertex lights which is capped at 4 + the Forward Light pass
 				KKVertexLight vertexLights[4];
 			#ifdef VERTEXLIGHT_ON
-				GetVertexLights(vertexLights, i.posWS);	
+				GetVertexLightsTwo(vertexLights, i.posWS, _DisablePointLights);
 			#endif
 				float4 vertexLighting = 0.0;
 				float vertexLightRamp = 1.0;

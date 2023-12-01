@@ -70,6 +70,7 @@
 		_ReflBlendSrc ("Reflect Blend Src", Float) = 2.0
 		_ReflBlendDst ("Reflect Blend Dst", Float) = 0.0
 		_ReflBlendVal ("Reflect Blend Val", Range(0, 1)) = 1.0
+		_DisablePointLights ("Disable Point Lights", Float) = 0.0
 	}
 	SubShader
 	{

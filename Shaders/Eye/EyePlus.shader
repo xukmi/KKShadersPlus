@@ -20,6 +20,7 @@
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
+		_DisablePointLights ("Disable Point Lights", Float) = 0.0
 	}
 	SubShader
 	{
@@ -153,7 +154,7 @@
 
 				KKVertexLight vertexLights[4];
 			#ifdef VERTEXLIGHT_ON
-				GetVertexLights(vertexLights, i.posWS);	
+				GetVertexLightsTwo(vertexLights, i.posWS, _DisablePointLights);	
 			#endif
 				float4 vertexLighting = 0.0;
 				float vertexLightRamp = 1.0;

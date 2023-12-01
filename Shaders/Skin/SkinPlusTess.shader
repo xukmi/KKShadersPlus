@@ -74,6 +74,7 @@
 		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1
 		_DisplaceFull("Displace Full", Range(-1, 1)) = 0
 		_Clock ("W is for displacement multiplier for animation", Vector) = (0,0,0,1)
+		_DisablePointLights ("Disable Point Lights", Float) = 0.0
 	}
 	SubShader
 	{

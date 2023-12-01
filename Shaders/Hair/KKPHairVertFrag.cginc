@@ -110,7 +110,7 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	
 	KKVertexLight vertexLights[4];
 #ifdef VERTEXLIGHT_ON
-	GetVertexLights(vertexLights, i.posWS);	
+	GetVertexLightsTwo(vertexLights, i.posWS, _DisablePointLights);	
 #endif
 	float4 vertexLighting = 0.0;
 	float vertexLightRamp = 1.0;

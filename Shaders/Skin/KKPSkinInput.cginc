@@ -119,5 +119,7 @@
 	float4 _ambientshadowG; //Shadow color 
 	float _FaceShadowG;
 	float _FaceNormalG;
+	
+	float _DisablePointLights;
 
 #endif

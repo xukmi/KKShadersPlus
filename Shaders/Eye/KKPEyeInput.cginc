@@ -56,5 +56,6 @@
 	//Global light params set by KK
 	float4 _ambientshadowG;
 	
+	float _DisablePointLights;
 
 #endif
