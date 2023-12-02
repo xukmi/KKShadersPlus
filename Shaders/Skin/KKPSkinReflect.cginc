@@ -11,10 +11,69 @@
 			float _ReflBlendDst;
 			fixed4 reflectfrag (Varyings i) : SV_Target
 			{
+				//Clips based on alpha texture
 				AlphaClip(i.uv0, 1);
+
+				//Used in various things so calculating them here
+				float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
+
+				//Normals from texture
 				float3 normal = GetNormal(i);
-				normal = NormalAdjust(i, normal);
+
+				//return float4(normal, 1);
+				// Cum
+				float liquidFinalMask;
+				float3 liquidNormal;
+				GetCumVals(i.uv0, liquidFinalMask, liquidNormal);
+				
+				//Combines normals from cum then adjusts to WS from TS
+				float3 finalCombinedNormal = lerp(normal, liquidNormal, liquidFinalMask); 
+				normal = NormalAdjust(i, finalCombinedNormal);
+				//Detailmask channels:
+				//Red 	: Specular
+				//Green : Drawn shadows
+				//Blue 	:  Something with rim light
+				//Alpha : Specular Intensity, Black = Nails White = body
+				float2 detailMaskUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
+				float4 detailMask = tex2D(_DetailMask, detailMaskUV);
+				detailMask.xyz = 1 - detailMask.ywz;
+
+				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
+				float4 lineMask = tex2D(_LineMask, lineMaskUV);
+				lineMask.xz = -lineMask.zx * _DetailNormalMapScale + 1;
+
+				//Lighting begins here
+
+				//Because of how Koikatsu lighting works, the ForwardAdd pass method isn't going to look right with Koikatsu's shading
+				//It's are limited to 4 pointlights + 1 directional light because we're using Unity's vertex lights which is capped at 4 + the Forward Light pass
+				KKVertexLight vertexLights[4];
+			#ifdef VERTEXLIGHT_ON
+				GetVertexLightsTwo(vertexLights, i.posWS, _DisablePointLights);
+			#endif
+				float4 vertexLighting = 0.0;
+				float vertexLightRamp = 1.0;
+			#ifdef VERTEXLIGHT_ON
+				vertexLighting = GetVertexLighting(vertexLights, normal);
+				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
+				vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
+				float3 rampLighting = GetRampLighting(vertexLights, normal, vertexLightRamp);
+				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
+			#endif
+				
+
+				//Shadows used as a map for the darker shade
+				float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;
+				float drawnShadows = min(detailMask.x, lineMask.x);
+				float matcapAttenuation = GetShadowAttenuation(i, vertexLighting.a, normal, worldLightPos, viewDir);
+				shadowExtend = drawnShadows * (1 - shadowExtend) + shadowExtend;
+				matcapAttenuation = 1 - (1-matcapAttenuation*shadowExtend)*_DisableShadowedMatcap;
+			
+				//Three lines commented due to adding matcap attenuation code
+				//AlphaClip(i.uv0, 1);
+				//float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
+				//float3 normal = GetNormal(i);
+				//normal = NormalAdjust(i, normal);
 				float reflectMap = tex2D(_ReflectMap, (i.uv0 *_ReflectMap_ST.xy) + _ReflectMap_ST.zw).r;
 
 
@@ -50,11 +109,11 @@
 				}
 
 				//5, 10 is alpha blend
-				env *= _ReflectionVal;
+				env *= _ReflectionVal * matcapAttenuation;
 
-				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal*reflectMap);
+				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal*matcapAttenuation*reflectMap);
 			
-				return float4(reflCol, reflectMap * _ReflectionVal);
+				return float4(reflCol, reflectMap * _ReflectionVal * matcapAttenuation);
 			}
 
 #endif

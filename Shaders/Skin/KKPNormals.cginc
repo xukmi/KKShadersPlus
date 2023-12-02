@@ -27,7 +27,7 @@ float3 NormalAdjust(Varyings i, float3 finalCombinedNormal){
 	);
 
 	//This give some items correct shading on backfaces but messes up mirror shading
-	//adjustedNormal.z *= faceDir <= 0 ? -1 : 1;
+	//float3 adjustedNormal = float3(normal.x, normal.y, normal.z * (faceDir <= 0 ? -1 : 1));
 
 	return normal;
 }

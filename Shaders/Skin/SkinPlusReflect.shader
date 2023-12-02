@@ -70,7 +70,8 @@
 		_ReflBlendSrc ("Reflect Blend Src", Float) = 2.0
 		_ReflBlendDst ("Reflect Blend Dst", Float) = 0.0
 		_ReflBlendVal ("Reflect Blend Val", Range(0, 1)) = 1.0
-		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
 	}
 	SubShader
 	{
@@ -232,9 +233,9 @@
 			#include "KKPNormals.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
-			#include "KKPLighting.cginc"
+			#include "../KKPLighting.cginc"
 			#include "../KKPEmission.cginc"
-			#include "KKPCoom.cginc"
+			#include "../KKPCoom.cginc"
 
 			#include "KKPSkinFrag.cginc"
 
@@ -285,6 +286,10 @@
 			#include "KKPSkinInput.cginc"
 			#include "KKPDiffuse.cginc"
 			#include "KKPNormals.cginc"
+			#include "../KKPCoom.cginc"
+			#include "../KKPVertexLights.cginc"
+			#include "../KKPLighting.cginc"
+			
 			#include "KKPSkinReflect.cginc"
 
 			Varyings vert (VertexData v)

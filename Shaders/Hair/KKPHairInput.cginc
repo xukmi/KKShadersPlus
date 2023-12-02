@@ -87,5 +87,13 @@
 	float4 _ambientshadowG;
 	
 	float _DisablePointLights;
+	float _DisableShadowedMatcap;
+	
+	// Required for Matcap light-masking
+	sampler2D _NormalMask;
+	float4 _NormalMask_ST;
+	float _FaceShadowG;
+	float _FaceNormalG;
+	bool _UseRampForShadows;
 
 #endif

@@ -128,6 +128,8 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DisableMapLights: 0
+    - _DisablePointLights: 0
+    - _DisableShadowedMatcap: 0
     - _DstBlend: 0
     - _EmissionIntensity: 1
     - _GlossMapScale: 1
@@ -198,7 +200,7 @@ Material:
     - _LineColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _LiquidTiling: {r: 0, g: 0, b: 2, a: 2}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
-    - _ShadowColor: {r: 0.628, g: 0.628, b: 0.628, a: 1}
+    - _ShadowColor: {r: 0.627451, g: 0.627451, b: 0.627451, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _overcolor1: {r: 1, g: 1, b: 1, a: 1}
     - _overcolor2: {r: 1, g: 1, b: 1, a: 1}

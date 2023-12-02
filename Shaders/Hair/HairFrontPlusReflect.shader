@@ -56,17 +56,19 @@
 		_ReflBlendDst ("Reflect Blend Dst", Float) = 0.0
 		_ReflBlendVal ("Reflect Blend Val", Range(0, 1)) = 1.0
 		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		
 	}
 	SubShader
 	{
 		LOD 600
-		Tags {"Queue" = "Transparent+40" "RenderType" = "Transparent" }
+		Tags {"Queue" = "AlphaTest+25" "RenderType" = "Transparent" }
 		//Outline
 		Pass
 		{
 			Name "Outline"
 			LOD 600
-			Tags {"Queue" = "Transparent+40" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags {"Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Cull Front
 			Stencil {
 				Ref 2
@@ -159,7 +161,7 @@
 		{
 			Name "Forward"
 			LOD 600
-			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent+40" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ForwardBase" "Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
 			Cull Off
 			Stencil {
@@ -203,7 +205,7 @@
 		Pass{
 			Name "Reflect"
 			LOD 600
-			Tags { "LightMode" = "Always" "Queue" = "Transparent-100" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "Always" "Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Blend [_ReflBlendSrc] [_ReflBlendDst]
 			CGPROGRAM
 			#pragma target 3.0
@@ -215,6 +217,8 @@
 			#include "KKPHairInput.cginc"
 			#include "KKPHairDiffuse.cginc"
 			#include "KKPHairNormals.cginc"
+			#include "../KKPVertexLights.cginc"
+			
 			#include "KKPHairReflect.cginc"
 
 			Varyings vert (VertexData v)
@@ -240,7 +244,7 @@
 		{
 			Name "ShadowCaster"
 			LOD 600
-			Tags { "LightMode" = "ShadowCaster" "Queue" = "Transparent+40" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ShadowCaster" "Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Offset 1, 1
 			Cull Back
 

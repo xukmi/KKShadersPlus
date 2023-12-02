@@ -22,7 +22,6 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				//Clips based on alpha texture
 				AlphaClip(i.uv0, 1);
 
-
 				//Used in various things so calculating them here
 				float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
@@ -32,10 +31,6 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float3 specularAdjustment; //Adjustments for specular from detailmap
 				float3 shadingAdjustment; //Adjustments for shading
 				MapValuesMain(diffuse, specularAdjustment, shadingAdjustment);
-
-
-
-
 
 				//Normals from texture
 				float3 normal = GetNormal(i);

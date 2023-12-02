@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: m_MainOpaquePlusTess
-  m_Shader: {fileID: 4800000, guid: cda6df87290298e42b14e58918dd2209, type: 3}
+  m_Shader: {fileID: 4800000, guid: 2ab89d7aa65d9994ca24acde731fce46, type: 3}
   m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _USELIGHTCOLORSPECULAR_ON
     _USERAMPFORLIGHTS_ON
   m_LightmapFlags: 4
@@ -141,6 +141,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DetailRLineR: 0
     - _DisableMapLights: 0
+    - _DisablePointLights: 0
     - _DisplaceFull: 0
     - _DisplaceMultiplier: 0
     - _DisplaceNormalMultiplier: 1
@@ -171,6 +172,8 @@ Material:
     - _Roughness: 0.75
     - _ShadowExtend: 0.5
     - _ShadowExtendAnother: 0
+    - _ShrinkVal: 1
+    - _ShrinkVerticalAdjust: 0
     - _SmoothnessTextureChannel: 0
     - _SpeclarHeight: 0.85
     - _SpecularHairPower: 1

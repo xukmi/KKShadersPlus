@@ -83,6 +83,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DisableMapLights: 0
+    - _DisablePointLights: 0
     - _DstBlend: 0
     - _EmissionIntensity: 1
     - _GlossMapScale: 1

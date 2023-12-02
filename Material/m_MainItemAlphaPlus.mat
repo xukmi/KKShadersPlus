@@ -143,6 +143,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DetailRLineR: 0
     - _DisableMapLights: 0
+    - _DisablePointLights: 0
     - _DisplaceFull: 0
     - _DisplaceMultiplier: 0
     - _DisplaceNormalMultiplier: 1

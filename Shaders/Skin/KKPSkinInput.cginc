@@ -121,5 +121,6 @@
 	float _FaceNormalG;
 	
 	float _DisablePointLights;
+	float _DisableShadowedMatcap;
 
 #endif

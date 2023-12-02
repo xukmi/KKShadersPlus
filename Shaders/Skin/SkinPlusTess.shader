@@ -249,9 +249,9 @@
 			#include "KKPNormals.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
-			#include "KKPLighting.cginc"
+			#include "../KKPLighting.cginc"
 			#include "../KKPEmission.cginc"
-			#include "KKPCoom.cginc"
+			#include "../KKPCoom.cginc"
 
 			#include "KKPSkinFrag.cginc"
 

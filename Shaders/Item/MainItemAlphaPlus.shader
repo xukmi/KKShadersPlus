@@ -245,7 +245,7 @@
 			#include "KKPItemInput.cginc"
 			#include "KKPItemDiffuse.cginc"
 			#include "KKPItemNormals.cginc"
-			#include "KKPItemCoom.cginc"
+			#include "../KKPCoom.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
