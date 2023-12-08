@@ -43,6 +43,10 @@ ExportedObj/
 *.opendb
 *.VC.db
 
+# Backup files
+.bak
+.bkp
+
 # Unity3D generated file on crash reports
 sysinfo.txt
 
