@@ -18,6 +18,7 @@
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
 		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 1
 		_NormalMapScale ("NormalMapScale", Float) = 1
@@ -71,6 +72,11 @@
 		_ReflBlendSrc ("Reflect Blend Src", Float) = 2.0
 		_ReflBlendDst ("Reflect Blend Dst", Float) = 0.0
 		_ReflBlendVal ("Reflect Blend Val", Range(0, 1)) = 1.0
+		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
+		_ReflectColAlphaOpt ("Reflection Color Alpha Method", Range(0,1)) = 0
+		_ReflectColColorOpt ("Reflection Color Coloring Method", Range(0,1)) = 0
+		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
+		_ReflectMask ("Reflect Body Mask", 2D) = "white" {}
 
 		_TessTex ("Tess Tex", 2D) = "white" {}
 		_TessMax("Tess Max", Range(1, 25)) = 4
@@ -83,8 +89,10 @@
 		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1
 		_DisplaceFull("Displace Full", Range(-1, 1)) = 0
 		_Clock ("W is for displacement multiplier for animation", Vector) = (0,0,0,1)
+		
 		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
 		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
 	}
 	SubShader
 	{
@@ -156,6 +164,7 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
+				1111;
 				return o;
 			}
 			
@@ -259,9 +268,9 @@
 			#include "KKPNormals.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
-			#include "KKPLighting.cginc"
+			#include "../KKPLighting.cginc"
 			#include "../KKPEmission.cginc"
-			#include "KKPCoom.cginc"
+			#include "../KKPCoom.cginc"
 
 			#include "KKPSkinFrag.cginc"
 
@@ -311,7 +320,7 @@
 		Pass{
 			Name "Reflect"
 			LOD 600
-			Tags { "LightMode" = "Always" "Queue" = "Transparent-100" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent-100" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Blend [_ReflBlendSrc] [_ReflBlendDst]
 			CGPROGRAM
 			#pragma target 5.0
@@ -319,16 +328,24 @@
 			#pragma fragment reflectfrag
 			#pragma hull hull
 			#pragma domain domain
+			
+			#pragma multi_compile _ VERTEXLIGHT_ON
+			#pragma multi_compile _ SHADOWS_SCREEN
+
+			#define KKP_EXPENSIVE_RAMP
 
 			#include "UnityCG.cginc"
+			#include "AutoLight.cginc"
 			#include "Lighting.cginc"
+			
 			#include "KKPSkinInput.cginc"
 			#include "KKPDiffuse.cginc"
 			#include "../KKPDisplace.cginc"
 			#include "KKPNormals.cginc"
-			#include "KKPCoom.cginc"
+			#include "../KKPCoom.cginc"
 			#include "../KKPVertexLights.cginc"
-			#include "KKPLighting.cginc"
+			#include "../KKPVertexLightsSpecular.cginc"
+			#include "../KKPLighting.cginc"
 			
 			#include "KKPSkinReflect.cginc"
 

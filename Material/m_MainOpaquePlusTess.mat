@@ -8,8 +8,8 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: m_MainOpaquePlusTess
   m_Shader: {fileID: 4800000, guid: 2ab89d7aa65d9994ca24acde731fce46, type: 3}
-  m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _USELIGHTCOLORSPECULAR_ON
-    _USERAMPFORLIGHTS_ON
+  m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _NOTUSETEXSPECULAR_ON _USELIGHTCOLORSPECULAR_ON
+    _USERAMPFORLIGHTS_ON _USERAMPFORSHADOWS_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -99,6 +99,22 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ReflectMapDetail:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ReflectMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ReflectPattern:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ReflectPatternasd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ReflectionMapCap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -132,8 +148,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AdjustBackfaceNormals: 0
     - _AlphaOptionCutoff: 1
-    - _AnotherRampFull: 0
+    - _AnotherRampFull: 1
     - _BumpScale: 1
     - _CullOption: 0
     - _Cutoff: 0.5
@@ -142,6 +159,7 @@ Material:
     - _DetailRLineR: 0
     - _DisableMapLights: 0
     - _DisablePointLights: 0
+    - _DisableShadowedMatcap: 0
     - _DisplaceFull: 0
     - _DisplaceMultiplier: 0
     - _DisplaceNormalMultiplier: 1
@@ -165,8 +183,11 @@ Material:
     - _ReflBlendDst: 0
     - _ReflBlendSrc: 2
     - _ReflBlendVal: 1
+    - _ReflectColAlphaOpt: 0
+    - _ReflectColColorOpt: 0
+    - _ReflectRotation: 0
     - _ReflectionVal: 1
-    - _Reflective: 0.75
+    - _Reflective: 1
     - _ReflectiveBlend: 0.05
     - _ReflectiveMulOrAdd: 1
     - _Roughness: 0.75
@@ -192,13 +213,13 @@ Material:
     - _Tolerance: 0.0005
     - _UVSec: 0
     - _UseDetailRAsSpecularMap: 0
-    - _UseKKMetal: 1
+    - _UseKKMetal: 0
     - _UseKKPRim: 0
     - _UseLightColorSpecular: 1
     - _UseMatCapReflection: 1
     - _UseMeshSpecular: 0
     - _UseRampForLights: 1
-    - _UseRampForShadows: 0
+    - _UseRampForShadows: 1
     - _UseRampForSpecular: 0
     - _ZWrite: 1
     - _alpha_a: 1
@@ -212,7 +233,7 @@ Material:
     - _nip: 0
     - _nip_specular: 0.5
     - _nipsize: 0.5
-    - _notusetexspecular: 0
+    - _notusetexspecular: 1
     - _rimV: 0.75
     - _rimpower: 0.5
     - _tex1mask: 0
@@ -228,7 +249,9 @@ Material:
     - _LineColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _LiquidTiling: {r: 0, g: 0, b: 2, a: 2}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
+    - _ReflectCol: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0.628, g: 0.628, b: 0.628, a: 1}
+    - _ShadowHSV: {r: 0, g: 0, b: 0, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _overcolor1: {r: 1, g: 1, b: 1, a: 1}
     - _overcolor2: {r: 1, g: 1, b: 1, a: 1}

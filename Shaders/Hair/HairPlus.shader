@@ -21,9 +21,10 @@
 		[Gamma]_SpecularColor ("SpecularColor", Vector) = (1.0,1.0,1.0,1.0)
 		[Gamma]_LineColor ("LineColor", Vector) = (0.5,0.5,0.5,1)
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		_NormalMapScale ("NormalMapScale", Float) = 1
-		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
+		_Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _SpecularIsHighlights ("Specular is highlight", Float) = 0
@@ -46,7 +47,10 @@
 		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
-		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 	}
 	SubShader
 	{
@@ -146,7 +150,7 @@
 			Name "Forward"
 			LOD 600
 			Tags { "LightMode" = "ForwardBase" "RenderType" = "Opaque" "ShadowSupport" = "true" }
-			Cull Off
+			Cull [_CullOption]
 
 
 			CGPROGRAM
@@ -166,6 +170,7 @@
 
 			#include "KKPHairInput.cginc"
 			#include "KKPHairDiffuse.cginc"
+			#include "KKPHairNormals.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
@@ -194,10 +199,12 @@
 
 			#include "UnityCG.cginc"
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			sampler2D _AlphaMask;
-			float4 _AlphaMask_ST;
+			#include "KKPHairInput.cginc"
+
+			//sampler2D _MainTex;
+			//float4 _MainTex_ST;
+			//sampler2D _AlphaMask;
+			//float4 _AlphaMask_ST;
 
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
@@ -219,7 +226,7 @@
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
 				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
 				float alphaVal = alphaMask.x * mainTex.a;
-				float clipVal = (alphaVal.x - 0.5) < 0.0f;
+				float clipVal = (alphaVal.x - _Cutoff) < 0.0f;
 				if(clipVal * int(0xffffffffu) != 0)
 					discard;
 

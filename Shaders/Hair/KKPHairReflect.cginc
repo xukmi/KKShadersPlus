@@ -9,6 +9,22 @@
 			float _ReflBlendVal;
 			float _ReflBlendSrc;
 			float _ReflBlendDst;
+			float4 _ReflectCol;
+			float _ReflectColAlphaOpt;
+			float _ReflectColColorOpt;
+			
+			float _ReflectRotation;
+			sampler2D _ReflectMask;
+
+			float2 rotateUV(float2 uv, float2 pivot, float rotation) {
+			    float cosa = cos(rotation);
+			    float sina = sin(rotation);
+			    uv -= pivot;
+			    return float2(
+			        cosa * uv.x - sina * uv.y,
+			        cosa * uv.y + sina * uv.x 
+			    ) + pivot;
+			}
 
 			fixed4 reflectfrag (Varyings i) : SV_Target
 			{
@@ -73,11 +89,14 @@
 				float3 env = DecodeHDR(envSample, unity_SpecCube0_HDR);
 
 				float3 viewNormal = mul((float3x3)UNITY_MATRIX_V, normal);
-				float2 matcapUV = viewNormal.xy * 0.5 + 0.5;
-
-				float3 matcap = tex2D(_ReflectionMapCap, matcapUV).rgb;
+				float2 matcapUV = rotateUV(viewNormal.xy * 0.5 + 0.5, float2(0.5, 0.5), radians(_ReflectRotation));
+				float reflectMask = tex2D(_ReflectMask, i.uv0).r;
+				
+				float4 matcap = tex2D(_ReflectionMapCap, matcapUV);
 				matcap = pow(matcap, 0.454545);
-				env = lerp(matcap, env, 1-_UseMatCapReflection);
+				float3 matcapRGBcolored = lerp(matcap.rgb * _ReflectCol.rgb, lerp(matcap.rgb, _ReflectCol, 0.5), _ReflectColColorOpt);
+				float3 matcapRGBalphacolored = lerp(lerp(1, matcapRGBcolored, _ReflectCol.a), lerp(matcap.rgb, matcapRGBcolored, _ReflectCol.a), _ReflectColAlphaOpt);
+				env = lerp(env, matcapRGBalphacolored, _UseMatCapReflection * reflectMask);
 
 				float reflectMulOrAdd = 1.0;
 				float src = floor(_ReflBlendSrc);
@@ -90,19 +109,18 @@
 				else if(src == 2.0 && dst == 0.0){
 					reflectMulOrAdd = 1.0;
 				}
-				else if(dst == 10.0 && (src == 1.0 || src == 5.0)){
+				else if(dst == 10.0 && (src == 5.0 || src == 1.0)){
 					reflectMulOrAdd = 0.0;
 				}
-				else{
+				else {
 					reflectMulOrAdd = _ReflBlendVal;
 				}
+				
+				env *= reflectMap * matcapAttenuation * matcap.a;
 
-				//5, 10 is alpha blend
-				env *= _ReflectionVal*matcapAttenuation;
-
-				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal*matcapAttenuation*reflectMap);
+				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal * matcapAttenuation * matcap.a * reflectMap);
 			
-				return float4(reflCol, reflectMap * _ReflectionVal * matcapAttenuation);
+				return float4(reflCol, _ReflectionVal*reflectMap);
 			}
 
 #endif

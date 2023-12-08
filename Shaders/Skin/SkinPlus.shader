@@ -18,6 +18,7 @@
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Color) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,1)
 		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 1
 		_NormalMapScale ("NormalMapScale", Float) = 1
@@ -64,6 +65,7 @@
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
 		
 		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
 	}
 	SubShader
 	{
@@ -89,6 +91,7 @@
 			Varyings vert (VertexData v)
 			{
 				Varyings o;
+				
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 				float3 viewDir = _WorldSpaceCameraPos.xyz - o.posWS.xyz;
 				float viewVal = dot(viewDir, viewDir);

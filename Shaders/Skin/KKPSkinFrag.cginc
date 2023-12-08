@@ -17,6 +17,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
         t * x * z - s * y,  t * y * z + s * x,  t * z * z + c
     );
 }
+
 			fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 			{
 				//Clips based on alpha texture
@@ -43,7 +44,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				
 				//Combines normals from cum then adjusts to WS from TS
 				float3 finalCombinedNormal = lerp(normal, liquidNormal, liquidFinalMask); 
-				normal = NormalAdjust(i, finalCombinedNormal);
+				normal = NormalAdjust(i, finalCombinedNormal, frontFace);
 				//Detailmask channels:
 				//Red 	: Specular
 				//Green : Drawn shadows
@@ -91,13 +92,11 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
 			#endif
 				
-
 				//Shadows used as a map for the darker shade
 				float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;
 				float drawnShadows = min(detailMask.x, lineMask.x);
 				float shadowAttenuation = GetShadowAttenuation(i, vertexLighting.a, normal, worldLightPos, viewDir);
-				float oneMinusShadowExtend = 1 - shadowExtend;
-				shadowExtend = drawnShadows * oneMinusShadowExtend + shadowExtend;
+				shadowExtend = drawnShadows * (1 - shadowExtend) + shadowExtend;
 				shadowAttenuation *= shadowExtend;
 
 				//FIGURE OUT BETTER SPECULAR MESH
@@ -106,6 +105,8 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float drawnSpecular = GetDrawnSpecular(i, detailMask, shadowAttenuation, viewDir, drawnSpecularColor);
 				float3 specularFromDetail = drawnSpecular * specularAdjustment.xyz + 1;
 				specularFromDetail = diffuse.rgb * specularFromDetail.xyz + drawnSpecularColor;
+				
+				
 				
 				float3 specularColorMesh;
 				float specularMesh = GetMeshSpecular(vertexLights, normal, viewDir, worldLightPos, specularColorMesh);
@@ -137,6 +138,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 					float3 shadowCol = lerp(1, _ShadowColor.rgb, 1 - saturate(_ShadowColor.a));
 					shadingAdjustment = saturate(hlslcc_movcTemp * shadowCol);
 				}
+				
 				float3 finalDiffuse = specularDiffuse * shadingAdjustment;
 				specularDiffuse = -specularDiffuse * shadingAdjustment + specularDiffuse;
 				specularDiffuse = specularDiffuse * shadowAttenuation + finalDiffuse;
@@ -146,7 +148,6 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float3 bodyShine = finalDiffuse * cumCol + specularMesh;
 
 				//Rimlight
-				
 
 				fresnel = max(fresnel, 0.0);
 				fresnel = log2(1 - fresnel);
@@ -159,12 +160,12 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				bodyShine = rimLight * _rimV + bodyShine;
 				bodyShine = bodyShine - specularDiffuse;
 				specularDiffuse = liquidFinalMask * bodyShine + specularDiffuse;
+				
 				//Final lighting colors
 				bodyShine = (_LightColor0.rgb + vertexLighting.rgb * vertexLightRamp) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 				float3 ambientCol = max(bodyShine, _ambientshadowG.xyz);
 				specularDiffuse *= ambientCol;
 				float3 diffuseAdjusted = diffuse * shadingAdjustment;
-
 
 				//Final combine with drawn lines
 				float3 coolVal = -diffuseAdjusted * detailMaskAdjusted.x + 1;
@@ -177,8 +178,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				diffuseAdjusted = 0.5 < _LineColorG.a ? someValue : diffuseAdjusted;
 				diffuseAdjusted = saturate(diffuseAdjusted) * bodyShine;
 				
-				float3 invertShadingAdjustment = 1 - shadingAdjustment;
-				shadingAdjustment = shadowExtend * invertShadingAdjustment + shadingAdjustment;
+				shadingAdjustment = shadowExtend * (1 - shadingAdjustment) + shadingAdjustment;
 				specularDiffuse = specularDiffuse * shadingAdjustment - diffuseAdjusted;
 
 				float lineMaskB = lineMask.z * 0.5 + 0.5;
@@ -189,9 +189,13 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				lineWidth = min(lineWidth, lineMaskB) - 1;
 				lineWidth = _linetexon * lineWidth + 1.0;
 
-
 				float3 finalCol = (lineWidth * specularDiffuse + diffuseAdjusted);
-
+				
+				float3 hsl = RGBtoHSL(finalCol);
+				hsl.x = hsl.x + _ShadowHSV.x;
+				hsl.y = hsl.y + _ShadowHSV.y;
+				hsl.z = hsl.z + _ShadowHSV.z;
+				finalCol = lerp(HSLtoRGB(hsl), finalCol, saturate(shadowAttenuation + 0.5));
 
 				finalCol = lerp(finalCol, bodyFresCol, _KKPRimColor.a * bodyFres * (1 - _KKPRimAsDiffuse));
 
@@ -199,7 +203,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float4 emission = GetEmission(i.uv0);
 				finalCol = finalCol * (1 - emission.a) + (emission.a*emission.rgb);
 
-				return float4(finalCol, 1);
+				return float4(finalCol, 1); 
 			}
 
 

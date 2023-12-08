@@ -82,12 +82,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ReflectMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ReflectionMapCap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AdjustBackfaceNormals: 0
     - _BumpScale: 1
+    - _CullOption: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DisableMapLights: 0
@@ -114,6 +120,9 @@ Material:
     - _ReflBlendDst: 0
     - _ReflBlendSrc: 2
     - _ReflBlendVal: 1
+    - _ReflectColAlphaOpt: 0
+    - _ReflectColColorOpt: 0
+    - _ReflectRotation: 0
     - _ReflectionVal: 1
     - _Roughness: 0.75
     - _ShadowExtend: 0.5
@@ -146,5 +155,7 @@ Material:
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
     - _KKPRimColor: {r: 1, g: 1, b: 1, a: 1}
     - _LineColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _ReflectCol: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0.628, g: 0.628, b: 0.628, a: 1}
+    - _ShadowHSV: {r: 0, g: 0, b: 0, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}

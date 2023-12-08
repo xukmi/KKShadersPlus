@@ -187,6 +187,7 @@ Material:
     - _LiquidTiling: {r: 0, g: 0, b: 2, a: 2}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowHSV: {r: 0, g: 0, b: 0, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _overcolor1: {r: 1, g: 1, b: 1, a: 1}
     - _overcolor2: {r: 1, g: 1, b: 1, a: 1}

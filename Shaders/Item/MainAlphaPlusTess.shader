@@ -13,6 +13,7 @@ Shader "xukmi/MainAlphaPlusTess"
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,1)
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
 		_SpecularPower ("Specular Power", Range(0, 1)) = 0
@@ -45,12 +46,13 @@ Shader "xukmi/MainAlphaPlusTess"
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
-		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
+		[Enum(Off,0,On,1,Smooth,2)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
 		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 2
 		_LineWidthS ("LineWidthS", Float) = 1
 		_Reflective("Reflective", Range(0, 1)) = 0.75
+		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
 		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
@@ -80,7 +82,14 @@ Shader "xukmi/MainAlphaPlusTess"
 		_ShrinkVal("ShrinkVal", Range(0, 1)) = 1
 		_ShrinkVerticalAdjust("Vertical Pos", Range(-1, 1)) = 0
 		_Clock ("W is for displacement multiplier for animation", Vector) = (0,0,0,1)
-		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		
+		_ReflectColAlphaOpt ("Reflection Color Alpha Method", Range(0,1)) = 0
+		_ReflectColColorOpt ("Reflection Color Coloring Method", Range(0,1)) = 0
+		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
+		_ReflectMapDetail ("Reflect Body Mask/Map", 2D) = "white" {}
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
 	}
 	SubShader
 	{

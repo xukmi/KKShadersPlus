@@ -101,6 +101,4 @@ float GetShadowAttenuation(Varyings i, float vertexLightingShadowAtten, float3 n
 
 }
 
-
-
 #endif

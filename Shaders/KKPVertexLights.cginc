@@ -69,7 +69,7 @@ float4 GetVertexLighting(inout KKVertexLight lights[4], float3 normal){
 		finalOutput.rgb += lightCol;
 		finalOutput.a += saturate(MaxGrayscale(lightCol));
 	}
-	finalOutput.rgb = max(0.0, finalOutput.rgb);
+	finalOutput.rgb = clamp(finalOutput.rgb, 0.0, 1.0);
 	return finalOutput;
 }
 

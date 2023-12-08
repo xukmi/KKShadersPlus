@@ -13,6 +13,7 @@ Shader "xukmi/MainAlphaPlus"
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,1)
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
 		_SpecularPower ("Specular Power", Range(0, 1)) = 0
@@ -45,12 +46,13 @@ Shader "xukmi/MainAlphaPlus"
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
-		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
+		[Enum(Off,0,On,1,Smooth,2)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
 		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 2
 		_LineWidthS ("LineWidthS", Float) = 1
 		_Reflective("Reflective", Range(0, 1)) = 0.75
+		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
 		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
@@ -65,7 +67,14 @@ Shader "xukmi/MainAlphaPlus"
 		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
-		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		
+		_ReflectColAlphaOpt ("Reflection Color Alpha Method", Range(0,1)) = 0
+		_ReflectColColorOpt ("Reflection Color Coloring Method", Range(0,1)) = 0
+		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
+		_ReflectMapDetail ("Reflect Body Mask/Map", 2D) = "white" {}
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
 	}
 	SubShader
 	{
@@ -92,6 +101,7 @@ Shader "xukmi/MainAlphaPlus"
 			Varyings vert (VertexData v)
 			{
 				Varyings o;
+				
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 				float3 viewDir = _WorldSpaceCameraPos.xyz - o.posWS.xyz;
 				float viewVal = dot(viewDir, viewDir);
@@ -292,7 +302,7 @@ Shader "xukmi/MainAlphaPlus"
 			float _alpha_a;
 			float _alpha_b;
 			float _Cutoff;
-			bool _AlphaOptionCutoff;
+			int _AlphaOptionCutoff;
 
             struct v2f { 
 				float2 uv0 : TEXCOORD1;

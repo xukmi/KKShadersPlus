@@ -16,7 +16,7 @@ float3 CreateBinormal (float3 normal, float3 tangent, float binormalSign) {
 		(binormalSign * unity_WorldTransformParams.w);
 }
 
-float3 NormalAdjust(Varyings i, float3 finalCombinedNormal){
+float3 NormalAdjust(Varyings i, float3 finalCombinedNormal, int faceDir = 0){
 	float3 normal = finalCombinedNormal;
 
 	float3 binormal = CreateBinormal(i.normalWS, i.tanWS.xyz, i.tanWS.w);
@@ -27,9 +27,8 @@ float3 NormalAdjust(Varyings i, float3 finalCombinedNormal){
 	);
 
 	//This give some items correct shading on backfaces but messes up mirror shading
-	//float3 adjustedNormal = float3(normal.x, normal.y, normal.z * (faceDir <= 0 ? -1 : 1));
-
-	return normal;
+	int adjust = int(floor(_AdjustBackfaceNormals));
+	return adjust ? normal * (faceDir <= 0 ? -1 : 1) : normal;
 }
 
 #endif

@@ -77,6 +77,7 @@
 
 	float4 _SpecularColor;
 	float4 _ShadowColor;
+	float4 _ShadowHSV;
 	float _SpeclarHeight;
 	float _ShadowExtend;
 
@@ -86,8 +87,11 @@
 	float _linewidthG; 
 	float4 _ambientshadowG;
 	
+	float _AdjustBackfaceNormals;
 	float _DisablePointLights;
 	float _DisableShadowedMatcap;
+	int _CullOption;
+	float _Cutoff;
 	
 	// Required for Matcap light-masking
 	sampler2D _NormalMask;

@@ -18,9 +18,11 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
         t * x * z - s * y,  t * y * z + s * x,  t * z * z + c
     );
 }
+
 			fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target{
 				//Clips based on alpha texture
 				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				
 				AlphaClip(i.uv0, mainTex.a);
 
 				float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
@@ -30,7 +32,6 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float3 diffuse = mainTex.rgb;
 				float3 shadingAdjustment = ShadeAdjust(diffuse);
 				float3 normal = GetNormal(i);
-
 
 
 
@@ -277,7 +278,14 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				lineWidth = exp2(lineWidth);
 
 				finalDiffuse = lineWidth * finalDiffuse + diffuse;
-				finalDiffuse = GetBlendReflections(finalDiffuse, normal, viewDir, kkMetalMap);
+				
+				float3 hsl = RGBtoHSL(finalDiffuse);
+				hsl.x = hsl.x + _ShadowHSV.x;
+				hsl.y = hsl.y + _ShadowHSV.y;
+				hsl.z = hsl.z + _ShadowHSV.z;
+				finalDiffuse = lerp(HSLtoRGB(hsl), finalDiffuse, saturate(finalRamp + 0.5));
+				
+				finalDiffuse = GetBlendReflections(i, finalDiffuse, normal, viewDir, kkMetalMap, finalRamp);
 
 				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
 
@@ -285,9 +293,21 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
 
                 float alpha = 1;
+				
             #ifdef ALPHA_SHADER
                 alpha = mainTex.a * _Alpha;
             #endif
-				return float4(finalDiffuse, alpha );
+			
+				float2 maskUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
+				float alphaMask = tex2D(_AlphaMask, maskUV).r;
+				
+				if (alphaMask < _Cutoff && _AlphaOptionCutoff) discard;
+				
+				alphaMask = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2);
+				alpha *= alphaMask;
+				
+				if (alpha <= 0) discard;
+				
+				return float4(finalDiffuse, alpha);
 			}
 #endif

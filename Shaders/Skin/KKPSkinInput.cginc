@@ -91,6 +91,7 @@
 	float _rimpower;
 	float _rimV;
 	float4 _SpecularColor;
+	float4 _ShadowHSV;
 	float _SpeclarHeight;
 	float _SpecularPower;
 	float _SpecularPowerNail;
@@ -113,6 +114,7 @@
 
 	float _LineWidthS;
 	bool _OutlineOn;
+	
 	//Global light params set by KK 
 	float4 _LineColorG;
 	float _linewidthG; 
@@ -120,6 +122,7 @@
 	float _FaceShadowG;
 	float _FaceNormalG;
 	
+	float _AdjustBackfaceNormals;
 	float _DisablePointLights;
 	float _DisableShadowedMatcap;
 

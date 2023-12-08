@@ -38,12 +38,6 @@ Varyings vert (VertexData v)
 #endif
 	return o;
 }
-			
-
-float3 CreateBinormal (float3 normal, float3 tangent, float binormalSign) {
-	return cross(normal, tangent.xyz) *
-		(binormalSign * unity_WorldTransformParams.w);
-}
 
 float3x3 AngleAxis3x3(float angle, float3 axis)
 {
@@ -64,9 +58,9 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 {
+	
 	float3 viewDir = normalize(_WorldSpaceCameraPos - i.posWS);
 	float3 worldLight = normalize(_WorldSpaceLightPos0.xyz); //Directional light
-
 	float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 	float alpha = AlphaClip(i.uv0, mainTex.a);
 	float3 diffuse = GetDiffuse(i.uv0) * mainTex.rgb;
@@ -74,23 +68,17 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	float3 ambientShadowExtendAdjust;
 	AmbientShadowAdjust(ambientShadowExtendAdjust);
 
-	float2 normalUV = i.uv0 * _NormalMap_ST.xy + _NormalMap_ST.zw;
-	float3 normal = UnpackScaleNormal(tex2D(_NormalMap, normalUV), _NormalMapScale);
+	float3 normal = GetNormal(i);
 
-	float3 binormal = CreateBinormal(i.normalWS, i.tanWS.xyz, i.tanWS.w);
-	normal = normalize(
-		normal.x * i.tanWS +
-		normal.y * binormal +
-		normal.z * i.normalWS
-	);
-	float3 adjustedNormal = normalize(normal);
-
+	float3 adjustedNormal = NormalAdjust(i, normal, frontFace);
+	
+	
 
 	float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
 	float3x3 rotY = AngleAxis3x3(_KKPRimRotateY, float3(1, 0, 0));
 	float3 adjustedViewDir = frontFace == 1 ? viewDir : -viewDir;
 	float3 rotView = mul(adjustedViewDir, mul(rotX, rotY));
-	float kkpFres = max(0.1, dot(normal, rotView));
+	float kkpFres = max(0.1, dot(adjustedNormal, rotView));
 	kkpFres = saturate(pow(1-kkpFres, _KKPRimSoft) * _KKPRimIntensity);
 	_KKPRimColor.a *= (_UseKKPRim);
 	float3 kkpFresCol = kkpFres * _KKPRimColor;
@@ -238,6 +226,12 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	shading = (_LightColor0.xyz + vertexLighting.rgb * vertexLightRamp)* float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 	shading = max(shading, _ambientshadowG.rgb);
 	finalDiffuse *= shading;
+	
+	float3 hsl = RGBtoHSL(finalDiffuse);
+	hsl.x = hsl.x + _ShadowHSV.x;
+	hsl.y = hsl.y + _ShadowHSV.y;
+	hsl.z = hsl.z + _ShadowHSV.z;
+	finalDiffuse = lerp(HSLtoRGB(hsl), finalDiffuse, saturate(shadowMasked + 0.5));
 
 	finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
 

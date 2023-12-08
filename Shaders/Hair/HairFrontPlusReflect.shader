@@ -21,9 +21,10 @@
 		[Gamma]_SpecularColor ("SpecularColor", Vector) = (1.0,1.0,1.0,1.0)
 		[Gamma]_LineColor ("LineColor", Vector) = (0.5,0.5,0.5,1)
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		_NormalMapScale ("NormalMapScale", Float) = 1
-		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
+		_Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _SpecularIsHighlights ("Specular is highlight", Float) = 0
@@ -50,13 +51,21 @@
 		_ReflectMap ("Reflect Body Map", 2D) = "white" {}
 		_Roughness ("Roughness", Range(0, 1)) = 0.75
 		_ReflectionVal ("ReflectionVal", Range(0, 1)) = 1.0
+		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
 		_ReflectionMapCap ("Matcap", 2D) = "white" {}
 		_UseMatCapReflection ("Use Matcap or Env", Range(0, 1)) = 1.0
 		_ReflBlendSrc ("Reflect Blend Src", Float) = 2.0
 		_ReflBlendDst ("Reflect Blend Dst", Float) = 0.0
 		_ReflBlendVal ("Reflect Blend Val", Range(0, 1)) = 1.0
-		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		_ReflectColAlphaOpt ("Reflection Color Alpha Method", Range(0,1)) = 0
+		_ReflectColColorOpt ("Reflection Color Coloring Method", Range(0,1)) = 0
+		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
+		_ReflectMask ("Reflect Body Mask", 2D) = "white" {}
+		
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
 		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 		
 	}
 	SubShader
@@ -163,7 +172,7 @@
 			LOD 600
 			Tags { "LightMode" = "ForwardBase" "Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
-			Cull Off
+			Cull [_CullOption]
 			Stencil {
 				Ref 2
 				Comp NotEqual
@@ -189,6 +198,7 @@
 
 			#include "KKPHairInput.cginc"
 			#include "KKPHairDiffuse.cginc"
+			#include "KKPHairNormals.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
@@ -205,19 +215,28 @@
 		Pass{
 			Name "Reflect"
 			LOD 600
-			Tags { "LightMode" = "Always" "Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ForwardBase" "Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Blend [_ReflBlendSrc] [_ReflBlendDst]
 			CGPROGRAM
 			#pragma target 3.0
 			#pragma vertex vert
 			#pragma fragment reflectfrag
+			
+			#pragma multi_compile _ VERTEXLIGHT_ON
+			#pragma multi_compile _ SHADOWS_SCREEN
+			
+			#define KKP_EXPENSIVE_RAMP
 
+			//Unity Includes
 			#include "UnityCG.cginc"
+			#include "AutoLight.cginc"
 			#include "Lighting.cginc"
+			
 			#include "KKPHairInput.cginc"
 			#include "KKPHairDiffuse.cginc"
 			#include "KKPHairNormals.cginc"
 			#include "../KKPVertexLights.cginc"
+			#include "../KKPVertexLightsSpecular.cginc"
 			
 			#include "KKPHairReflect.cginc"
 
@@ -255,10 +274,12 @@
 
 			#include "UnityCG.cginc"
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			sampler2D _AlphaMask;
-			float4 _AlphaMask_ST;
+			#include "KKPHairInput.cginc"
+
+			//sampler2D _MainTex;
+			//float4 _MainTex_ST;
+			//sampler2D _AlphaMask;
+			//float4 _AlphaMask_ST;
 
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
@@ -280,7 +301,7 @@
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
 				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
 				float alphaVal = alphaMask.x * mainTex.a;
-				float clipVal = (alphaVal.x - 0.5) < 0.0f;
+				float clipVal = (alphaVal.x - _Cutoff) < 0.0f;
 				if(clipVal * int(0xffffffffu) != 0)
 					discard;
 

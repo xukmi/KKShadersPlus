@@ -27,7 +27,7 @@
 	bool _UseRampForSpecular;
 	bool _UseRampForShadows;
 	bool _UseLightColorSpecular;
-	bool _AlphaOptionCutoff;
+	int _AlphaOptionCutoff;
 	bool _OutlineOn;
 	bool _UseDetailRAsSpecularMap;
 	bool _UseKKPRim;
@@ -87,6 +87,7 @@
 	float _rimpower;
 	float _rimV;
 	float4 _SpecularColor;
+	float4 _ShadowHSV;
 	float _SpeclarHeight;
 	float _SpecularPower;
 	float _SpecularPowerNail;
@@ -107,6 +108,7 @@
 	float4 _TimeEditor;
 	
 	float _DisablePointLights;
+	float _AdjustBackfaceNormals;
 	
 #ifndef DEFINED_CLOCK
 #define DEFINED_CLOCK

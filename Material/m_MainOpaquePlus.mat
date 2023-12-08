@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: m_MainOpaquePlus
   m_Shader: {fileID: 4800000, guid: cda6df87290298e42b14e58918dd2209, type: 3}
-  m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _USELIGHTCOLORSPECULAR_ON
+  m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _NOTUSETEXSPECULAR_ON _USELIGHTCOLORSPECULAR_ON
     _USERAMPFORLIGHTS_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -141,6 +141,9 @@ Material:
     - _DetailNormalMapScale: 1
     - _DetailRLineR: 0
     - _DisableMapLights: 0
+    - _DisablePointLights: 0
+    - _DisableShadoweMatcap: 0
+    - _DisableShadowedMatcap: 0
     - _DisplaceFull: 0
     - _DisplaceMultiplier: 0
     - _DisplaceNormalMultiplier: 1
@@ -165,7 +168,7 @@ Material:
     - _ReflBlendSrc: 2
     - _ReflBlendVal: 1
     - _ReflectionVal: 1
-    - _Reflective: 0.75
+    - _Reflective: 1
     - _ReflectiveBlend: 0.05
     - _ReflectiveMulOrAdd: 1
     - _Roughness: 0.75
@@ -209,7 +212,7 @@ Material:
     - _nip: 0
     - _nip_specular: 0.5
     - _nipsize: 0.5
-    - _notusetexspecular: 0
+    - _notusetexspecular: 1
     - _rimV: 0.75
     - _rimpower: 0.5
     - _tex1mask: 0
@@ -225,6 +228,7 @@ Material:
     - _LineColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _LiquidTiling: {r: 0, g: 0, b: 2, a: 2}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
+    - _ReflectCol: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0.628, g: 0.628, b: 0.628, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _overcolor1: {r: 1, g: 1, b: 1, a: 1}

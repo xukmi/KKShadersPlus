@@ -8,10 +8,12 @@
 		_NormalMapDetail ("Normal Map Detail", 2D) = "bump" {}
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
+		_AlphaMask ("Alpha Mask", 2D) = "white" {}
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_SpecularColor ("Specular Color", Color) = (1,1,1,1)
 		_SpecularPower ("Specular Power", Range(0, 1)) = 0
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
@@ -39,11 +41,12 @@
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
 		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
-		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
+		[Enum(Off,0,On,1,Smooth,2)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 2
 		_Alpha ("AlphaValue", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		_Reflective("Reflective", Range(0, 1)) = 0.75
+		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
 		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
@@ -56,7 +59,14 @@
 		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
-		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		
+		_ReflectColAlphaOpt ("Reflection Color Alpha Method", Range(0,1)) = 0
+		_ReflectColColorOpt ("Reflection Color Coloring Method", Range(0,1)) = 0
+		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
+		_ReflectMapDetail ("Reflect Body Mask/Map", 2D) = "white" {}
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
 	}
 	SubShader
 	{
@@ -83,6 +93,7 @@
 			Varyings vert (VertexData v)
 			{
 				Varyings o;
+				
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 				float3 viewDir = _WorldSpaceCameraPos.xyz - o.posWS.xyz;
 				float viewVal = dot(viewDir, viewDir);
@@ -425,7 +436,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 		
 				KKVertexLight vertexLights[4];
 			#ifdef VERTEXLIGHT_ON
-				GetVertexLights(vertexLights, i.posWS);	
+				GetVertexLightsTwo(vertexLights, i.posWS, _DisablePointLights);	
 			#endif
 				float4 vertexLighting = 0.0;
 				float vertexLightRamp = 1.0;
@@ -545,15 +556,31 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 				float3 finalDiffuse = detailLineShadow * diffuse + shadingAdjustment;
 				finalDiffuse += specularCol;
+				
+				float3 hsl = RGBtoHSL(finalDiffuse);
+				hsl.x = hsl.x + _ShadowHSV.x;
+				hsl.y = hsl.y + _ShadowHSV.y;
+				hsl.z = hsl.z + _ShadowHSV.z;
+				finalDiffuse = lerp(HSLtoRGB(hsl), finalDiffuse, saturate(finalRamp + 0.5));
 			
-				finalDiffuse = GetBlendReflections(finalDiffuse, normal, viewDir, kkMetalMap);
+				finalDiffuse = GetBlendReflections(i, finalDiffuse, normal, viewDir, kkMetalMap, finalRamp);
 
 				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
 
 				float4 emission = GetEmission(i.uv0);
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
 
-				return float4(finalDiffuse, mainTex.a * _Alpha);
+				float2 maskUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
+				float alphaMask = tex2D(_AlphaMask, maskUV).r;
+				
+				if (alphaMask < _Cutoff && _AlphaOptionCutoff) discard;
+				
+				alphaMask = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2);
+                float alpha = mainTex.a * _Alpha * alphaMask;
+				
+				if (alpha <= 0) discard;
+
+				return float4(finalDiffuse, alpha);
 
 
 			}
@@ -586,6 +613,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 			float _alpha_a;
 			float _alpha_b;
+			float _Cutoff;
 
 
             struct v2f { 
@@ -610,7 +638,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);
 				alphaVal *= mainTexAlpha;
-				alphaVal.x -= 0.5f;
+				alphaVal.x -= _Cutoff;
 				float clipVal = alphaVal.x < 0.0f;
 				if(clipVal * int(0xffffffffu) != 0)
 					discard;
