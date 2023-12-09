@@ -173,7 +173,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 					hlslcc_movcTemp.x = (compTest.x) ? diffuseShaded.x : shadingAdjustment.x;
 					hlslcc_movcTemp.y = (compTest.y) ? diffuseShaded.y : shadingAdjustment.y;
 					hlslcc_movcTemp.z = (compTest.z) ? diffuseShaded.z : shadingAdjustment.z;
-					float3 shadowCol = lerp(1, _ShadowColor.rgb, 1 - saturate(_ShadowColor.a));
+					float3 shadowCol = lerp(1, _ShadowColor.rgb+1E-06, 1 - saturate(_ShadowColor.a+1E-06));
 					shadingAdjustment = saturate(hlslcc_movcTemp * shadowCol);
 				}
 
@@ -285,7 +285,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				hsl.z = hsl.z + _ShadowHSV.z;
 				finalDiffuse = lerp(HSLtoRGB(hsl), finalDiffuse, saturate(finalRamp + 0.5));
 				
-				finalDiffuse = GetBlendReflections(i, finalDiffuse, normal, viewDir, kkMetalMap, finalRamp);
+				finalDiffuse = GetBlendReflections(i, max(finalDiffuse, 1E-06), normal, viewDir, kkMetalMap, finalRamp);
 
 				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
 
@@ -295,19 +295,15 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
                 float alpha = 1;
 				
             #ifdef ALPHA_SHADER
-                alpha = mainTex.a * _Alpha;
-            #endif
-			
 				float2 maskUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
 				float alphaMask = tex2D(_AlphaMask, maskUV).r;
 				
-				if (alphaMask < _Cutoff && _AlphaOptionCutoff) discard;
-				
 				alphaMask = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2);
-				alpha *= alphaMask;
+				alpha *= alphaMask * mainTex.a * _Alpha;
 				
 				if (alpha <= 0) discard;
+			#endif
 				
-				return float4(finalDiffuse, alpha);
+				return float4(max(finalDiffuse, 1E-06), alpha);
 			}
 #endif

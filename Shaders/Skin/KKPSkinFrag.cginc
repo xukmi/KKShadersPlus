@@ -135,7 +135,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 					hlslcc_movcTemp.x = (compTest.x) ? diffuseShaded.x : shadingAdjustment.x;
 					hlslcc_movcTemp.y = (compTest.y) ? diffuseShaded.y : shadingAdjustment.y;
 					hlslcc_movcTemp.z = (compTest.z) ? diffuseShaded.z : shadingAdjustment.z;
-					float3 shadowCol = lerp(1, _ShadowColor.rgb, 1 - saturate(_ShadowColor.a));
+					float3 shadowCol = lerp(1, _ShadowColor.rgb+1E-06, 1 - saturate(_ShadowColor.a+1E-06));
 					shadingAdjustment = saturate(hlslcc_movcTemp * shadowCol);
 				}
 				
@@ -203,7 +203,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float4 emission = GetEmission(i.uv0);
 				finalCol = finalCol * (1 - emission.a) + (emission.a*emission.rgb);
 
-				return float4(finalCol, 1); 
+				return float4(max(finalCol,1E-06), 1); 
 			}
 
 

@@ -9,9 +9,11 @@ float _DisableShadowedMatcap;
 float _Reflective;
 float _ReflectiveBlend;
 float _ReflectiveMulOrAdd;
+float _ReflectiveOverlayed;
 
 float _UseMatCapReflection;
 sampler2D _ReflectionMapCap;
+float4 _ReflectionMapCap_ST;
 
 float _ReflectRotation;
 sampler2D _ReflectMapDetail;
@@ -35,7 +37,8 @@ float3 GetBlendReflections(Varyings i, float3 diffuse, float3 normal, float3 vie
 	float3 env = DecodeHDR(envSample, unity_SpecCube0_HDR) * _ReflectiveBlend;
 
 	float3 viewNormal = mul((float3x3)UNITY_MATRIX_V, normal);
-	float2 matcapUV = rotateUV(viewNormal.xy * 0.5 + 0.5, float2(0.5, 0.5), radians(_ReflectRotation));
+	float2 matcapUV = viewNormal.xy * 0.5 * _ReflectionMapCap_ST.xy + 0.5 + _ReflectionMapCap_ST.zw;
+	matcapUV = rotateUV(matcapUV, float2(0.5, 0.5), radians(_ReflectRotation));
 	float reflectMask = tex2D(_ReflectMapDetail, (i.uv0 *_ReflectMapDetail_ST.xy) + _ReflectMapDetail_ST.zw).g;
 	
 	float4 matcap = tex2D(_ReflectionMapCap, matcapUV) * _ReflectiveBlend;
@@ -50,9 +53,12 @@ float3 GetBlendReflections(Varyings i, float3 diffuse, float3 normal, float3 vie
 	//Yes, this is dumb
 	float3 envMul = env * diffuse;
 	float3 envAdd = env + diffuse; 
-	env = lerp(envMul, envAdd, _ReflectiveMulOrAdd);
+	float3 envNormal = lerp(envMul, envAdd, _ReflectiveMulOrAdd);
+	float3 envOverlayed = env*_ReflectiveBlend + (1-_ReflectiveBlend)*diffuse;
+	env = lerp(envNormal,envOverlayed,_ReflectiveOverlayed);
+	
 	diffuse = lerp(diffuse, env, (metallicMap) * (1 - _UseKKMetal) * matCapAttenuation * reflectMap);
-	return diffuse;
+	return max(diffuse, 1E-06);
 }
 
 #endif

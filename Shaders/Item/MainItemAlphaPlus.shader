@@ -8,7 +8,6 @@
 		_NormalMapDetail ("Normal Map Detail", 2D) = "bump" {}
 		_DetailMask ("Detail Mask", 2D) = "black" {}
 		_LineMask ("Line Mask", 2D) = "black" {}
-		_AlphaMask ("Alpha Mask", 2D) = "white" {}
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
@@ -67,6 +66,7 @@
 		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
 		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
 		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		[Enum(Off,0,On,1)]_ReflectiveOverlayed ("Reflections Overlayed", Float) = 0.0
 	}
 	SubShader
 	{
@@ -196,7 +196,7 @@
 					hlslcc_movcTemp.x = (compTest.x) ? diffuseShaded.x : shadingAdjustment.x;
 					hlslcc_movcTemp.y = (compTest.y) ? diffuseShaded.y : shadingAdjustment.y;
 					hlslcc_movcTemp.z = (compTest.z) ? diffuseShaded.z : shadingAdjustment.z;
-					float3 shadowCol = lerp(1, _ShadowColor.rgb, 1 - saturate(_ShadowColor.a));
+					float3 shadowCol = lerp(1, _ShadowColor.rgb+1E-06, 1 - saturate(_ShadowColor.a+1E-06));
 					shadingAdjustment = saturate(hlslcc_movcTemp * shadowCol);
 				}
 				float shadowExtendAnother = 1 - _ShadowExtendAnother;
@@ -563,7 +563,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				hsl.z = hsl.z + _ShadowHSV.z;
 				finalDiffuse = lerp(HSLtoRGB(hsl), finalDiffuse, saturate(finalRamp + 0.5));
 			
-				finalDiffuse = GetBlendReflections(i, finalDiffuse, normal, viewDir, kkMetalMap, finalRamp);
+				finalDiffuse = GetBlendReflections(i, max(finalDiffuse, 1E-06), normal, viewDir, kkMetalMap, finalRamp);
 
 				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
 
@@ -572,15 +572,12 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 				float2 maskUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
 				float alphaMask = tex2D(_AlphaMask, maskUV).r;
-				
-				if (alphaMask < _Cutoff && _AlphaOptionCutoff) discard;
-				
 				alphaMask = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2);
                 float alpha = mainTex.a * _Alpha * alphaMask;
 				
 				if (alpha <= 0) discard;
 
-				return float4(finalDiffuse, alpha);
+				return float4(max(finalDiffuse,1E-06), alpha);
 
 
 			}

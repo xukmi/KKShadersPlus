@@ -2,7 +2,7 @@
 <manifest schema-ver="1">
   <guid>xukmi.Shaders.VanillaPlus</guid>
   <name>Vanilla Plus</name>
-  <version>1.4.2</version>
+  <version>1.4.3</version>
   <author>xukmi</author>
   <description>Vanilla KK Shaders with more features</description>
   <website>https://www.pixiv.net/en/users/66587336</website>
@@ -892,7 +892,6 @@
     </Shader>
     <Shader Name="xukmi/MainItemPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemPlus">
       <Property Name="AnotherRamp" Type="Texture" />
-	  <Property Name="AlphaMask" Type="Texture" />
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="LineMask" Type="Texture" />
       <Property Name="MainTex" Type="Texture" />
@@ -956,7 +955,6 @@
     </Shader>
     <Shader Name="xukmi/MainItemAlphaPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemAlphaPlus">
       <Property Name="AnotherRamp" Type="Texture" />
-	  <Property Name="AlphaMask" Type="Texture" />
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="LineMask" Type="Texture" />
       <Property Name="MainTex" Type="Texture" />

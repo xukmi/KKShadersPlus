@@ -170,13 +170,13 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	finalAmbientShadow = saturate(finalAmbientShadow);
 	float3 invertFinalAmbientShadow = 1 - finalAmbientShadow;
 
-	finalAmbientShadow = finalAmbientShadow * _ShadowColor.xyz;
+	finalAmbientShadow = finalAmbientShadow * (_ShadowColor.xyz+1E-06);
 	finalAmbientShadow += finalAmbientShadow;
-	float3 shadowCol = _ShadowColor - 0.5;
+	float3 shadowCol = _ShadowColor+1E-06 - 0.5;
 	shadowCol = -shadowCol * 2 + 1;
 
 	invertFinalAmbientShadow = -shadowCol * invertFinalAmbientShadow + 1;
-	bool3 shadeCheck = 0.5 < _ShadowColor.xyz;
+	bool3 shadeCheck = 0.5 < (_ShadowColor.xyz+1E-06);
 	{
 	    float3 hlslcc_movcTemp = finalAmbientShadow;
 	    hlslcc_movcTemp.x = (shadeCheck.x) ? invertFinalAmbientShadow.x : finalAmbientShadow.x;
@@ -239,7 +239,7 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	float4 emission = GetEmission(i.uv0);
 	finalDiffuse = finalDiffuse * (1 - emission.a) +  (emission.a * emission.rgb);
 
-	return float4(finalDiffuse, alpha);
+	return float4(max(finalDiffuse,1E-06), alpha);
 }
 
 #endif

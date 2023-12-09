@@ -3,6 +3,7 @@
 			sampler2D _ReflectMap;
 			float4 _ReflectMap_ST;
 			sampler2D _ReflectionMapCap;
+			float4 _ReflectionMapCap_ST;
 			float _Roughness;
 			float _ReflectionVal;
 			float _UseMatCapReflection;
@@ -89,7 +90,8 @@
 				float3 env = DecodeHDR(envSample, unity_SpecCube0_HDR);
 
 				float3 viewNormal = mul((float3x3)UNITY_MATRIX_V, normal);
-				float2 matcapUV = rotateUV(viewNormal.xy * 0.5 + 0.5, float2(0.5, 0.5), radians(_ReflectRotation));
+				float2 matcapUV = viewNormal.xy * 0.5 * _ReflectionMapCap_ST.xy + 0.5 + _ReflectionMapCap_ST.zw;
+				matcapUV = rotateUV(matcapUV, float2(0.5, 0.5), radians(_ReflectRotation));
 				float reflectMask = tex2D(_ReflectMask, i.uv0).r;
 				
 				float4 matcap = tex2D(_ReflectionMapCap, matcapUV);
@@ -120,7 +122,7 @@
 
 				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal * matcapAttenuation * matcap.a * reflectMap);
 			
-				return float4(reflCol, _ReflectionVal*reflectMap);
+				return float4(max(reflCol, 1E-06), _ReflectionVal*reflectMap);
 			}
 
 #endif
