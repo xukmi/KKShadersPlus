@@ -205,7 +205,6 @@
 			Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
 			Cull Off
 
-
 			CGPROGRAM
 			#pragma target 3.0
 
@@ -220,7 +219,6 @@
 			#include "UnityCG.cginc"
 			#include "AutoLight.cginc"
 			#include "Lighting.cginc"
-
 
 			#include "KKPSkinInput.cginc"
 	
@@ -261,10 +259,8 @@
 				return o;
 			}
 			
-			
 			ENDCG
 		}
-
 		
 		//ShadowCaster
 		Pass

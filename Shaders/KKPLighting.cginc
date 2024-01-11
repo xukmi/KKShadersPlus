@@ -95,10 +95,7 @@ float GetShadowAttenuation(Varyings i, float vertexLightingShadowAtten, float3 n
 	float2 rampUV = blendShadows * _RampG_ST.xy + _RampG_ST.zw;
 	float ramp = tex2D(_RampG, rampUV).x * rampAtten;
 
-
-
     return ramp;
-
 }
 
 #endif
