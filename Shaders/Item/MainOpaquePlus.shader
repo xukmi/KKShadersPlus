@@ -67,14 +67,14 @@ Shader "xukmi/MainOpaquePlus"
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
 		
-		_ReflectColAlphaOpt ("Reflection Color Alpha Method", Range(0,1)) = 0
-		_ReflectColColorOpt ("Reflection Color Coloring Method", Range(0,1)) = 0
+		_ReflectColMix ("Reflection Color Mix Amount", Range(0,1)) = 1
 		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
 		_ReflectMapDetail ("Reflect Body Mask/Map", 2D) = "white" {}
 		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
 		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
 		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
 		[Enum(Off,0,On,1)]_ReflectiveOverlayed ("Reflections Overlayed", Float) = 0.0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
 	}
 	SubShader
 	{
@@ -136,6 +136,7 @@ Shader "xukmi/MainOpaquePlus"
 				if(!_OutlineOn)
 					o.posCS = float4(2,2,2,1);
 				o.uv0 = v.uv0;
+				1;
 				return o;
 			}
 			

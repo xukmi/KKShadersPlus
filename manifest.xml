@@ -2,7 +2,7 @@
 <manifest schema-ver="1">
   <guid>xukmi.Shaders.VanillaPlus</guid>
   <name>Vanilla Plus</name>
-  <version>1.4.3</version>
+  <version>1.4.3.5</version>
   <author>xukmi</author>
   <description>Vanilla KK Shaders with more features</description>
   <website>https://www.pixiv.net/en/users/66587336</website>
@@ -45,6 +45,7 @@
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
@@ -111,6 +112,7 @@
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
@@ -147,8 +149,7 @@
       <Property Name="ReflectCol" Type="Color" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/SkinPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_SkinPlusTess">
@@ -189,6 +190,7 @@
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
@@ -266,6 +268,7 @@
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
@@ -313,8 +316,7 @@
       <Property Name="Clock" Type="Color" DefaultValue="(1, 1, 1, 1)" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/HairPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairPlus">
@@ -337,6 +339,7 @@
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
@@ -387,6 +390,7 @@
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
@@ -425,8 +429,7 @@
 	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/HairFrontPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairFrontPlus">
@@ -450,6 +453,7 @@
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
@@ -509,6 +513,7 @@
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
@@ -546,8 +551,7 @@
 	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/EyePlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyePlus">
@@ -612,6 +616,7 @@
       <Property Name="DetailRLineR" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
@@ -645,8 +650,7 @@
 	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
 	  
     </Shader>
@@ -683,6 +687,7 @@
       <Property Name="DetailRLineR" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
@@ -729,8 +734,7 @@
 	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/MainAlphaPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainAlphaPlus">
@@ -766,6 +770,7 @@
       <Property Name="DetailRLineR" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
@@ -801,8 +806,7 @@
 	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/MainAlphaPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainAlphaPlusTess">
@@ -838,6 +842,7 @@
       <Property Name="DetailRLineR" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
@@ -886,8 +891,7 @@
 	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/MainItemPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemPlus">
@@ -918,6 +922,7 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
@@ -949,8 +954,7 @@
 	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/MainItemAlphaPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemAlphaPlus">
@@ -981,6 +985,7 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
+	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
@@ -1014,8 +1019,7 @@
 	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
 	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
 	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColAlphaOpt" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectColColorOpt" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
 	<Shader Name="xukmi/Debug/WireframeTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_WireframeTess">
@@ -1037,6 +1041,11 @@
       <Property Name="ShrinkVerticalAdjust" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" DefaultValue="(1, 1, 1, 1)" />
     </Shader>
+	<Shader Name="xukmi/ShaderForgeExample" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_ShaderForgeExample">
+	  <Property Name="Diffuse" Type="Texture" />
+	  <Property Name="Normal" Type="Texture" />
+	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
+	</Shader>
   </KK_MaterialEditor>
   <game>Koikatsu</game>
 </manifest>

@@ -81,8 +81,7 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	float kkpFres = max(0.1, dot(adjustedNormal, rotView));
 	kkpFres = saturate(pow(1-kkpFres, _KKPRimSoft) * _KKPRimIntensity);
 	_KKPRimColor.a *= (_UseKKPRim);
-	float3 kkpFresCol = kkpFres * _KKPRimColor;
-	diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse);
+	float3 kkpFresCol = kkpFres * _KKPRimColor + (1 - kkpFres) * diffuse;
 	
 	float fresnel = max(0.0, dot(viewDir, adjustedNormal));
 	float anotherRamp = tex2D(_AnotherRamp, fresnel * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw).x;
@@ -184,13 +183,7 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	    hlslcc_movcTemp.z = (shadeCheck.z) ? invertFinalAmbientShadow.z : finalAmbientShadow.z;
 	    finalAmbientShadow = hlslcc_movcTemp;
 	}
-	finalAmbientShadow = saturate(finalAmbientShadow);
-	float minusAmbientShadow = finalAmbientShadow - 1;
-	minusAmbientShadow = hairGloss * minusAmbientShadow + 1;
-	shadowCol = diffuse * minusAmbientShadow;
-	shadowCol *= finalAmbientShadow;
-	diffuse = diffuse * minusAmbientShadow - shadowCol;
-
+	
 	float shadowAttenuation = saturate(min(ramp, anotherRamp));
 	float rampAdjust = ramp * 0.5 + 0.5;
 	#ifdef SHADOWS_SCREEN
@@ -198,6 +191,16 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 		float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
 		shadowAttenuation *= shadowMap;
 	#endif
+	
+	float rimPlace = lerp(lerp(1 - shadowAttenuation, 1, min(_rimReflectMode+1, 1)), shadowAttenuation, max(0, _rimReflectMode));
+	diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse * rimPlace);
+	
+	finalAmbientShadow = saturate(finalAmbientShadow);
+	float minusAmbientShadow = finalAmbientShadow - 1;
+	minusAmbientShadow = hairGloss * minusAmbientShadow + 1;
+	shadowCol = diffuse * minusAmbientShadow;
+	shadowCol *= finalAmbientShadow;
+	diffuse = diffuse * minusAmbientShadow - shadowCol;
 	
 	float4 detailMask = tex2D(_DetailMask, i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw);
 	float specularMap = _UseDetailRAsSpecularMap ? detailMask.r : 1;
@@ -213,7 +216,7 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	float hairGlossMask = hairGloss2.x * rampAdjust * _GlossColor.a;
 	float3 hairGlossColor = hairGlossMask * _GlossColor.rgb * _GlossColor.a;
 	diffuse = hairGlossColor + saturate(1 - hairGlossMask) * diffuse;
-	float rimVal = invertDetailGB.x * _rimV;
+	float rimVal = invertDetailGB.x * _rimV * rimPlace;
 	rimVal *= invertDetailGB.y;
 
 	float3 finalDiffuse  = saturate(rimVal * ambientShadowExtendAdjust + diffuse) + _UseMeshSpecular * specularColor;
@@ -233,7 +236,7 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	hsl.z = hsl.z + _ShadowHSV.z;
 	finalDiffuse = lerp(HSLtoRGB(hsl), finalDiffuse, saturate(shadowMasked + 0.5));
 
-	finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
+	finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * rimPlace * (1 - _KKPRimAsDiffuse));
 
 	//Overlay Emission over everything
 	float4 emission = GetEmission(i.uv0);

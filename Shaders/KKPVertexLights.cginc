@@ -13,7 +13,6 @@ struct KKVertexLight{
 	float lightValNoAtten;
 };
 
-
 void GetVertexLights(out KKVertexLight lights[4], float3 surfaceWorldPos) {
 	[unroll]
 	for(int i = 0; i < 4; i++){
@@ -25,6 +24,7 @@ void GetVertexLights(out KKVertexLight lights[4], float3 surfaceWorldPos) {
 		kLight.dir = normalize(dir);
 		kLight.col = unity_LightColor[i];
 		float distSqr = max(dot(dir, dir), 0.0001);
+		
 		kLight.atten = 1.0 / (1.0 + unity_4LightAtten0[i] * distSqr);
 		lights[i] = kLight;
 	}
@@ -46,7 +46,6 @@ void GetVertexLightsTwo(out KKVertexLight lights[4], float3 surfaceWorldPos, flo
 	}
 }
 
-
 float LumaGrayscale(float3 col){
 	return col.r * 0.2126 + col.g * 0.7152 + col.b * 0.0722;
 }
@@ -54,7 +53,6 @@ float LumaGrayscale(float3 col){
 float MaxGrayscale(float3 col){
 	return max(col.r, max(col.g, col.b));
 }
-
 
 float4 GetVertexLighting(inout KKVertexLight lights[4], float3 normal){
 	float4 finalOutput = 0;

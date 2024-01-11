@@ -49,7 +49,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float kkpFres = dot(normal, rotView);
 				kkpFres = saturate(pow(1-kkpFres, _KKPRimSoft) * _KKPRimIntensity);
 				_KKPRimColor.a *= (_UseKKPRim);
-				float3 kkpFresCol = kkpFres * _KKPRimColor;
+				float3 kkpFresCol = kkpFres * _KKPRimColor + (1 - kkpFres) * diffuse;
 
 				diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse);
 
@@ -134,6 +134,9 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float drawnShadow = min(lineMask.b, detailMaskAdjust.x);
 				drawnShadow = drawnShadow * (1 - shadowExtend) + shadowExtend;
 				finalRamp *= drawnShadow;
+				
+				float rimPlace = lerp(lerp(1 - finalRamp, 1, min(_rimReflectMode+1, 1)), finalRamp, max(0, _rimReflectMode));
+				diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse * rimPlace);
 
 				float specularHeight = _SpeclarHeight  - 1.0;
 				specularHeight *= 0.800000012;
@@ -244,7 +247,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				rimPow *= rimMask;
 				rimPow = min(max(rimPow, 0.0), 0.60000024);
 				float3 rimCol = rimPow * _SpecularColor.xyz;
-				rimCol *= _rimV * (1-_UseKKPRim);
+				rimCol *= _rimV * rimPlace * (1-_UseKKPRim);
 				
 				float3 diffuseSpecRim = saturate(rimCol * detailMaskAdjust.x + mergedSpecularDiffuse);
 
@@ -287,7 +290,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				
 				finalDiffuse = GetBlendReflections(i, max(finalDiffuse, 1E-06), normal, viewDir, kkMetalMap, finalRamp);
 
-				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
+				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * rimPlace * (1 - _KKPRimAsDiffuse));
 
 				float4 emission = GetEmission(i.uv0);
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
@@ -298,7 +301,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float2 maskUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
 				float alphaMask = tex2D(_AlphaMask, maskUV).r;
 				
-				alphaMask = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2);
+				alphaMask = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2.0);
 				alpha *= alphaMask * mainTex.a * _Alpha;
 				
 				if (alpha <= 0) discard;

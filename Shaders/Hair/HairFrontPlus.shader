@@ -50,6 +50,7 @@
 		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
 		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
 	}
 	SubShader
 	{
@@ -105,7 +106,7 @@
 				u_xlat0.xyz = v.normal.xyz * alpha + v.vertex.xyz;
 				o.posCS = UnityObjectToClipPos(u_xlat0.xyz);
 				o.uv0 = v.uv0;
-
+				1;
 				return o;
 			}
 			

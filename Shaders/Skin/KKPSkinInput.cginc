@@ -125,5 +125,6 @@
 	float _AdjustBackfaceNormals;
 	float _DisablePointLights;
 	float _DisableShadowedMatcap;
+	float _rimReflectMode;
 
 #endif

@@ -70,9 +70,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float bodyFres = fresnel;
 				bodyFres = saturate(pow(1-bodyFres, _KKPRimSoft) * _KKPRimIntensity);
 				_KKPRimColor.a *= (_UseKKPRim);
-				float3 bodyFresCol = bodyFres * _KKPRimColor;
-
-				diffuse = lerp(diffuse, bodyFresCol, _KKPRimColor.a * bodyFres * _KKPRimAsDiffuse);
+				float3 bodyFresCol = bodyFres * _KKPRimColor + (1 - bodyFres) * diffuse;
 
 				//Lighting begins here
 
@@ -98,6 +96,9 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float shadowAttenuation = GetShadowAttenuation(i, vertexLighting.a, normal, worldLightPos, viewDir);
 				shadowExtend = drawnShadows * (1 - shadowExtend) + shadowExtend;
 				shadowAttenuation *= shadowExtend;
+				
+				float rimPlace = lerp(lerp(1 - shadowAttenuation, 1, min(_rimReflectMode+1, 1)), shadowAttenuation, max(0, _rimReflectMode));
+				diffuse = lerp(diffuse, bodyFresCol, _KKPRimColor.a * bodyFres * _KKPRimAsDiffuse * rimPlace);
 
 				//FIGURE OUT BETTER SPECULAR MESH
 				//Specular values
@@ -157,7 +158,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				rimLight = saturate(min(rimLight, detailMaskAdjusted.y));
 				rimLight *= detailMask.x * (1-_UseKKPRim);
 
-				bodyShine = rimLight * _rimV + bodyShine;
+				bodyShine = rimLight * _rimV * rimPlace + bodyShine;
 				bodyShine = bodyShine - specularDiffuse;
 				specularDiffuse = liquidFinalMask * bodyShine + specularDiffuse;
 				
@@ -197,7 +198,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				hsl.z = hsl.z + _ShadowHSV.z;
 				finalCol = lerp(HSLtoRGB(hsl), finalCol, saturate(shadowAttenuation + 0.5));
 
-				finalCol = lerp(finalCol, bodyFresCol, _KKPRimColor.a * bodyFres * (1 - _KKPRimAsDiffuse));
+				finalCol = lerp(finalCol, bodyFresCol, _KKPRimColor.a * rimPlace * bodyFres * (1 - _KKPRimAsDiffuse));
 
 				//Overlay Emission over everything
 				float4 emission = GetEmission(i.uv0);

@@ -57,14 +57,14 @@
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
 		
-		_ReflectColAlphaOpt ("Reflection Color Alpha Method", Range(0,1)) = 0
-		_ReflectColColorOpt ("Reflection Color Coloring Method", Range(0,1)) = 0
+		_ReflectColMix ("Reflection Color Mix Amount", Range(0,1)) = 1
 		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
 		_ReflectMapDetail ("Reflect Body Mask/Map", 2D) = "white" {}
 		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
 		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
 		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
 		[Enum(Off,0,On,1)]_ReflectiveOverlayed ("Reflections Overlayed", Float) = 0.0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
 	}
 	SubShader
 	{
@@ -126,6 +126,7 @@
 				if(!_OutlineOn)
 					o.posCS = float4(2,2,2,1);
 				o.uv0 = v.uv0;
+				1;
 				return o;
 			}
 			
@@ -369,9 +370,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float kkpFres = dot(normal, rotView);
 				kkpFres = saturate(pow(1-kkpFres, _KKPRimSoft) * _KKPRimIntensity);
 				_KKPRimColor.a *= (_UseKKPRim);
-				float3 kkpFresCol = kkpFres * _KKPRimColor;
-
-				diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse);
+				float3 kkpFresCol = kkpFres * _KKPRimColor + (1 - kkpFres) * diffuse;
 
 				//Apparently can rotate?
 				float time = _TimeEditor.y + _Time.y;
@@ -481,6 +480,9 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 					finalRamp *= shadowAttenuation;
 				#endif
 				
+				float rimPlace = lerp(lerp(1 - finalRamp, 1, min(_rimReflectMode+1, 1)), finalRamp, max(0, _rimReflectMode));
+				diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse * rimPlace);
+				
 				diffuseShadow = finalRamp *  diffuseShadowBlended + diffuseShadow;
 				
 				float specularHeight = _SpeclarHeight  - 1.0;
@@ -520,7 +522,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 				float rimPow = _rimpower * 9.0 + 1.0;
 				rimPow = rimPow * fresnel;
-				float rim = saturate(exp2(rimPow) * 2.5 - 0.5) * _rimV;
+				float rim = saturate(exp2(rimPow) * 2.5 - 0.5) * _rimV * rimPlace;
 				float rimMask = detailMask.x * 9.99999809 + -8.99999809;
 				rim *= rimMask;
 
@@ -566,7 +568,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 			
 				finalDiffuse = GetBlendReflections(i, max(finalDiffuse, 1E-06), normal, viewDir, kkMetalMap, finalRamp);
 
-				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * (1 - _KKPRimAsDiffuse));
+				finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * rimPlace * (1 - _KKPRimAsDiffuse));
 
 
 				float4 emission = GetEmission(i.uv0);

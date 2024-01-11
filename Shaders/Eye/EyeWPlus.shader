@@ -60,6 +60,7 @@
 				o.posCS = mul(UNITY_MATRIX_VP, o.posWS);
 				o.normalWS = UnityObjectToWorldNormal(v.normal);
 				o.uv0 = v.uv0;
+				1;
 				return o;
 			}
 
@@ -143,7 +144,7 @@
 		{
 			Name "ShadowCaster"
 			LOD 600
-			Tags { "IgnoerProjector" = "true" "LightMode" = "ShadowCaster" "Queue" = "Transparent--1" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "IgnoerProjector" = "true" "LightMode" = "ShadowCaster" "Queue" = "Transparent-1" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Offset 1, 1
 			Cull Back
 

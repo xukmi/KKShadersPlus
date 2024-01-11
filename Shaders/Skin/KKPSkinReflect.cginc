@@ -11,8 +11,7 @@
 			float _ReflBlendSrc;
 			float _ReflBlendDst;
 			float4 _ReflectCol;
-			float _ReflectColAlphaOpt;
-			float _ReflectColColorOpt;
+			float _ReflectColMix;
 			
 			float _ReflectRotation;
 			sampler2D _ReflectMask;
@@ -106,33 +105,38 @@
 				
 				float4 matcap = tex2D(_ReflectionMapCap, matcapUV);
 				matcap = pow(matcap, 0.454545);
-				float3 matcapRGBcolored = lerp(matcap.rgb * _ReflectCol.rgb, lerp(matcap.rgb, _ReflectCol, 0.5), _ReflectColColorOpt);
-				float3 matcapRGBalphacolored = lerp(lerp(1, matcapRGBcolored, _ReflectCol.a), lerp(matcap.rgb, matcapRGBcolored, _ReflectCol.a), _ReflectColAlphaOpt);
-				env = lerp(env, matcapRGBalphacolored, _UseMatCapReflection * reflectMask);
+				float3 matcapRGBcolored = lerp(matcap.rgb, matcap.rgb * _ReflectCol.rgb, _ReflectColMix);
+				env = lerp(env, matcapRGBcolored, _UseMatCapReflection * reflectMask);
 
+				float alphaLerp = 1;
 				float reflectMulOrAdd = 1.0;
 				float src = floor(_ReflBlendSrc);
 				float dst = floor(_ReflBlendDst);
 				//Add
 				if(src == 1.0 && dst == 1.0){
 					reflectMulOrAdd = 0.0;
+					alphaLerp = _ReflectCol.a;
 				}
 				//Mul
 				else if(src == 2.0 && dst == 0.0){
 					reflectMulOrAdd = 1.0;
+					alphaLerp = _ReflectCol.a;
 				}
+				// Alpha Blend & Premultiplied Alpha
 				else if(dst == 10.0 && (src == 5.0 || src == 1.0)){
 					reflectMulOrAdd = 0.0;
+					env *= _ReflectCol.a;
 				}
 				else {
 					reflectMulOrAdd = _ReflBlendVal;
+					alphaLerp = _ReflectCol.a;
 				}
 				
 				env *= reflectMap * matcapAttenuation * matcap.a;
 
-				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal * matcapAttenuation * matcap.a * reflectMap);
+				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal * matcapAttenuation * matcap.a * alphaLerp);
 			
-				return float4(max(reflCol, 1E-06), _ReflectionVal*reflectMap);
+				return float4(max(reflCol, 1E-06), _ReflectionVal * reflectMap * _ReflectCol.a);
 			}
 
 #endif

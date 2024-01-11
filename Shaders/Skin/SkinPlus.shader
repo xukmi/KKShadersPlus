@@ -66,6 +66,7 @@
 		
 		_DisablePointLights ("Disable Point Lights", Float) = 0.0
 		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
 	}
 	SubShader
 	{
@@ -127,6 +128,7 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
+				111111;
 				return o;
 			}
 			

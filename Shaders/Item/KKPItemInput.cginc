@@ -109,6 +109,7 @@
 	
 	float _DisablePointLights;
 	float _AdjustBackfaceNormals;
+	float _rimReflectMode;
 	
 #ifndef DEFINED_CLOCK
 #define DEFINED_CLOCK

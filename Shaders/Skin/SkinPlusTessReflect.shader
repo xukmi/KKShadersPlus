@@ -73,8 +73,7 @@
 		_ReflBlendDst ("Reflect Blend Dst", Float) = 0.0
 		_ReflBlendVal ("Reflect Blend Val", Range(0, 1)) = 1.0
 		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
-		_ReflectColAlphaOpt ("Reflection Color Alpha Method", Range(0,1)) = 0
-		_ReflectColColorOpt ("Reflection Color Coloring Method", Range(0,1)) = 0
+		_ReflectColMix ("Reflection Color Mix Amount", Range(0,1)) = 1
 		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
 		_ReflectMask ("Reflect Body Mask", 2D) = "white" {}
 
@@ -93,6 +92,7 @@
 		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
 		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
 		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
 	}
 	SubShader
 	{
@@ -164,7 +164,7 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
-				1111;
+				1;
 				return o;
 			}
 			
