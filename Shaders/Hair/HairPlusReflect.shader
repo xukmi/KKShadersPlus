@@ -158,7 +158,6 @@
 			ENDCG
 		}
 		
-
 		//Main Pass
 		Pass
 		{
@@ -166,7 +165,6 @@
 			LOD 600
 			Tags { "LightMode" = "ForwardBase" "RenderType" = "Opaque" "ShadowSupport" = "true" }
 			Cull [_CullOption]
-
 
 			CGPROGRAM
 			#pragma target 3.0
@@ -191,9 +189,7 @@
 			#include "../KKPEmission.cginc"
 			
 			#include "KKPHairVertFrag.cginc" //Vert Frag here
-			
 
-			
 			ENDCG
 		}
 		
@@ -292,11 +288,8 @@
 
                 SHADOW_CASTER_FRAGMENT(i)
             }
-
-			
 			ENDCG
 		}
-		
 	}
 	Fallback "Unlit/Texture"
 }

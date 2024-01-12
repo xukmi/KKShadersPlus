@@ -6,28 +6,41 @@
 		_MainTex ("MainTex", 2D) = "white" {}
 		[Gamma]_shadowcolor ("shadowcolor", Vector) = (0.6298235,0.6403289,0.747,1)
 		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
+		_EmissionMask ("Emission Mask", 2D) = "black" {}
+		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
+		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
-		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		
+		_ReflectMap ("Reflect Body Map", 2D) = "white" {}
+		_Roughness ("Roughness", Range(0, 1)) = 0.75
+		_ReflectionVal ("ReflectionVal", Range(0, 1)) = 1.0
+		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
+		_ReflectionMapCap ("Matcap", 2D) = "white" {}
+		_UseMatCapReflection ("Use Matcap or Env", Range(0, 1)) = 1.0
+		_ReflBlendSrc ("Reflect Blend Src", Float) = 2.0
+		_ReflBlendDst ("Reflect Blend Dst", Float) = 0.0
+		_ReflBlendVal ("Reflect Blend Val", Range(0, 1)) = 1.0
+		_ReflectColMix ("Reflection Color Mix Amount", Range(0,1)) = 1
+		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
+		_ReflectMask ("Reflect Body Mask", 2D) = "white" {}
+		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 	}
 	SubShader
 	{
 		LOD 600
-		Tags {"IgnoreProjector" = "true"
-			  "Queue" = "Transparent-1" 
-			  "RenderType" = "Transparent" }
+		Tags { "IGNOREPROJECTOR" = "true" "QUEUE" = "Transparent-1" "RenderType" = "Transparent" }
+		
 		//Main Pass
-		Pass
-		{
+		Pass {
 			Name "Forward"
 			LOD 600
-			Tags { 	"IgnoreProjector" = "true"
-					"LightMode" = "ForwardBase" 
-					"Queue" = "Transparent-1" 
-			  		"RenderType" = "Transparent"
-					"ShadowSupport" = "true" }
-
+			Tags { "IGNOREPROJECTOR" = "true" "LIGHTMODE" = "FORWARDBASE" "QUEUE" = "Transparent-1" "RenderType" = "Transparent" "SHADOWSUPPORT" = "true" }
 			ZWrite Off
+			
 			Stencil {
 				Ref 2
 				Comp Always
@@ -35,7 +48,6 @@
 				Fail Keep
 				ZFail Keep
 			}
-
 
 			CGPROGRAM
 			#pragma vertex vert
@@ -51,7 +63,9 @@
 
 
 			#include "KKPEyeInput.cginc"
-			#include "..//KKPVertexLights.cginc"
+			#include "KKPEyeDiffuse.cginc"
+			#include "../KKPVertexLights.cginc"
+			#include "../KKPEmission.cginc"
 
 			Varyings vert (VertexData v)
 			{
@@ -60,7 +74,7 @@
 				o.posCS = mul(UNITY_MATRIX_VP, o.posWS);
 				o.normalWS = UnityObjectToWorldNormal(v.normal);
 				o.uv0 = v.uv0;
-				1;
+				11111;
 				return o;
 			}
 
@@ -109,42 +123,99 @@
 				float3 shadedDiffuse = diffuse * finalAmbientShadow;
 				float3 finalCol = mainTex.rgb * _Color.rgb - shadedDiffuse;
 
-
-
 				KKVertexLight vertexLights[4];
-				#ifdef VERTEXLIGHT_ON
-					GetVertexLightsTwo(vertexLights, i.posWS, _DisablePointLights);	
-				#endif
-					float4 vertexLighting = 0.0;
-					float vertexLightRamp = 1.0;
-				#ifdef VERTEXLIGHT_ON
-					vertexLighting = GetVertexLighting(vertexLights, i.normalWS);
-					float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
-					vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
-					float3 rampLighting = GetRampLighting(vertexLights, i.normalWS, vertexLightRamp);
-					vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
-				#endif
+			#ifdef VERTEXLIGHT_ON
+				GetVertexLightsTwo(vertexLights, i.posWS, _DisablePointLights);	
+			#endif
+				float4 vertexLighting = 0.0;
+				float vertexLightRamp = 1.0;
+			#ifdef VERTEXLIGHT_ON
+				vertexLighting = GetVertexLighting(vertexLights, i.normalWS);
+				float2 vertexLightRampUV = vertexLighting.a * _RampG_ST.xy + _RampG_ST.zw;
+				vertexLightRamp = tex2D(_RampG, vertexLightRampUV).x;
+				float3 rampLighting = GetRampLighting(vertexLights, i.normalWS, vertexLightRamp);
+				vertexLighting.rgb = _UseRampForLights ? rampLighting : vertexLighting.rgb;
+			#endif
 
 				float lambert =	dot(_WorldSpaceLightPos0.xyz, i.normalWS.xyz) + vertexLighting.a;;
 				float ramp = tex2D(_RampG, lambert * _RampG_ST.xy + _RampG_ST.zw);
 				finalCol = ramp * finalCol + shadedDiffuse;
+				
+				float shadowAttenuation = saturate(ramp);
+				#ifdef SHADOWS_SCREEN
+					float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
+					float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
+					shadowAttenuation *= shadowMap;
+				#endif
 
 				float3 lightCol = (_LightColor0.xyz + vertexLighting.rgb * vertexLightRamp) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient;
 				lightCol = max(lightCol, _ambientshadowG.xyz);
 				finalCol *= lightCol;
 				
+				float3 hsl = RGBtoHSL(finalCol);
+				hsl.x = hsl.x + _ShadowHSV.x;
+				hsl.y = hsl.y + _ShadowHSV.y;
+				hsl.z = hsl.z + _ShadowHSV.z;
+				finalCol = lerp(HSLtoRGB(hsl), finalCol, saturate(shadowAttenuation + 0.5));
+
+				// Overlay emission over everything
+				float4 emission = GetEmission(i.uv0);
+				finalCol = finalCol * (1 - emission.a) + (emission.a * emission.rgb);
+				
 				return float4(finalCol, 1);
 			}
-
-			
 			ENDCG
 		}
+		
+		//Reflection Pass
+		Pass {
+			Name "Reflect"
+			LOD 600
+			Tags { "IGNOREPROJECTOR" = "true" "LIGHTMODE" = "FORWARDBASE" "QUEUE" = "Transparent-1" "RenderType" = "Transparent" "SHADOWSUPPORT" = "true" }
+			Blend [_ReflBlendSrc] [_ReflBlendDst]
+			ZWrite Off
+			
+			CGPROGRAM
+			#pragma target 3.0
+			#pragma vertex vert
+			#pragma fragment reflectfrag
+			
+			#pragma multi_compile _ VERTEXLIGHT_ON
+			#pragma multi_compile _ SHADOWS_SCREEN
+			
+			#define KKP_EXPENSIVE_RAMP
+
+			//Unity Includes
+			#include "UnityCG.cginc"
+			#include "AutoLight.cginc"
+			#include "Lighting.cginc"
+			
+			#include "KKPEyeInput.cginc"
+			#include "KKPEyeDiffuse.cginc"
+			#include "../KKPVertexLights.cginc"
+			
+			#include "KKPEyeReflect.cginc"
+
+			Varyings vert (VertexData v)
+			{
+				Varyings o;
+				o.posWS = mul(unity_ObjectToWorld, v.vertex);
+				o.posCS = UnityObjectToClipPos(v.vertex);
+				o.normalWS = UnityObjectToWorldNormal(v.normal);
+				o.tanWS = float4(UnityObjectToWorldDir(v.tangent.xyz), v.tangent.w);
+				float3 biTan = cross(o.tanWS, o.normalWS);
+				o.bitanWS = normalize(biTan);
+				o.uv0 = v.uv0;
+				return o;
+			}
+			ENDCG
+		}
+		
 		//ShadowCaster
-		Pass
-		{
+		Pass {
 			Name "ShadowCaster"
 			LOD 600
-			Tags { "IgnoerProjector" = "true" "LightMode" = "ShadowCaster" "Queue" = "Transparent-1" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "IGNOREPROJECTOR" = "true" "IgnoerProjector" = "true" "LIGHTMODE" = "SHADOWCASTER" "QUEUE" = "Transparent-1" "RenderType" = "Transparent" "SHADOWSUPPORT" = "true" }
 			Offset 1, 1
 			Cull Back
 
@@ -182,13 +253,8 @@
 
                 SHADOW_CASTER_FRAGMENT(i)
             }
-
-			
 			ENDCG
 		}
-
-
-		
 	}
 	Fallback "Diffuse"
 }
