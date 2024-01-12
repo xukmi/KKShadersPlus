@@ -6,9 +6,10 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: m_EyePlus
-  m_Shader: {fileID: 4800000, guid: c22ae04498790c84aa0373ecc5e80b3f, type: 3}
+  m_Name: m_EyeWPlusTess
+  m_Shader: {fileID: 4800000, guid: 8f79f653456e1fe4baf8d1576f0ee3f1, type: 3}
   m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _USELIGHTCOLORSPECULAR_ON
+    _USERAMPFORLIGHTS_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -95,11 +96,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ReflectMap:
-        m_Texture: {fileID: 2800000, guid: 2aaeab3cbdeab0448a9753b4fd72f081, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ReflectMask:
-        m_Texture: {fileID: 2800000, guid: 2aaeab3cbdeab0448a9753b4fd72f081, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ReflectionMapCap:
@@ -115,10 +116,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture3:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _expression:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -150,8 +147,6 @@ Material:
     - _DisplaceNormalMultiplier: 1
     - _DstBlend: 0
     - _EmissionIntensity: 1
-    - _ExpressionDepth: 1
-    - _ExpressionSize: 0.35
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -197,14 +192,12 @@ Material:
     - _UseLightColorSpecular: 1
     - _UseMatCapReflection: 1
     - _UseMeshSpecular: 0
-    - _UseRampForLights: 0
+    - _UseRampForLights: 1
     - _UseRampForShadows: 0
     - _UseRampForSpecular: 0
     - _ZWrite: 1
     - _alpha_a: 1
     - _alpha_b: 1
-    - _exppower: 1
-    - _isHighLight: 0
     - _linetexon: 1
     - _liquidbbot: 0
     - _liquidbtop: 0
@@ -217,7 +210,6 @@ Material:
     - _notusetexspecular: 0
     - _rimV: 0.75
     - _rimpower: 0.5
-    - _rotation: 0
     - _tex1mask: 0
     m_Colors:
     - _Clock: {r: 0, g: 0, b: 0, a: 1}

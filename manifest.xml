@@ -573,6 +573,20 @@
       <Property Name="CustomAmbient" Type="Color" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
 	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectionMapCap" Type="Texture" />
+      <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
+      <Property Name="ReflBlendDst" Type="Float" Range="0, 10" />
+      <Property Name="ReflBlendVal" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+	  <Property Name="ReflectMask" Type="Texture" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/EyeWPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyeWPlus">
       <Property Name="MainTex" Type="Texture" />
@@ -581,7 +595,24 @@
       <Property Name="CustomAmbient" Type="Color" />
       <Property Name="Cutoff" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
+	  <Property Name="EmissionMask" Type="Texture" />
+      <Property Name="EmissionColor" Type="Color" />
+      <Property Name="EmissionIntensity" Type="Float" />
 	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectionMapCap" Type="Texture" />
+      <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
+      <Property Name="ReflBlendDst" Type="Float" Range="0, 10" />
+      <Property Name="ReflBlendVal" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+	  <Property Name="ReflectMask" Type="Texture" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/MainOpaquePlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainOpaquePlus">
       <Property Name="AnotherRamp" Type="Texture" />

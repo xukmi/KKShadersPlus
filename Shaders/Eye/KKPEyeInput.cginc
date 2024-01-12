@@ -20,11 +20,10 @@
 		float3 normalWS : TEXCOORD4;
 		float4 tanWS    : TEXCOORD5;
 		float3 bitanWS  : TEXCOORD6;
+	#ifdef SHADOWS_SCREEN
+		float4 shadowCoordinate : TEXCOORD7;
+	#endif
 	};
-
-
-
-
 
 	//Input Textures
 	sampler2D _MainTex;
@@ -47,6 +46,7 @@
 	float4 _CustomAmbient;
 	
 	float4 _shadowcolor;
+	float4 _ShadowHSV;
 	float _isHighLight;
 	float _exppower;
 	float _ExpressionSize;
@@ -57,5 +57,6 @@
 	float4 _ambientshadowG;
 	
 	float _DisablePointLights;
+	float _DisableShadowedMatcap;
 
 #endif

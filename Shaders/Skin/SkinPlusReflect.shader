@@ -220,7 +220,6 @@
 			Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
 			Cull Off
 
-
 			CGPROGRAM
 			#pragma target 3.0
 
@@ -281,7 +280,7 @@
 		}
 
 		//Reflection Pass
-		Pass{
+		Pass {
 			Name "Reflect"
 			LOD 600
 			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent-100" "RenderType" = "Transparent" "ShadowSupport" = "true" }

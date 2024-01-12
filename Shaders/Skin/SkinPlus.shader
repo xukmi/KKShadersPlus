@@ -19,7 +19,7 @@
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Color) = (0.628,0.628,0.628,1)
 		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
-		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,1)
+		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
 		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 1
 		_NormalMapScale ("NormalMapScale", Float) = 1
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
@@ -56,6 +56,7 @@
 		_LineWidthS ("LineWidthS", Float) = 1
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
+
 		_UseKKPRim ("Use KKP Rim", Range(0 ,1)) = 0
 		[Gamma]_KKPRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 1.0)
 		_KKPRimSoft ("Body Rim Softness", Float) = 1.5
