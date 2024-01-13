@@ -13,6 +13,17 @@ float _DisplaceFull;
 float4 _Clock;
 #endif
 
+#define ROTATEUV
+float2 rotateUV(float2 uv, float2 pivot, float rotation) {
+	float cosa = cos(rotation);
+	float sina = sin(rotation);
+	uv -= pivot;
+	return float2(
+		cosa * uv.x - sina * uv.y,
+		cosa * uv.y + sina * uv.x 
+	) + pivot;
+}
+
 float DisplaceVal(float2 uv, float2 offset, float2 texelSize){
 	float4 displaceTex = tex2Dlod(_DisplaceTex, float4(uv, 0, 0) + float4(texelSize * offset, 0, 0));
 	float displaceVal = displaceTex.r;
@@ -41,13 +52,16 @@ float3 normalsFromHeight(sampler2D heightTex, float2 uv, float2 texelSize)
     return normalize(n);
 }
 
-
-
-
 void DisplacementValues(VertexData v, inout float4 vertex, inout float3 normal){
-	float3 displace = DisplaceVal(v.uv0 * _DisplaceTex_ST.xy + _DisplaceTex_ST.zw + _Clock.xy, 0, 0);
+	float2 displaceUV = v.uv0 * _DisplaceTex_ST.xy + _DisplaceTex_ST.zw;
+#ifdef MOVE_PUPILS
+	displaceUV = displaceUV * _MainTex_ST.xy + _MainTex_ST.zw;
+	displaceUV = rotateUV(displaceUV, float2(0.5, 0.5), -_rotation*6.28318548);
+#endif
+	
+	float3 displace = DisplaceVal(displaceUV + _Clock.xy, 0, 0);
 #ifndef SHADOW_CASTER_PASS
-	float3 bumpnormal = normalsFromHeight(_DisplaceTex, v.uv0 * _DisplaceTex_ST.xy + _DisplaceTex_ST.zw, _DisplaceTex_TexelSize.xy);
+	float3 bumpnormal = normalsFromHeight(_DisplaceTex, displaceUV, _DisplaceTex_TexelSize.xy);
 	bumpnormal.xyz = bumpnormal.xzy;
 	float3 mergedNormals = BlendNormals(normal, bumpnormal);
 	normal = mergedNormals;

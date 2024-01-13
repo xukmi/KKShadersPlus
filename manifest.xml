@@ -588,6 +588,51 @@
 	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
     </Shader>
+	<Shader Name="xukmi/EyePlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyePlusTess">
+      <Property Name="MainTex" Type="Texture" />
+      <Property Name="overtex1" Type="Texture" />
+      <Property Name="overtex2" Type="Texture" />
+      <Property Name="expression" Type="Texture" />
+      <Property Name="overcolor1" Type="Color" />
+      <Property Name="overcolor2" Type="Color" />
+      <Property Name="shadowcolor" Type="Color" />
+      <Property Name="isHighLight" Type="Float" Range="0, 1" />
+      <Property Name="exppower" Type="Float" Range="0, 1" />
+      <Property Name="rotation" Type="Float" Range="0, 1" />
+      <Property Name="EmissionMask" Type="Texture" />
+      <Property Name="EmissionColor" Type="Color" />
+      <Property Name="EmissionIntensity" Type="Float" />
+      <Property Name="ExpressionSize" Type="Float" Range="0, 1" />
+      <Property Name="ExpressionDepth" Type="Float" Range="0, 2" />
+      <Property Name="CustomAmbient" Type="Color" />
+      <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
+	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectionMapCap" Type="Texture" />
+      <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
+      <Property Name="ReflBlendDst" Type="Float" Range="0, 10" />
+      <Property Name="ReflBlendVal" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+	  <Property Name="ReflectMask" Type="Texture" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+	  <Property Name="ShadowHSV" Type="Color" />
+	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="DisplaceTex" Type="Texture" />
+      <Property Name="TessMax" Type="Float" Range="1, 25" />
+      <Property Name="TessMin" Type="Float" Range="1, 25" />
+      <Property Name="TessBias" Type="Float" Range="1, 100" />
+      <Property Name="TessSmooth" Type="Float" Range="0, 1" />
+      <Property Name="Tolerance" Type="Float" Range="0, 0.05" />
+      <Property Name="DisplaceMultiplier" Type="Float" />
+      <Property Name="DisplaceNormalMultiplier" Type="Float" />
+      <Property Name="DisplaceFull" Type="Float" Range="-1, 1" />
+      <Property Name="Clock" Type="Color" DefaultValue="(1, 1, 1, 1)" />
+    </Shader>
     <Shader Name="xukmi/EyeWPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyeWPlus">
       <Property Name="MainTex" Type="Texture" />
       <Property Name="Color" Type="Color" />
@@ -613,6 +658,43 @@
 	  <Property Name="ReflectMask" Type="Texture" />
 	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
+    </Shader>
+	<Shader Name="xukmi/EyeWPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyeWPlusTess">
+      <Property Name="MainTex" Type="Texture" />
+      <Property Name="Color" Type="Color" />
+      <Property Name="shadowcolor" Type="Color" />
+      <Property Name="CustomAmbient" Type="Color" />
+      <Property Name="Cutoff" Type="Float" Range="0, 1" />
+      <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
+	  <Property Name="EmissionMask" Type="Texture" />
+      <Property Name="EmissionColor" Type="Color" />
+      <Property Name="EmissionIntensity" Type="Float" />
+	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectionMapCap" Type="Texture" />
+      <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
+      <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
+      <Property Name="ReflBlendDst" Type="Float" Range="0, 10" />
+      <Property Name="ReflBlendVal" Type="Float" Range="0, 1" />
+      <Property Name="Roughness" Type="Float" Range="0, 1" />
+      <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+	  <Property Name="ReflectMask" Type="Texture" />
+	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+	  <Property Name="ShadowHSV" Type="Color" />
+	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="DisplaceTex" Type="Texture" />
+      <Property Name="TessMax" Type="Float" Range="1, 25" />
+      <Property Name="TessMin" Type="Float" Range="1, 25" />
+      <Property Name="TessBias" Type="Float" Range="1, 100" />
+      <Property Name="TessSmooth" Type="Float" Range="0, 1" />
+      <Property Name="Tolerance" Type="Float" Range="0, 0.05" />
+      <Property Name="DisplaceMultiplier" Type="Float" />
+      <Property Name="DisplaceNormalMultiplier" Type="Float" />
+      <Property Name="DisplaceFull" Type="Float" Range="-1, 1" />
+      <Property Name="Clock" Type="Color" DefaultValue="(1, 1, 1, 1)" />
     </Shader>
     <Shader Name="xukmi/MainOpaquePlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainOpaquePlus">
       <Property Name="AnotherRamp" Type="Texture" />
@@ -683,7 +765,6 @@
 	  <Property Name="ReflectMapDetail" Type="Texture" />
 	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
-	  
     </Shader>
     <Shader Name="xukmi/MainOpaquePlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainOpaquePlusTess">
       <Property Name="AnotherRamp" Type="Texture" />
@@ -1072,11 +1153,6 @@
       <Property Name="ShrinkVerticalAdjust" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" DefaultValue="(1, 1, 1, 1)" />
     </Shader>
-	<Shader Name="xukmi/ShaderForgeExample" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_ShaderForgeExample">
-	  <Property Name="Diffuse" Type="Texture" />
-	  <Property Name="Normal" Type="Texture" />
-	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
-	</Shader>
   </KK_MaterialEditor>
   <game>Koikatsu</game>
 </manifest>

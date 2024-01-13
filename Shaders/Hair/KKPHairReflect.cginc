@@ -16,6 +16,7 @@
 			float _ReflectRotation;
 			sampler2D _ReflectMask;
 
+		#ifndef ROTATEUV
 			float2 rotateUV(float2 uv, float2 pivot, float rotation) {
 			    float cosa = cos(rotation);
 			    float sina = sin(rotation);
@@ -25,6 +26,7 @@
 			        cosa * uv.y + sina * uv.x 
 			    ) + pivot;
 			}
+		#endif
 
 			fixed4 reflectfrag (Varyings i) : SV_Target
 			{

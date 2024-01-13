@@ -19,6 +19,7 @@ float _ReflectRotation;
 sampler2D _ReflectMapDetail;
 float4 _ReflectMapDetail_ST;
 
+#ifndef ROTATEUV
 float2 rotateUV(float2 uv, float2 pivot, float rotation) {
 	float cosa = cos(rotation);
 	float sina = sin(rotation);
@@ -28,6 +29,7 @@ float2 rotateUV(float2 uv, float2 pivot, float rotation) {
 		cosa * uv.y + sina * uv.x 
 	) + pivot;
 }
+#endif
 
 float3 GetBlendReflections(Varyings i, float3 diffuse, float3 normal, float3 viewDir, float metallicMap, float lightAmount = 1){
 	float3 reflectionDir = reflect(-viewDir, normal);

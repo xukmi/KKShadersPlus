@@ -17,6 +17,7 @@
 			sampler2D _ReflectMask;
 			float4 _ReflectMask_ST;
 
+		#ifndef ROTATEUV
 			float2 rotateUV(float2 uv, float2 pivot, float rotation) {
 			    float cosa = cos(rotation);
 			    float sina = sin(rotation);
@@ -26,6 +27,7 @@
 			        cosa * uv.y + sina * uv.x 
 			    ) + pivot;
 			}
+		#endif
 
 			fixed4 reflectfrag (Varyings i) : SV_Target
 			{
@@ -54,8 +56,11 @@
 				//Reflection begins here
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
 				float3 normal = i.normalWS.xyz;
-				float2 reflectMapUV = (i.uv0 *_ReflectMap_ST.xy + _ReflectMap_ST.zw) * _MainTex_ST.xy + _MainTex_ST.zw;
-				reflectMapUV = rotateUV(reflectMapUV, float2(0.5, 0.5), -_rotation*2*3.14159265);
+				float2 reflectMapUV = (i.uv0 *_ReflectMap_ST.xy + _ReflectMap_ST.zw);
+			#ifdef MOVE_PUPILS
+				reflectMapUV = reflectMapUV * _MainTex_ST.xy + _MainTex_ST.zw;
+				reflectMapUV = rotateUV(reflectMapUV, float2(0.5, 0.5), -_rotation*6.28318548);
+			#endif
 				float reflectMap = tex2D(_ReflectMap, reflectMapUV).r;
 
 				float3 reflectionDir = reflect(-viewDir, normal);
@@ -68,8 +73,11 @@
 				float2 matcapUV = viewNormal.xy * 0.5 * _ReflectionMapCap_ST.xy + 0.5 + _ReflectionMapCap_ST.zw;
 				matcapUV = rotateUV(matcapUV, float2(0.5, 0.5), radians(_ReflectRotation));
 				
-				float2 reflectMaskUV = (i.uv0 *_ReflectMask_ST.xy + _ReflectMask_ST.zw) * _MainTex_ST.xy + _MainTex_ST.zw;
-				reflectMaskUV = rotateUV(reflectMaskUV, float2(0.5, 0.5), -_rotation*2*3.14159265);
+				float2 reflectMaskUV = (i.uv0 *_ReflectMask_ST.xy + _ReflectMask_ST.zw);
+			#ifdef MOVE_PUPILS
+				reflectMaskUV = reflectMaskUV * _MainTex_ST.xy + _MainTex_ST.zw;
+				reflectMaskUV = rotateUV(reflectMaskUV, float2(0.5, 0.5), -_rotation*6.28318548);
+			#endif
 				float reflectMask = tex2D(_ReflectMask, reflectMaskUV).r;
 				
 				float4 matcap = tex2D(_ReflectionMapCap, matcapUV);
