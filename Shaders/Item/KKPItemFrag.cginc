@@ -21,7 +21,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 			fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target{
 				//Clips based on alpha texture
-				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = UNITY_SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				
 				AlphaClip(i.uv0, mainTex.a);
 
@@ -112,7 +112,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float2 detailUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 				float4 detailMask = tex2D(_DetailMask, detailUV);
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMask = tex2D(_LineMask, lineMaskUV);
+				float4 lineMask = UNITY_SAMPLE_TEX2D_SAMPLER(_LineMask, _MainTex, lineMaskUV);
 				lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;
 
 				lineMask.r = _AnotherRampFull * (1 - lineMask.r) + lineMask.r;
@@ -299,7 +299,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				
             #ifdef ALPHA_SHADER
 				float2 maskUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float alphaMask = tex2D(_AlphaMask, maskUV).r;
+				float alphaMask = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, maskUV).r;
 				
 				alphaMask = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2.0);
 				alpha *= alphaMask * mainTex.a * _Alpha;
