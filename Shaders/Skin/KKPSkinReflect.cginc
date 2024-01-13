@@ -30,6 +30,7 @@
 			
 			fixed4 reflectfrag (Varyings i) : SV_Target
 			{
+				float4 mainTex = UNITY_SAMPLE_TEX2D(_MainTex, float2(0,0));
 				//Clips based on alpha texture
 				AlphaClip(i.uv0, 1);
 
@@ -58,7 +59,7 @@
 				detailMask.xyz = 1 - detailMask.ywz;
 
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMask = tex2D(_LineMask, lineMaskUV);
+				float4 lineMask = UNITY_SAMPLE_TEX2D_SAMPLER(_LineMask, _MainTex, lineMaskUV);
 				lineMask.xz = -lineMask.zx * _DetailNormalMapScale + 1;
 
 				//Lighting begins here
@@ -138,7 +139,7 @@
 
 				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal * matcapAttenuation * matcap.a * alphaLerp);
 			
-				return float4(max(reflCol, 1E-06), _ReflectionVal * reflectMap * _ReflectCol.a);
+				return float4(max(reflCol, 1E-06 - mainTex * 1.2e-38), _ReflectionVal * reflectMap * _ReflectCol.a);
 			}
 
 #endif

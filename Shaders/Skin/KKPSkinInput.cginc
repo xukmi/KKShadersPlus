@@ -55,20 +55,20 @@
 	//KK Inputs
 
 	//Input Textures
-	sampler2D _MainTex;
-	sampler2D _AlphaMask;
-	sampler2D _NormalMap;
-	sampler2D _NormalMapDetail;
-	sampler2D _liquidmask;
-	sampler2D _Texture2; //Liquid Tex
-	sampler2D _Texture3; //Liquid Normal
-	sampler2D _overtex1;
-	sampler2D _overtex2;
-	sampler2D _overtex3;
+	UNITY_DECLARE_TEX2D(_MainTex);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_NormalMap);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_NormalMapDetail);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_liquidmask);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_Texture2); //Liquid Tex
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_Texture3); //Liquid Normal
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex1);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex2);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex3);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_LineMask);
 	sampler2D _DetailMask;
 	sampler2D _NormalMask;
 	sampler2D _RampG;
-	sampler2D _LineMask;
 	//UV Offsets
 	float4 _MainTex_ST;
 	float4 _AlphaMask_ST;

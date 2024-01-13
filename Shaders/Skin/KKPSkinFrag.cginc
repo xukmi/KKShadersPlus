@@ -58,7 +58,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				detailMask.xyz = 1 - detailMask.ywz;
 
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMask = tex2D(_LineMask, lineMaskUV);
+				float4 lineMask = UNITY_SAMPLE_TEX2D_SAMPLER(_LineMask, _MainTex, lineMaskUV);
 				lineMask.xz = -lineMask.zx * _DetailNormalMapScale + 1;
 
 

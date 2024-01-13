@@ -141,7 +141,7 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
-				1;
+				1111;
 				return o;
 			}
 			
@@ -342,12 +342,7 @@
 
 			#include "UnityCG.cginc"
 
-			sampler2D _AlphaMask;
-			float4 _AlphaMask_ST;
-
-			float _alpha_a;
-			float _alpha_b;
-
+			#include "KKPSkinInput.cginc"
 
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
@@ -364,8 +359,9 @@
 
             float4 frag(v2f i) : SV_Target
             {
-				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+				float4 mainTex = UNITY_SAMPLE_TEX2D(_MainTex, float2(0,0));
+				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw + mainTex*1.2e-38;
+				float4 alphaMask = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, alphaUV);
 				float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);
