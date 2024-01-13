@@ -1,5 +1,9 @@
 ﻿#ifndef KKP_ITEM_INPUT
 #define KKP_ITEM_INPUT
+
+#include "../KKPDeclarations.cginc"
+#define SAMPLERTEX _MainTex
+
 	struct VertexData
 	{
 		float4 vertex : POSITION;
@@ -46,15 +50,15 @@
 	float _KKPRimRotateY;
 
 	//Input Textures
-	UNITY_DECLARE_TEX2D(_MainTex);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_NormalMap);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_NormalMapDetail);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_liquidmask);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_Texture2); //Liquid Tex
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_Texture3); //Liquid Normal
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_ColorMask);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_LineMask);
+	DECLARE_TEX2D(_MainTex);
+	DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
+	DECLARE_TEX2D_NOSAMPLER(_NormalMap);
+	DECLARE_TEX2D_NOSAMPLER(_NormalMapDetail);
+	DECLARE_TEX2D_NOSAMPLER(_liquidmask);
+	DECLARE_TEX2D_NOSAMPLER(_Texture2); //Liquid Tex
+	DECLARE_TEX2D_NOSAMPLER(_Texture3); //Liquid Normal
+	DECLARE_TEX2D_NOSAMPLER(_ColorMask);
+	DECLARE_TEX2D_NOSAMPLER(_LineMask);
 	sampler2D _DetailMask;
 	sampler2D _NormalMask;
 	sampler2D _AnotherRamp;
@@ -125,5 +129,4 @@
 	float4 _ambientshadowG;
 	float _FaceShadowG;
 	float _FaceNormalG;
-
 #endif

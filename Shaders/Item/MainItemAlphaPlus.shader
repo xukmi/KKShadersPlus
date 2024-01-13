@@ -83,6 +83,7 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
@@ -128,7 +129,7 @@
 				if(!_OutlineOn)
 					o.posCS = float4(2,2,2,1);
 				o.uv0 = v.uv0;
-				1;
+				11111;
 				return o;
 			}
 			
@@ -138,14 +139,14 @@
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				//Clips based on alpha texture
-				float4 mainTex = UNITY_SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				AlphaClip(i.uv0,  _OutlineOn ? mainTex.a * _Alpha : 0);
 
 				float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
 				float3 halfDir = normalize(viewDir + worldLightPos);
 
-				float4 colorMask = UNITY_SAMPLE_TEX2D_SAMPLER(_ColorMask, _MainTex, i.uv0 * + _ColorMask_ST.xy + _ColorMask_ST.zw);
+				float4 colorMask = SAMPLE_TEX2D_SAMPLER(_ColorMask, SAMPLERTEX, i.uv0 * + _ColorMask_ST.xy + _ColorMask_ST.zw);
 				float3 color;
 				color = colorMask.r * (_Color.rgb - 1) + 1;
 				color = colorMask.g * (_Color2.rgb - color) + color;
@@ -165,7 +166,7 @@
 				rotatedDetailUV.y = dot(detailUVAdjust, rotVal.xy);
 				rotatedDetailUV += _Clock.xy;
 				rotatedDetailUV = rotatedDetailUV * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMaskRot = UNITY_SAMPLE_TEX2D_SAMPLER(_LineMask, _MainTex, rotatedDetailUV);
+				float4 lineMaskRot = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, rotatedDetailUV);
 
 				diffuse = lineMaskRot.b * -diffuse + diffuse;
 				float3 shadingAdjustment = ShadeAdjustItem(diffuse);
@@ -173,7 +174,7 @@
 				float2 detailUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 				float4 detailMask = tex2D(_DetailMask, detailUV);
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMask = UNITY_SAMPLE_TEX2D_SAMPLER(_LineMask, _MainTex, lineMaskUV);
+				float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, lineMaskUV);
 				lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;
 
 				float3 diffuseShaded = shadingAdjustment * 0.899999976 - 0.5;
@@ -244,6 +245,7 @@
 
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 			
@@ -345,14 +347,14 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 			fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target
 			{
 				//Clips based on alpha texture
-				float4 mainTex = UNITY_SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				AlphaClip(i.uv0, mainTex.a);
 
 				float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
 				float3 halfDir = normalize(viewDir + worldLightPos);
 
-				float4 colorMask = UNITY_SAMPLE_TEX2D_SAMPLER(_ColorMask, _MainTex, i.uv0 * + _ColorMask_ST.xy + _ColorMask_ST.zw);
+				float4 colorMask = SAMPLE_TEX2D_SAMPLER(_ColorMask, SAMPLERTEX, i.uv0 * + _ColorMask_ST.xy + _ColorMask_ST.zw);
 				float3 color;
 				color = colorMask.r * (_Color.rgb - 1) + 1;
 				color = colorMask.g * (_Color2.rgb - color) + color;
@@ -383,7 +385,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				rotatedDetailUV.y = dot(detailUVAdjust, rotVal.xy);
 				rotatedDetailUV += _Clock.xy;
 				rotatedDetailUV = rotatedDetailUV * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMaskRot = UNITY_SAMPLE_TEX2D_SAMPLER(_LineMask, _MainTex, rotatedDetailUV);
+				float4 lineMaskRot = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, rotatedDetailUV);
 
 				diffuse = lineMaskRot.b * -diffuse + diffuse;
 				float3 shadingAdjustment = ShadeAdjustItem(diffuse);
@@ -391,7 +393,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float2 detailUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 				float4 detailMask = tex2D(_DetailMask, detailUV);
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMask = UNITY_SAMPLE_TEX2D_SAMPLER(_LineMask, _MainTex, lineMaskUV);
+				float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, lineMaskUV);
 				lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;
 
 				float3 diffuseShaded = shadingAdjustment * 0.899999976 - 0.5;
@@ -572,7 +574,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
 
 				float2 maskUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float alphaMask = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, maskUV).r;
+				float alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, maskUV).r;
 				alphaMask = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2.0);
                 float alpha = mainTex.a * _Alpha * alphaMask;
 				
@@ -601,6 +603,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#include "UnityCG.cginc"
 
@@ -622,9 +625,9 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
             float4 frag(v2f i) : SV_Target
             {
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, alphaUV);
+				float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV);
 				float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
-				float mainTexAlpha = UNITY_SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw).a;
+				float mainTexAlpha = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw).a;
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);
 				alphaVal *= mainTexAlpha;

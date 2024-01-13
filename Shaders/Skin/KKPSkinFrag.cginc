@@ -20,6 +20,8 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 			fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 			{
+				float4 samplerTex = SAMPLE_TEX2D(SAMPLERTEX, float2(0,0));
+				
 				//Clips based on alpha texture
 				AlphaClip(i.uv0, 1);
 
@@ -58,7 +60,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				detailMask.xyz = 1 - detailMask.ywz;
 
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMask = UNITY_SAMPLE_TEX2D_SAMPLER(_LineMask, _MainTex, lineMaskUV);
+				float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, lineMaskUV);
 				lineMask.xz = -lineMask.zx * _DetailNormalMapScale + 1;
 
 
@@ -110,7 +112,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				
 				
 				float3 specularColorMesh;
-				float specularMesh = GetMeshSpecular(vertexLights, normal, viewDir, worldLightPos, specularColorMesh);
+				float specularMesh = GetMeshSpecular(i, vertexLights, normal, viewDir, worldLightPos, specularColorMesh);
 				float3 specularDiffuse = saturate((1 - _notusetexspecular) * specularFromDetail.xyz) + (_notusetexspecular * (specularColorMesh + diffuse));	
 			
 				//Shading
@@ -204,7 +206,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				float4 emission = GetEmission(i.uv0);
 				finalCol = finalCol * (1 - emission.a) + (emission.a*emission.rgb);
 
-				return float4(max(finalCol,1E-06), 1); 
+				return float4(max(finalCol,1E-06 - samplerTex.a * 1.2e-38), 1); 
 			}
 
 

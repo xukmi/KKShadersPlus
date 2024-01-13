@@ -1,5 +1,9 @@
 ﻿#ifndef KKP_EYE_INPUT
 #define KKP_EYE_INPUT
+
+#include "../KKPDeclarations.cginc"
+#define SAMPLERTEX _MainTex
+
 	struct VertexData
 	{
 		float4 vertex : POSITION;
@@ -26,10 +30,10 @@
 	};
 
 	//Input Textures
-	UNITY_DECLARE_TEX2D(_MainTex);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex1);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex2);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_expression);
+	DECLARE_TEX2D(_MainTex);
+	DECLARE_TEX2D(_expression);
+	DECLARE_TEX2D(_overtex1);
+	DECLARE_TEX2D(_overtex2);
 
 	sampler2D _RampG;
 
@@ -58,5 +62,4 @@
 	
 	float _DisablePointLights;
 	float _DisableShadowedMatcap;
-
 #endif

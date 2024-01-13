@@ -1,6 +1,9 @@
 ﻿#ifndef KKP_MAIN_INPUT
 #define KKP_MAIN_INPUT
 
+#include "../KKPDeclarations.cginc"
+#define SAMPLERTEX _NormalMap
+
 	struct VertexData
 	{
 		float4 vertex : POSITION;
@@ -47,25 +50,24 @@
 	float _KKPRimRotateX;
 	float _KKPRimRotateY;
 
-
 	float4 _ShadowColor;
 	float4 _OutlineColor;
-
 
 	//KK Inputs
 
 	//Input Textures
-	UNITY_DECLARE_TEX2D(_MainTex);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_NormalMap);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_NormalMapDetail);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_liquidmask);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_Texture2); //Liquid Tex
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_Texture3); //Liquid Normal
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex1);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex2);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex3);
-	UNITY_DECLARE_TEX2D_NOSAMPLER(_LineMask);
+	DECLARE_TEX2D_NOSAMPLER(_MainTex);
+	DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
+	DECLARE_TEX2D(_NormalMap);
+	DECLARE_TEX2D_NOSAMPLER(_NormalMapDetail);
+	DECLARE_TEX2D_NOSAMPLER(_liquidmask);
+	DECLARE_TEX2D_NOSAMPLER(_Texture2); //Liquid Tex
+	DECLARE_TEX2D_NOSAMPLER(_Texture3); //Liquid Normal
+	//DECLARE_TEX2D_NOSAMPLER(_SpecularMap);
+	DECLARE_TEX2D(_overtex1);
+	DECLARE_TEX2D(_overtex2);
+	DECLARE_TEX2D(_overtex3);
+	DECLARE_TEX2D_NOSAMPLER(_LineMask);
 	sampler2D _DetailMask;
 	sampler2D _NormalMask;
 	sampler2D _RampG;
@@ -77,6 +79,7 @@
 	float4 _liquidmask_ST;
 	float4 _Texture2_ST; //Liquid Tex
 	float4 _Texture3_ST; //Liquid Normal
+	//float4 _SpecularMap_ST;
 	float4 _overtex1_ST;
 	float4 _overtex2_ST;
 	float4 _overtex3_ST;
@@ -126,5 +129,4 @@
 	float _DisablePointLights;
 	float _DisableShadowedMatcap;
 	float _rimReflectMode;
-
 #endif

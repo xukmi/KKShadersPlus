@@ -67,6 +67,7 @@
 			#pragma fragment frag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			
@@ -98,7 +99,7 @@
 				o.posCS = mul(UNITY_MATRIX_VP, o.posWS);
 				o.normalWS = UnityObjectToWorldNormal(v.normal);
 				o.uv0 = v.uv0;
-				1;
+				11111;
 				return o;
 			}
 			
@@ -123,6 +124,7 @@
 			#pragma fragment reflectfrag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
@@ -182,6 +184,7 @@
 			#pragma hull hull
 			#pragma domain domain
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#define SHADOW_CASTER_PASS
 
@@ -215,7 +218,7 @@
             float4 frag(v2f i) : SV_Target
             {
 
-				float4 mainTex = UNITY_SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				float alphaVal = mainTex.a;
 				float clipVal = (alphaVal.x - 0.5) < 0.0f;
 				if(clipVal * int(0xffffffffu) != 0)

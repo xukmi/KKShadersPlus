@@ -62,6 +62,7 @@
 			#pragma target 3.0
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 
@@ -92,7 +93,7 @@
 				o.uv0 = v.uv0;
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
-				11;
+				11111;
 				return o;
 			}
 
@@ -113,6 +114,7 @@
 			#pragma target 3.0
 			#pragma vertex vert
 			#pragma fragment reflectfrag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN

@@ -47,7 +47,7 @@ void AmbientShadowAdjust(out float3 a){
 
 float3 GetDiffuse(float2 uv){
 	float3 diffuse = _Color.rgb - 1;
-	float4 colorMask = tex2D(_ColorMask, uv * _ColorMask_ST.xy + _ColorMask_ST.zw);
+	float4 colorMask = SAMPLE_TEX2D_SAMPLER(_ColorMask, SAMPLERTEX, uv * _ColorMask_ST.xy + _ColorMask_ST.zw);
 	diffuse = colorMask.x * diffuse + 1;
 	float3 color2 = _Color2.rgb - diffuse;
 	diffuse = colorMask.y * color2 + diffuse; 
@@ -91,7 +91,7 @@ float3 HSLtoRGB(in float3 HSL)
 
 float AlphaClip(float2 uv, float mainTexAlpha){
 	float2 alphaUV = uv * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-	float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+	float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV);
 	float alphaVal = alphaMask.x * mainTexAlpha;
 	float clipVal = (alphaVal.x - _Cutoff) < 0.0f;
 	if(clipVal * int(0xffffffffu) != 0)

@@ -76,6 +76,7 @@
 			#pragma fragment frag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
@@ -115,7 +116,7 @@
 				o.uv0 = v.uv0;
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
-				1;
+				11111;
 				return o;
 			}
 			
@@ -140,6 +141,7 @@
 			#pragma fragment reflectfrag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN

@@ -36,7 +36,7 @@ fixed4 frag (Varyings i) : SV_Target
 	float2 dotRot = float2(dot(uv, rotation.yz), dot(uv, rotation.xy));
 	uv = dotRot + 0.5;
 	uv = uv * _MainTex_ST.xy + _MainTex_ST.zw;
-	float4 iris = UNITY_SAMPLE_TEX2D(_MainTex, uv);
+	float4 iris = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, uv);
 	float3 viewDir = normalize(_WorldSpaceCameraPos - i.posWS);
 	float2 expressionUV = float2(dot(i.tanWS, viewDir),
 						   dot(i.bitanWS, viewDir));
@@ -46,21 +46,22 @@ fixed4 frag (Varyings i) : SV_Target
 	expressionUV -= 0.5;
 	expressionUV /= max(0.1, _ExpressionSize);
 	expressionUV += 0.5;
-	float4 expression = UNITY_SAMPLE_TEX2D_SAMPLER(_expression, _MainTex, expressionUV + float2(0, 0.1));
+	float4 expression = SAMPLE_TEX2D_SAMPLER(_expression, _expression, expressionUV + float2(0, 0.1));
 	expression.rgb =  expression.rgb - iris.rgb;
 	expression.a *= _exppower;
 	float3 diffuse = expression.a * expression.rgb + iris.rgb;
 
 
-	float4 overTex1 = UNITY_SAMPLE_TEX2D_SAMPLER(_overtex1, _MainTex, i.uv1 * _overtex1_ST + _overtex1_ST.zw);
+	float4 overTex1 = SAMPLE_TEX2D_SAMPLER(_overtex1, _overtex1, i.uv1 * _overtex1_ST + _overtex1_ST.zw);
 	overTex1 = overTex1.a * _overcolor1.rgba;
-	float4 overTex2 = UNITY_SAMPLE_TEX2D_SAMPLER(_overtex2, _MainTex, i.uv2 * _overtex2_ST + _overtex2_ST.zw);
+	float4 overTex2 = SAMPLE_TEX2D_SAMPLER(_overtex2, _overtex2, i.uv2 * _overtex2_ST + _overtex2_ST.zw);
 	overTex2 = overTex2.a * _overcolor2.rgba;
 	float4 overTex = max(overTex1, overTex2);
 	float3 blendOverTex = overTex.rgb - diffuse;
 	overTex.a = saturate(overTex.a * _isHighLight);
 	diffuse = overTex.a * blendOverTex + diffuse;
 	float alpha = saturate(max(max(overTex.a, expression.a), iris.a));
+	if (alpha < 0.01) discard;
 
 	float3 shadedDiffuse = diffuse * finalAmbientShadow;
 	finalAmbientShadow = -diffuse * finalAmbientShadow + diffuse;
@@ -86,7 +87,7 @@ fixed4 frag (Varyings i) : SV_Target
 	float shadowAttenuation = saturate(tex2D(_RampG, lambert * _RampG_ST.xy + _RampG_ST.zw).x);
 	#ifdef SHADOWS_SCREEN
 		float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
-		float4 shadowMap = tex2d(_ShadowMapTexture, shadowMapUV);
+		float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
 		shadowAttenuation *= shadowMap;
 	#endif
 

@@ -1,9 +1,11 @@
 ﻿#ifndef KKP_LIGHTING_INC
 #define KKP_LIGHTING_INC
 
-
 //Specular
 float GetDrawnSpecular(Varyings i, float4 detailMask, float shadowAttenuation, float3 viewDir, out float3 drawnSpecularColor){
+	//float2 specularUV = i.uv0 * _SpecularMap_ST.xy + _SpecularMap_ST.zw;
+	//float specularMap = SAMPLE_TEX2D_SAMPLER(_SpecularMap, SAMPLERTEX, specularUV).r;
+	
 	float specularHeight = _SpeclarHeight  - 1.0;
 	specularHeight *= 0.800000012;
 	float2 detailSpecularOffset;
@@ -29,11 +31,14 @@ float GetDrawnSpecular(Varyings i, float4 detailMask, float shadowAttenuation, f
 	dotSpecCol = min(dotSpecCol, specular);
 	dotSpecCol = min(dotSpecCol, shadowAttenuation);
 	dotSpecCol = min(dotSpecCol, detailMask.a);
+	//return dotSpecCol * specularMap;
 	return dotSpecCol;
 }
 
-
-float GetMeshSpecular(KKVertexLight vertexLights[4], float3 normal, float3 viewDir, float3 worldLightPos, out float3 specularColorMesh){
+float GetMeshSpecular(Varyings i, KKVertexLight vertexLights[4], float3 normal, float3 viewDir, float3 worldLightPos, out float3 specularColorMesh){
+	//float2 specularUV = i.uv0 * _SpecularMap_ST.xy + _SpecularMap_ST.zw;
+	//float specularMap = SAMPLE_TEX2D_SAMPLER(_SpecularMap, SAMPLERTEX, specularUV).r;
+	
 	float3 halfVector = normalize(viewDir + worldLightPos);
 	float specularMesh = max(dot(halfVector, normal), 0.0);
 	specularMesh = log2(specularMesh);
@@ -48,8 +53,8 @@ float GetMeshSpecular(KKVertexLight vertexLights[4], float3 normal, float3 viewD
 #endif
 
 	float3 specularColor = _UseLightColorSpecular ? _LightColor0.rgb * _SpecularColor.a: _SpecularColor.rgb * _SpecularColor.a;
+	//specularColorMesh = specularPowerMesh * specularColor * specularMap;
 	specularColorMesh = specularPowerMesh * specularColor;
-
 
 #ifdef VERTEXLIGHT_ON
 	float3 specularColorVertex = 0;
@@ -57,10 +62,9 @@ float GetMeshSpecular(KKVertexLight vertexLights[4], float3 normal, float3 viewD
 	specularColorMesh += specularColorVertex;
 #endif
 
-	
+	//return specularMesh * specularMap;
 	return specularMesh;
 }
-
 
 float GetLambert(float3 lightPos, float3 normal){
     return max(dot(lightPos, normal), 0.0);
@@ -97,5 +101,4 @@ float GetShadowAttenuation(Varyings i, float vertexLightingShadowAtten, float3 n
 
     return ramp;
 }
-
 #endif

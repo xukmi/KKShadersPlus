@@ -30,11 +30,12 @@
 
 			fixed4 reflectfrag (Varyings i) : SV_Target
 			{
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, float2(0,0));
 				float3 viewDir = normalize(_WorldSpaceCameraPos - i.posWS);
 				float3 worldLight = normalize(_WorldSpaceLightPos0.xyz); //Directional light
 
 				float2 normalUV = i.uv0 * _NormalMap_ST.xy + _NormalMap_ST.zw;
-				float3 normalMatcap = UnpackScaleNormal(tex2D(_NormalMap, normalUV), _NormalMapScale);
+				float3 normalMatcap = UnpackScaleNormal(SAMPLE_TEX2D_SAMPLER(_NormalMap, SAMPLERTEX, normalUV), _NormalMapScale);
 
 				float3 binormal = CreateBinormal(i.normalWS, i.tanWS.xyz, i.tanWS.w);
 				normalMatcap = normalize(
@@ -128,7 +129,7 @@
 
 				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal * matcapAttenuation * matcap.a * alphaLerp);
 			
-				return float4(max(reflCol, 1E-06), _ReflectionVal * reflectMap * _ReflectCol.a);
+				return float4(max(reflCol, 1E-06 - mainTex.a * 1.2e-38), _ReflectionVal * reflectMap * _ReflectCol.a);
 			}
 
 #endif

@@ -111,6 +111,7 @@ Shader "xukmi/MainAlphaPlusTess"
 			#pragma fragment frag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
@@ -162,7 +163,7 @@ Shader "xukmi/MainAlphaPlusTess"
 				if(!_OutlineOn)
 					o.posCS = float4(2,2,2,1);
 				o.uv0 = v.uv0;
-				11;
+				11111;
 				return o;
 			}
 			
@@ -171,7 +172,7 @@ Shader "xukmi/MainAlphaPlusTess"
 
 			fixed4 frag (Varyings i) : SV_Target
 			{
-				float4 mainTex = UNITY_SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				AlphaClip(i.uv0, _OutlineOn ? mainTex.a * _Alpha : 0);
 
 				float3 diffuse = mainTex.rgb;
@@ -208,7 +209,7 @@ Shader "xukmi/MainAlphaPlusTess"
 				_SpecularPower *= specularMap;
 				
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMask = UNITY_SAMPLE_TEX2D_SAMPLER(_LineMask, _MainTex, lineMaskUV);
+				float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, lineMaskUV);
 
 				float detailLine = detailMask.x - lineMask.x;
 				detailLine = _DetailRLineR * detailLine + lineMask;
@@ -256,6 +257,7 @@ Shader "xukmi/MainAlphaPlusTess"
 			#pragma fragment frag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 
@@ -331,6 +333,7 @@ Shader "xukmi/MainAlphaPlusTess"
 			#pragma hull hull
 			#pragma domain domain
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#define SHADOW_CASTER_PASS
 
@@ -359,9 +362,9 @@ Shader "xukmi/MainAlphaPlusTess"
             float4 frag(v2f i) : SV_Target
             {
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = UNITY_SAMPLE_TEX2D_SAMPLER(_AlphaMask, _MainTex, alphaUV);
+				float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV);
 				float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
-				float mainTexAlpha = UNITY_SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw).a;
+				float mainTexAlpha = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw).a;
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);
 				alphaVal *= mainTexAlpha;

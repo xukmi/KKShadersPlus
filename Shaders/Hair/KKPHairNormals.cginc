@@ -4,7 +4,7 @@
 float3 GetNormal(Varyings i){	
 	//Normals
 	float2 normalUV = i.uv0 * _NormalMap_ST.xy + _NormalMap_ST.zw;
-	return UnpackScaleNormal(tex2D(_NormalMap, normalUV), _NormalMapScale);
+	return UnpackScaleNormal(SAMPLE_TEX2D_SAMPLER(_NormalMap, SAMPLERTEX, normalUV), _NormalMapScale);
 }
 
 float3 CreateBinormal (float3 normal, float3 tangent, float binormalSign) {

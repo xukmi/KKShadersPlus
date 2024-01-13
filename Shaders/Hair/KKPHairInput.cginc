@@ -1,5 +1,9 @@
 ﻿#ifndef KKP_HAIR_INPUT
 #define KKP_HAIR_INPUT
+
+#include "../KKPDeclarations.cginc"
+#define SAMPLERTEX _MainTex
+
 	struct VertexData
 	{
 		float4 vertex : POSITION;
@@ -48,11 +52,11 @@
 	float _KKPRimRotateY;
 
 	//Input Textures
-	sampler2D _MainTex;
-	sampler2D _AlphaMask;
-	sampler2D _NormalMap;
-	sampler2D _ColorMask;
-	sampler2D _HairGloss;
+	DECLARE_TEX2D(_MainTex);
+	DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
+	DECLARE_TEX2D_NOSAMPLER(_NormalMap);
+	DECLARE_TEX2D_NOSAMPLER(_ColorMask);
+	DECLARE_TEX2D_NOSAMPLER(_HairGloss);
 	sampler2D _DetailMask;
 	sampler2D _RampG;
 	sampler2D _AnotherRamp;
@@ -65,7 +69,6 @@
 	float4 _DetailMask_ST;
 	float4 _RampG_ST;
 	float4 _AnotherRamp_ST;
-
 
 	float _rimpower;
 	float _rimV;
@@ -100,5 +103,4 @@
 	float _FaceShadowG;
 	float _FaceNormalG;
 	bool _UseRampForShadows;
-
 #endif
