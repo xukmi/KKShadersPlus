@@ -1,7 +1,7 @@
 fixed4 frag (Varyings i) : SV_Target
 {
 
-	float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+	float4 mainTex = UNITY_SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 	float alpha = mainTex.a - 0.5;
 
 	//Because of the stencil the shader needs to alpha cilp otherwise the whole mesh shows over the hair

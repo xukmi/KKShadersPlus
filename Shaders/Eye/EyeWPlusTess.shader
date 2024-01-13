@@ -215,7 +215,7 @@
             float4 frag(v2f i) : SV_Target
             {
 
-				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = UNITY_SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				float alphaVal = mainTex.a;
 				float clipVal = (alphaVal.x - 0.5) < 0.0f;
 				if(clipVal * int(0xffffffffu) != 0)

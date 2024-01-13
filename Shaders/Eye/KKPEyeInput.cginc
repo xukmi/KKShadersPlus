@@ -26,10 +26,10 @@
 	};
 
 	//Input Textures
-	sampler2D _MainTex;
-	sampler2D _overtex1;
-	sampler2D _overtex2;
-	sampler2D _expression;
+	UNITY_DECLARE_TEX2D(_MainTex);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex1);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_overtex2);
+	UNITY_DECLARE_TEX2D_NOSAMPLER(_expression);
 
 	sampler2D _RampG;
 
