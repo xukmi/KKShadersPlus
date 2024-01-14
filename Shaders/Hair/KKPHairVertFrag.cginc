@@ -4,6 +4,15 @@
 Varyings vert (VertexData v)
 {
 	Varyings o;
+	
+#ifdef TESS_SHADER
+	float4 vertex = v.vertex;
+	float3 normal = v.normal;
+	DisplacementValues(v, vertex, normal);
+	v.vertex = vertex;
+	v.normal = normal;
+#endif
+	
 	o.posWS = mul(unity_ObjectToWorld, v.vertex);
 	o.posCS = mul(UNITY_MATRIX_VP, o.posWS);
 	o.normalWS = UnityObjectToWorldNormal(v.normal);
