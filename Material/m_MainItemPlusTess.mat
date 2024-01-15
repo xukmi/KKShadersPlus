@@ -137,7 +137,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AdjustBackfaceNormals: 0
+    - _Alpha: 1
     - _AlphaOptionCutoff: 1
+    - _AlphaOptionZWrite: 1
     - _AnotherRampFull: 0
     - _BumpScale: 1
     - _CullOption: 0
@@ -183,6 +185,8 @@ Material:
     - _Roughness: 0.75
     - _ShadowExtend: 0.5
     - _ShadowExtendAnother: 1
+    - _ShrinkVal: 1
+    - _ShrinkVerticalAdjust: 0
     - _SmoothnessTextureChannel: 0
     - _SpeclarHeight: 0.85
     - _SpecularHairPower: 1
@@ -228,6 +232,7 @@ Material:
     - _tex1mask: 0
     m_Colors:
     - _Clock: {r: 0, g: 0, b: 0, a: 1}
+    - _ClockDisp: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color2: {r: 0.7843137, g: 0.7843137, b: 0.7843137, a: 1}
     - _Color3: {r: 0.5, g: 0.5, b: 0.5, a: 1}
