@@ -13,6 +13,10 @@ float _DisplaceFull;
 float4 _Clock;
 #endif
 
+#ifdef ITEM_SHADER
+float4 _ClockDisp;
+#endif
+
 #define ROTATEUV
 float2 rotateUV(float2 uv, float2 pivot, float rotation) {
 	float cosa = cos(rotation);
@@ -33,7 +37,11 @@ float DisplaceVal(float2 uv, float2 offset, float2 texelSize){
 	displaceVal += _DisplaceFull;
 
 	//Can animate via rendereditor since _Clock is an exposed variable
+#ifdef ITEM_SHADER
+	float displacementAnimation = _ClockDisp.w;
+#else
 	float displacementAnimation = _Clock.w;
+#endif
 	return displaceVal * displacementAnimation;
 }
 
@@ -58,8 +66,11 @@ void DisplacementValues(VertexData v, inout float4 vertex, inout float3 normal){
 	displaceUV = displaceUV * _MainTex_ST.xy + _MainTex_ST.zw;
 	displaceUV = rotateUV(displaceUV, float2(0.5, 0.5), -_rotation*6.28318548);
 #endif
-	
+#ifdef ITEM_SHADER
+	float3 displace = DisplaceVal(displaceUV + _ClockDisp.xy, 0, 0);
+#else
 	float3 displace = DisplaceVal(displaceUV + _Clock.xy, 0, 0);
+#endif
 #ifndef SHADOW_CASTER_PASS
 	float3 bumpnormal = normalsFromHeight(_DisplaceTex, displaceUV, _DisplaceTex_TexelSize.xy);
 	bumpnormal.xyz = bumpnormal.xzy;

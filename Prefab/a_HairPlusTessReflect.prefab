@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23911842700600096}
   - component: {fileID: 114026440146529810}
   m_Layer: 10
-  m_Name: a_HairPlusReflect
+  m_Name: a_HairPlusTessReflect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,7 +56,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 3386ee701630a7e42aa42ffd6cc6d5f4, type: 2}
+  - {fileID: 2100000, guid: da82eceb576bc9b47b0b1826cda32eb7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

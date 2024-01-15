@@ -15,7 +15,6 @@
 		_LineMask ("Line Mask", 2D) = "black" {}
 		_AlphaMask ("Alpha Mask", 2D) = "white" {}
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
-		_SpecularMap ("Specular Body Map", 2D) = "white" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Color) = (0.628,0.628,0.628,1)
