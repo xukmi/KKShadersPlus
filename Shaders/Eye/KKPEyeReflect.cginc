@@ -58,8 +58,8 @@
 				float3 normal = i.normalWS.xyz;
 				float2 reflectMapUV = (i.uv0 *_ReflectMap_ST.xy + _ReflectMap_ST.zw);
 			#ifdef MOVE_PUPILS
-				reflectMapUV = reflectMapUV * _MainTex_ST.xy + _MainTex_ST.zw;
 				reflectMapUV = rotateUV(reflectMapUV, float2(0.5, 0.5), -_rotation*6.28318548);
+				reflectMapUV = reflectMapUV * _MainTex_ST.xy + _MainTex_ST.zw;
 			#endif
 				float reflectMap = tex2D(_ReflectMap, reflectMapUV).r;
 
@@ -75,8 +75,8 @@
 				
 				float2 reflectMaskUV = (i.uv0 *_ReflectMask_ST.xy + _ReflectMask_ST.zw);
 			#ifdef MOVE_PUPILS
-				reflectMaskUV = reflectMaskUV * _MainTex_ST.xy + _MainTex_ST.zw;
 				reflectMaskUV = rotateUV(reflectMaskUV, float2(0.5, 0.5), -_rotation*6.28318548);
+				reflectMaskUV = reflectMaskUV * _MainTex_ST.xy + _MainTex_ST.zw;
 			#endif
 				float reflectMask = tex2D(_ReflectMask, reflectMaskUV).r;
 				

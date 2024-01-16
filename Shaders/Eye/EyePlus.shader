@@ -40,13 +40,20 @@
 	SubShader
 	{
 		LOD 600
-		Tags { "IGNOREPROJECTOR" = "true" "QUEUE" = "Transparent" "RenderType" = "Transparent" }
+		Tags {"IgnoreProjector" = "true"
+			  "Queue" = "Transparent" 
+			  "RenderType" = "Transparent" }
 		
 		//Main Pass
 		Pass {
 			Name "Forward"
 			LOD 600
-			Tags { "IGNOREPROJECTOR" = "true" "LIGHTMODE" = "FORWARDBASE" "QUEUE" = "Transparent" "RenderType" = "Transparent" "SHADOWSUPPORT" = "true" }
+			Tags { 	"IgnoreProjector" = "true"
+					"LightMode" = "ForwardBase" 
+					"Queue" = "Transparent" 
+			  		"RenderType" = "Transparent"
+					"ShadowSupport" = "true" }
+					
 			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
 			ZWrite Off
 			
@@ -59,12 +66,10 @@
 			}
 
 			CGPROGRAM
-			#pragma target 3.0
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
-			#pragma multi_compile _ SHADOWS_SCREEN
 
 			#define KKP_EXPENSIVE_RAMP
 			#define MOVE_PUPILS
@@ -93,7 +98,7 @@
 				o.uv0 = v.uv0;
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
-				11111;
+				1111111;
 				return o;
 			}
 
@@ -111,13 +116,11 @@
 			ZWrite Off
 			
 			CGPROGRAM
-			#pragma target 3.0
 			#pragma vertex vert
 			#pragma fragment reflectfrag
 			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#pragma multi_compile _ VERTEXLIGHT_ON
-			#pragma multi_compile _ SHADOWS_SCREEN
 			
 			#define KKP_EXPENSIVE_RAMP
 			#define MOVE_PUPILS

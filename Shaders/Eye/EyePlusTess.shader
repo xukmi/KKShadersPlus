@@ -79,7 +79,6 @@
 			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#pragma multi_compile _ VERTEXLIGHT_ON
-			#pragma multi_compile _ SHADOWS_SCREEN
 			
 			#define KKP_EXPENSIVE_RAMP
 			#define MOVE_PUPILS
@@ -116,7 +115,7 @@
 				o.uv0 = v.uv0;
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
-				11111;
+				111;
 				return o;
 			}
 			
@@ -144,7 +143,6 @@
 			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#pragma multi_compile _ VERTEXLIGHT_ON
-			#pragma multi_compile _ SHADOWS_SCREEN
 			
 			#define KKP_EXPENSIVE_RAMP
 			#define MOVE_PUPILS

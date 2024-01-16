@@ -1,6 +1,4 @@
-fixed4 frag (Varyings i) : SV_Target
-{
-
+fixed4 frag (Varyings i) : SV_Target {
 	float4 ambientShadow = 1 - _ambientshadowG.wxyz;
 	float3 ambientShadowIntensity = -ambientShadow.x * ambientShadow.yzw + 1;
 	float ambientShadowAdjust = _ambientshadowG.w * 0.5 + 0.5;

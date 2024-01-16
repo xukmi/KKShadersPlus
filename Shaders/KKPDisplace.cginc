@@ -63,8 +63,8 @@ float3 normalsFromHeight(sampler2D heightTex, float2 uv, float2 texelSize)
 void DisplacementValues(VertexData v, inout float4 vertex, inout float3 normal){
 	float2 displaceUV = v.uv0 * _DisplaceTex_ST.xy + _DisplaceTex_ST.zw;
 #ifdef MOVE_PUPILS
-	displaceUV = displaceUV * _MainTex_ST.xy + _MainTex_ST.zw;
 	displaceUV = rotateUV(displaceUV, float2(0.5, 0.5), -_rotation*6.28318548);
+	displaceUV = displaceUV * _MainTex_ST.xy + _MainTex_ST.zw;
 #endif
 #ifdef ITEM_SHADER
 	float3 displace = DisplaceVal(displaceUV + _ClockDisp.xy, 0, 0);
