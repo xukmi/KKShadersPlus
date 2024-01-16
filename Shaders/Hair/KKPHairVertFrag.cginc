@@ -4,6 +4,15 @@
 Varyings vert (VertexData v)
 {
 	Varyings o;
+	
+#ifdef TESS_SHADER
+	float4 vertex = v.vertex;
+	float3 normal = v.normal;
+	DisplacementValues(v, vertex, normal);
+	v.vertex = vertex;
+	v.normal = normal;
+#endif
+	
 	o.posWS = mul(unity_ObjectToWorld, v.vertex);
 	o.posCS = mul(UNITY_MATRIX_VP, o.posWS);
 	o.normalWS = UnityObjectToWorldNormal(v.normal);
@@ -61,7 +70,7 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	
 	float3 viewDir = normalize(_WorldSpaceCameraPos - i.posWS);
 	float3 worldLight = normalize(_WorldSpaceLightPos0.xyz); //Directional light
-	float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+	float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 	float alpha = AlphaClip(i.uv0, mainTex.a);
 	float3 diffuse = GetDiffuse(i.uv0) * mainTex.rgb;
 
@@ -155,8 +164,8 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	hairGlossVal.y = hairGlossVal.z + 0.00800000038;
 
 	float4 hairGlossUV = hairGlossVal.xyxz * _HairGloss_ST.xyxy + _HairGloss_ST.zwzw;
-	float4 hairGloss1 = tex2D(_HairGloss, hairGlossUV.xy);
-	float4 hairGloss2 = tex2D(_HairGloss, hairGlossUV.zw);
+	float4 hairGloss1 = SAMPLE_TEX2D_SAMPLER(_HairGloss, SAMPLERTEX, hairGlossUV.xy);
+	float4 hairGloss2 = SAMPLE_TEX2D_SAMPLER(_HairGloss, SAMPLERTEX, hairGlossUV.zw);
 	float hairGloss = (hairGloss1 - hairGloss2) * 0.5f;
 
 	float4 ambientShadow = 1 - _ambientshadowG.wxyz;

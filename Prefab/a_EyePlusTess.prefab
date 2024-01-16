@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23911842700600096}
   - component: {fileID: 114026440146529810}
   m_Layer: 10
-  m_Name: a_ShaderForgeExample
+  m_Name: a_EyePlusTess
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,7 +56,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 4650bca7e23e89d4daf04a4e801f7a03, type: 2}
+  - {fileID: 2100000, guid: 361b08f56c0787b4c894e12c3fd38cd6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

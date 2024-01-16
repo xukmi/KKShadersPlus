@@ -17,7 +17,7 @@
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
-		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		[Gamma]_ShadowColor ("Shadow Color", Color) = (0.628,0.628,0.628,1)
 		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
 		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 1
@@ -113,6 +113,7 @@
 			#pragma fragment frag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
@@ -164,7 +165,7 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
-				1;
+				11111;
 				return o;
 			}
 			
@@ -172,13 +173,13 @@
 
 			fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 			{
+				float4 samplerTex = SAMPLE_TEX2D(SAMPLERTEX, float2(0,0));
+				
 				//Defined in Diffuse.cginc
 				AlphaClip(i.uv0, _OutlineOn ? 1 : 0);	
 				float3 diffuse = GetDiffuse(i);
 				float3 u_xlat1;
 				MapValuesOutline(diffuse, u_xlat1);
-
-		
 
 				bool3 compTest = 0.555555582 < u_xlat1.xyz;
 				float3 diffuseShaded = u_xlat1.xyz * 0.899999976 - 0.5;
@@ -224,9 +225,7 @@
 
 				float3 finalColor = finalDiffuse * outLineCol;
 				finalColor = lerp(finalColor, _OutlineColor.rgb, _OutlineColor.a);
-				return float4(finalColor, 1.0);
-
-
+				return float4(max(finalColor, 1e-06 - samplerTex.a * 1.2e-38), 1.0);
 			}
 
 			
@@ -250,6 +249,7 @@
 			#pragma fragment frag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 
@@ -328,6 +328,7 @@
 			#pragma fragment reflectfrag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
@@ -390,6 +391,7 @@
 			#pragma hull hull
 			#pragma domain domain
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#define SHADOW_CASTER_PASS
 
@@ -418,8 +420,9 @@
 			#include "KKPTess.cginc"
             float4 frag(v2f i) : SV_Target
             {
-				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+				float4 samplerTex = SAMPLE_TEX2D(SAMPLERTEX, float2(0,0));
+				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw + samplerTex*1.2e-38;
+				float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV);
 				float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);

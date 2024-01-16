@@ -84,6 +84,7 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
@@ -129,7 +130,7 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
-				111111;
+				11111;
 				return o;
 			}
 			
@@ -138,13 +139,13 @@
 
 			fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 			{
+				float4 samplerTex = SAMPLE_TEX2D(SAMPLERTEX, float2(0,0));
+				
 				//Defined in Diffuse.cginc
 				AlphaClip(i.uv0, _OutlineOn ? 1 : 0);	
 				float3 diffuse = GetDiffuse(i);
 				float3 u_xlat1;
 				MapValuesOutline(diffuse, u_xlat1);
-
-
 
 				bool3 compTest = 0.555555582 < u_xlat1.xyz;
 				float3 diffuseShaded = u_xlat1.xyz * 0.899999976 - 0.5;
@@ -190,9 +191,7 @@
 
 				float3 finalColor = finalDiffuse * outLineCol;
 				finalColor = lerp(finalColor, _OutlineColor.rgb, _OutlineColor.a);
-				return float4(finalColor, 1.0);
-
-
+				return float4(max(finalColor, 1E-06 - samplerTex.a * 1.2e-38), 1.0);
 			}
 
 			
@@ -213,6 +212,7 @@
 
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 
@@ -277,17 +277,13 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile_shadowcaster
 
 			#include "UnityCG.cginc"
 
-			sampler2D _AlphaMask;
-			float4 _AlphaMask_ST;
-
-			float _alpha_a;
-			float _alpha_b;
-
-
+			#include "KKPSkinInput.cginc"
+			
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
                 V2F_SHADOW_CASTER;
@@ -303,8 +299,9 @@
 
             float4 frag(v2f i) : SV_Target
             {
-				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+				float4 samplerTex = SAMPLE_TEX2D(SAMPLERTEX, float2(0,0));
+				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw + samplerTex*1.2e-38;
+				float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV) ;
 				float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);

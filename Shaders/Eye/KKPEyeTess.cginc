@@ -87,8 +87,14 @@ TessellationControlPoint  hull(InputPatch<TessellationControlPoint , 3> patch, u
 float EdgeTessellationFactor(float3 p0PositionWS, float2 p0UV, float3 p1PositionWS, float2 p1UV) {
     float length = distance(p0PositionWS, p1PositionWS) * _TessBias * 3;
     float distanceToCamera = distance(_WorldSpaceCameraPos, (p0PositionWS + p1PositionWS) * 0.5);
-
-    float tessTex = tex2Dlod(_TessTex, float4((p0UV + p1UV) * 0.5, 0, 0)).x;
+	
+	float2 tessUV = (p0UV + p1UV) * 0.5;
+#ifdef MOVE_PUPILS
+	tessUV = tessUV * _MainTex_ST.xy + _MainTex_ST.zw;
+	tessUV = rotateUV(tessUV, float2(0.5, 0.5), -_rotation*6.28318548);
+#endif
+	
+    float tessTex = tex2Dlod(_TessTex, float4(tessUV, 0, 0)).x;
     float factor = length / (distanceToCamera * distanceToCamera);
     factor = min(_TessMax, factor);
     float multiplier = 1.0;

@@ -1,7 +1,6 @@
 ﻿#ifndef KKP_LIGHTING_INC
 #define KKP_LIGHTING_INC
 
-
 //Specular
 float GetDrawnSpecular(Varyings i, float4 detailMask, float shadowAttenuation, float3 viewDir, out float3 drawnSpecularColor){
 	float specularHeight = _SpeclarHeight  - 1.0;
@@ -32,8 +31,7 @@ float GetDrawnSpecular(Varyings i, float4 detailMask, float shadowAttenuation, f
 	return dotSpecCol;
 }
 
-
-float GetMeshSpecular(KKVertexLight vertexLights[4], float3 normal, float3 viewDir, float3 worldLightPos, out float3 specularColorMesh){
+float GetMeshSpecular(Varyings i, KKVertexLight vertexLights[4], float3 normal, float3 viewDir, float3 worldLightPos, out float3 specularColorMesh){
 	float3 halfVector = normalize(viewDir + worldLightPos);
 	float specularMesh = max(dot(halfVector, normal), 0.0);
 	specularMesh = log2(specularMesh);
@@ -50,17 +48,14 @@ float GetMeshSpecular(KKVertexLight vertexLights[4], float3 normal, float3 viewD
 	float3 specularColor = _UseLightColorSpecular ? _LightColor0.rgb * _SpecularColor.a: _SpecularColor.rgb * _SpecularColor.a;
 	specularColorMesh = specularPowerMesh * specularColor;
 
-
 #ifdef VERTEXLIGHT_ON
 	float3 specularColorVertex = 0;
 	specularMesh += GetVertexSpecularDiffuse(vertexLights, normal, viewDir, _SpecularPower, specularColorVertex);
 	specularColorMesh += specularColorVertex;
 #endif
 
-	
 	return specularMesh;
 }
-
 
 float GetLambert(float3 lightPos, float3 normal){
     return max(dot(lightPos, normal), 0.0);
@@ -97,5 +92,4 @@ float GetShadowAttenuation(Varyings i, float vertexLightingShadowAtten, float3 n
 
     return ramp;
 }
-
 #endif

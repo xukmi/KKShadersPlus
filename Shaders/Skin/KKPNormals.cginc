@@ -4,9 +4,9 @@
 float3 GetNormal(Varyings i){	
 	//Normals
 	float2 detailNormalUV = i.uv0 * _NormalMapDetail_ST.xy + _NormalMapDetail_ST.zw;
-	float3 detailNormal = UnpackScaleNormal(tex2D(_NormalMapDetail, detailNormalUV), _DetailNormalMapScale);
+	float3 detailNormal = UnpackScaleNormal(SAMPLE_TEX2D_SAMPLER(_NormalMapDetail, SAMPLERTEX, detailNormalUV), _DetailNormalMapScale);
 	float2 normalUV = i.uv0 * _NormalMap_ST.xy + _NormalMap_ST.zw;
-	float3 normalMap = UnpackScaleNormal(tex2D(_NormalMap, normalUV), _NormalMapScale);
+	float3 normalMap = UnpackScaleNormal(SAMPLE_TEX2D_SAMPLER(_NormalMap, SAMPLERTEX, normalUV), _NormalMapScale);
 	float3 mergedNormals = BlendNormals(normalMap, detailNormal);
 	return mergedNormals;
 }
