@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: m_HairFrontPlusTess
-  m_Shader: {fileID: 4800000, guid: 7cce7e1ab4f508c49b407f53a4ba9ade, type: 3}
+  m_Shader: {fileID: 4800000, guid: 90304c540a1356c46aea4e2f197525b1, type: 3}
   m_ShaderKeywords: _USELIGHTCOLORSPECULAR_ON _USERAMPFORLIGHTS_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

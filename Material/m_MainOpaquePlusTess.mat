@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: m_MainOpaquePlusTess
-  m_Shader: {fileID: 4800000, guid: 2ab89d7aa65d9994ca24acde731fce46, type: 3}
+  m_Shader: {fileID: 4800000, guid: 0424c4cb2dc0e91489386a71575905d0, type: 3}
   m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _NOTUSETEXSPECULAR_ON _USELIGHTCOLORSPECULAR_ON
     _USERAMPFORLIGHTS_ON _USERAMPFORSHADOWS_ON
   m_LightmapFlags: 4
@@ -185,11 +185,13 @@ Material:
     - _ReflBlendVal: 1
     - _ReflectColAlphaOpt: 0
     - _ReflectColColorOpt: 0
+    - _ReflectColMix: 1
     - _ReflectRotation: 0
     - _ReflectionVal: 1
     - _Reflective: 1
     - _ReflectiveBlend: 0.05
     - _ReflectiveMulOrAdd: 1
+    - _ReflectiveOverlayed: 0
     - _Roughness: 0.75
     - _ShadowExtend: 0.5
     - _ShadowExtendAnother: 0
@@ -234,6 +236,7 @@ Material:
     - _nip_specular: 0.5
     - _nipsize: 0.5
     - _notusetexspecular: 1
+    - _rimReflectMode: 0
     - _rimV: 0.75
     - _rimpower: 0.5
     - _tex1mask: 0

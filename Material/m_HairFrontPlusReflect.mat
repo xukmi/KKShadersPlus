@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: m_HairFrontPlusReflect
-  m_Shader: {fileID: 4800000, guid: b8a7012c2b91f0749901923649de989c, type: 3}
+  m_Shader: {fileID: 4800000, guid: a049e3d36cc6f1449b847bd015e51018, type: 3}
   m_ShaderKeywords: _USELIGHTCOLORSPECULAR_ON _USERAMPFORLIGHTS_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -122,6 +122,7 @@ Material:
     - _ReflBlendVal: 1
     - _ReflectColAlphaOpt: 0
     - _ReflectColColorOpt: 0
+    - _ReflectColMix: 1
     - _ReflectRotation: 0
     - _ReflectionVal: 1
     - _Roughness: 0.75
@@ -144,6 +145,7 @@ Material:
     - _UseRampForLights: 1
     - _UseRampForSpecular: 0
     - _ZWrite: 1
+    - _rimReflectMode: 0
     - _rimV: 0.75
     - _rimpower: 0.5
     m_Colors:

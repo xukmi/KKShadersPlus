@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: m_MainItemPlusTess
-  m_Shader: {fileID: 4800000, guid: 9759e086dc56d0a42b53c539ef25b3eb, type: 3}
+  m_Shader: {fileID: 4800000, guid: e5e23da4bbd8b404a87ee8f49a824fec, type: 3}
   m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _USELIGHTCOLORSPECULAR_ON
     _USERAMPFORLIGHTS_ON
   m_LightmapFlags: 4

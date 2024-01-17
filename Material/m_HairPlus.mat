@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: m_HairPlus
-  m_Shader: {fileID: 4800000, guid: 2abf935616a612a4fa572d1ab6cba985, type: 3}
+  m_Shader: {fileID: 4800000, guid: 4fefb229824596d42a564d7c13a6638d, type: 3}
   m_ShaderKeywords: _USELIGHTCOLORSPECULAR_ON _USERAMPFORLIGHTS_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -121,6 +121,7 @@ Material:
     - _UseRampForLights: 1
     - _UseRampForSpecular: 0
     - _ZWrite: 1
+    - _rimReflectMode: 0
     - _rimV: 0.75
     - _rimpower: 0.5
     m_Colors:

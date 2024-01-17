@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: m_MainItemAlphaPlusTess
-  m_Shader: {fileID: 4800000, guid: e2845f568288cc04bbb772db8bb2c989, type: 3}
+  m_Shader: {fileID: 4800000, guid: 403e9e278d2c15746ab085b3101b3bd6, type: 3}
   m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _USELIGHTCOLORSPECULAR_ON
     _USERAMPFORLIGHTS_ON
   m_LightmapFlags: 4
@@ -185,6 +185,8 @@ Material:
     - _Roughness: 0.75
     - _ShadowExtend: 0.5
     - _ShadowExtendAnother: 1
+    - _ShrinkVal: 1
+    - _ShrinkVerticalAdjust: 0
     - _SmoothnessTextureChannel: 0
     - _SpeclarHeight: 0.85
     - _SpecularHairPower: 1
@@ -230,6 +232,7 @@ Material:
     - _tex1mask: 0
     m_Colors:
     - _Clock: {r: 0, g: 0, b: 0, a: 1}
+    - _ClockDisp: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color2: {r: 0.7843137, g: 0.7843137, b: 0.7843137, a: 1}
     - _Color3: {r: 0.5, g: 0.5, b: 0.5, a: 1}

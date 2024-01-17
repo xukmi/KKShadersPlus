@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: m_SkinPlusTessReflect
-  m_Shader: {fileID: 4800000, guid: 0a5079a2aaa747e4e9f0c7eda37886d4, type: 3}
+  m_Shader: {fileID: 4800000, guid: 079540e42ce71e4479f822e82e1b3d64, type: 3}
   m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _USELIGHTCOLORSPECULAR_ON
     _USERAMPFORLIGHTS_ON _USERAMPFORSHADOWS_ON
   m_LightmapFlags: 4
@@ -136,6 +136,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AdjustBackfaceNormals: 0
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -167,6 +168,7 @@ Material:
     - _ReflBlendVal: 1
     - _ReflectColAlphaOpt: 0
     - _ReflectColColorOpt: 0
+    - _ReflectColMix: 1
     - _ReflectRotation: 0
     - _ReflectionVal: 1
     - _Roughness: 0.75
@@ -209,6 +211,7 @@ Material:
     - _nip_specular: 0.5
     - _nipsize: 0.5
     - _notusetexspecular: 0
+    - _rimReflectMode: 0
     - _rimV: 0.75
     - _rimpower: 0.5
     - _tex1mask: 0

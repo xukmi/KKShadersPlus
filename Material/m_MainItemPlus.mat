@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: m_MainItemPlus
-  m_Shader: {fileID: 4800000, guid: a5d12d2f396a1ae409b6fce32f57e12a, type: 3}
+  m_Shader: {fileID: 4800000, guid: 2402ddf9cbb3d6d4da5f6fb2083fe8e1, type: 3}
   m_ShaderKeywords: _ALPHA_A_ON _ALPHA_B_ON _LINETEXON_ON _USELIGHTCOLORSPECULAR_ON
     _USERAMPFORLIGHTS_ON
   m_LightmapFlags: 4
@@ -173,11 +173,13 @@ Material:
     - _ReflBlendVal: 1
     - _ReflectColAlphaOpt: 0
     - _ReflectColColorOpt: 0
+    - _ReflectColMix: 1
     - _ReflectRotation: 0
     - _ReflectionVal: 1
     - _Reflective: 0.75
     - _ReflectiveBlend: 0.05
     - _ReflectiveMulOrAdd: 1
+    - _ReflectiveOverlayed: 0
     - _Roughness: 0.75
     - _ShadowExtend: 0.5
     - _ShadowExtendAnother: 1
@@ -220,6 +222,7 @@ Material:
     - _nip_specular: 0.5
     - _nipsize: 0.5
     - _notusetexspecular: 0
+    - _rimReflectMode: 0
     - _rimV: 0.75
     - _rimpower: 0.5
     - _tex1mask: 0
