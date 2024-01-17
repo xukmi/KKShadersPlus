@@ -20,7 +20,6 @@
       <Property Name="overtex3" Type="Texture" />
       <Property Name="Texture2" Type="Texture" />
       <Property Name="Texture3" Type="Texture" />
-	  <Property Name="SpecularMap" Type="Texture" />
       <Property Name="EmissionMask" Type="Texture" />
       <Property Name="EmissionColor" Type="Color" />
       <Property Name="EmissionIntensity" Type="Float" />
@@ -88,7 +87,6 @@
       <Property Name="Texture2" Type="Texture" />
       <Property Name="Texture3" Type="Texture" />
       <Property Name="EmissionMask" Type="Texture" />
-	  <Property Name="SpecularMap" Type="Texture" />
       <Property Name="EmissionColor" Type="Color" />
       <Property Name="EmissionIntensity" Type="Float" />
       <Property Name="LiquidTiling" Type="Color" />
@@ -168,7 +166,6 @@
       <Property Name="Texture2" Type="Texture" />
       <Property Name="Texture3" Type="Texture" />
       <Property Name="EmissionMask" Type="Texture" />
-	  <Property Name="SpecularMap" Type="Texture" />
       <Property Name="EmissionColor" Type="Color" />
       <Property Name="EmissionIntensity" Type="Float" />
       <Property Name="LiquidTiling" Type="Color" />
@@ -246,7 +243,6 @@
       <Property Name="Texture2" Type="Texture" />
       <Property Name="Texture3" Type="Texture" />
       <Property Name="EmissionMask" Type="Texture" />
-	  <Property Name="SpecularMap" Type="Texture" />
       <Property Name="EmissionColor" Type="Color" />
       <Property Name="EmissionIntensity" Type="Float" />
       <Property Name="LiquidTiling" Type="Color" />
