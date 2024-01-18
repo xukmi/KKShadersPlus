@@ -114,6 +114,7 @@
 	
 #ifdef STUDIO_SHADER
 	float ambientshadowOFF;
+	float EmissionPower;
 
 	DECLARE_TEX2D(_PatternMask1);
 	DECLARE_TEX2D_NOSAMPLER(_PatternMask2);

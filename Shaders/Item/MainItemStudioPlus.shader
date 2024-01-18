@@ -46,7 +46,7 @@
 		[MaterialToggle] _patternclamp2 ("Pattern 2 tile clamp", Float) = 0
 		[MaterialToggle] _patternclamp3 ("Pattern 3 tile clamp", Float) = 0
 		
-		_EmissionPower("Emission Intensity", Float) = 1
+		_EmissionPower("Emission Power", Float) = 1
 		_LineWidthS ("LineWidthS", Float) = 1
 		_patternrotator1 ("Pattern 1 rotation", Range(-1,1)) = 0
 		_patternrotator2 ("Pattern 2 rotation", Range(-1,1)) = 0
@@ -69,6 +69,7 @@
 		
 		_Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		_DetailNormalMapScale ("Detail Normal Scale", Float) = 1
+		_EmissionIntensity ("Emission Intensity", Float) = 0
 		_NormalMapScale ("NormalMapScale", Float) = 1
 		
 		// KKPrim properties
@@ -116,6 +117,8 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
+			
+			#define STUDIO_SHADER
 			
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
@@ -182,22 +185,6 @@
 				color = colorMask.b * (_Color3.rgb - color) + color;
 				float3 diffuse = mainTex * color;
 
-
-				//Apparently can rotate?
-				float time = _TimeEditor.y + _Time.y;
-				time *= _Clock.z * _Clock.w;
-				float sinTime = sin(time);
-				float cosTime = cos(time);
-				float3 rotVal = float3(-sinTime, cosTime, sinTime);
-				float2 detailUVAdjust = i.uv0 - _Clock.xy;
-				float2 rotatedDetailUV;
-				rotatedDetailUV.x = dot(detailUVAdjust, rotVal.yz); 
-				rotatedDetailUV.y = dot(detailUVAdjust, rotVal.xy);
-				rotatedDetailUV += _Clock.xy;
-				rotatedDetailUV = rotatedDetailUV * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMaskRot = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, rotatedDetailUV);
-
-				diffuse = lineMaskRot.b * -diffuse + diffuse;
 				float3 shadingAdjustment = ShadeAdjustItem(diffuse);
 
 				float2 detailUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
@@ -267,7 +254,6 @@
 			Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
 			Cull [_CullOption]
 
-
 			CGPROGRAM
 			#pragma target 3.0
 
@@ -276,6 +262,8 @@
 			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
+			
+			#define STUDIO_SHADER
 			
 			//Unity Includes
 			#include "UnityCG.cginc"
@@ -316,7 +304,7 @@
 				return o;
 			}
 
-			#include "KKPItemItemFrag.cginc"
+			#include "KKPStudioItemFrag.cginc"
 
 			ENDCG
 		}
@@ -335,6 +323,8 @@
 			#pragma fragment frag
 			#pragma multi_compile_shadowcaster
 			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
+			
+			#define STUDIO_SHADER
 
 			#include "UnityCG.cginc"
 
