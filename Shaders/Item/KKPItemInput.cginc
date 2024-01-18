@@ -112,9 +112,28 @@
 	float _AdjustBackfaceNormals;
 	float _rimReflectMode;
 	
+#ifdef STUDIO_SHADER
+	float ambientshadowOFF;
+
+	DECLARE_TEX2D(_PatternMask1);
+	DECLARE_TEX2D_NOSAMPLER(_PatternMask2);
+	DECLARE_TEX2D_NOSAMPLER(_PatternMask3);
+	float4 _PatternMask1_ST;
+	float4 _PatternMask2_ST;
+	float4 _PatternMask3_ST;
+	float4 _Patternuv1;
+	float4 _Patternuv2;
+	float4 _Patternuv3;
+	float _patternrotator1;
+	float _patternrotator2;
+	float _patternrotator3;
+#endif
+	
 #ifndef DEFINED_CLOCK
-#define DEFINED_CLOCK
-	float4 _Clock;
+	#ifndef STUDIO_SHADER
+		#define DEFINED_CLOCK
+		float4 _Clock;
+	#endif
 #endif
 
 	float4 _Color;
