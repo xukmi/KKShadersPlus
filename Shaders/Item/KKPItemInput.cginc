@@ -128,6 +128,10 @@
 	float _patternrotator1;
 	float _patternrotator2;
 	float _patternrotator3;
+	
+	float4 _Color1_2;
+	float4 _Color2_2;
+	float4 _Color3_2;
 #endif
 	
 #ifndef DEFINED_CLOCK
