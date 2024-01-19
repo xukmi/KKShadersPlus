@@ -113,8 +113,8 @@
 	float _rimReflectMode;
 	
 #ifdef STUDIO_SHADER
-	float ambientshadowOFF;
-	float EmissionPower;
+	float _ambientshadowOFF;
+	float _EmissionPower;
 
 	DECLARE_TEX2D(_PatternMask1);
 	DECLARE_TEX2D_NOSAMPLER(_PatternMask2);

@@ -69,7 +69,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	color = colorMask.b * (_Color3.rgb - color) + color;
 	float3 diffuse = mainTex * color;
 	
-	float3 normal = NormalAdjust(i, GetNormal(i), 1);
+	float3 normal = NormalAdjust(i, GetNormal(i), faceDir);
 
 	float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
 	float3x3 rotY = AngleAxis3x3(_KKPRimRotateY, float3(1, 0, 0));
