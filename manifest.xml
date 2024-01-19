@@ -1639,6 +1639,9 @@
 	  <Property Name="patternrotator1" Type="Float" Range="-1, 1" />
 	  <Property Name="patternrotator2" Type="Float" Range="-1, 1" />
 	  <Property Name="patternrotator3" Type="Float" Range="-1, 1" />
+	  <Property Name="patternclamp1" Type="Float" Range="0, 1" />
+	  <Property Name="patternclamp2" Type="Float" Range="0, 1" />
+	  <Property Name="patternclamp3" Type="Float" Range="0, 1" />
 	  <Property Name="ambientshadowOFF" Type="Float" Range="0, 1" />
 	  <Property Name="EmissionPower" Type="Float" Range="0, 1" />
     </Shader>

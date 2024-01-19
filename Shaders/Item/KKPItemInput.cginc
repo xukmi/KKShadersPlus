@@ -128,6 +128,9 @@
 	float _patternrotator1;
 	float _patternrotator2;
 	float _patternrotator3;
+	float _patternclamp1;
+	float _patternclamp2;
+	float _patternclamp3;
 	
 	float4 _Color1_2;
 	float4 _Color2_2;

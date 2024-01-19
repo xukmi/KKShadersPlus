@@ -53,10 +53,11 @@ float3x3 AngleAxis3x3(float angle, float3 axis) {
     );
 }
 
-float2 PatternUV(Varyings i, float4 ST, float4 uv, float rot) {
+float2 PatternUV(Varyings i, float4 ST, float4 uv, float rot, float clampuv) {
 	float2 output = (i.uv0 + uv.xy);
 	output = rotateUV(output, float2(0.5, 0.5), -rot * 3.14159265358979);
 	output = (output - 0.5) * uv.zw + 0.5;
+	output = output + (output - saturate(output)) * -clampuv;
 	output = output * ST.xy + ST.zw;
 	return output;
 }
@@ -72,9 +73,9 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 
 	float4 colorMask = SAMPLE_TEX2D_SAMPLER(_ColorMask, SAMPLERTEX, i.uv0 * _ColorMask_ST.xy + _ColorMask_ST.zw);
 	
-	float3 patternMask1 = SAMPLE_TEX2D_SAMPLER(_PatternMask1, _PatternMask1, PatternUV(i, _PatternMask1_ST, _Patternuv1, _patternrotator1)).rgb;
-	float3 patternMask2 = SAMPLE_TEX2D_SAMPLER(_PatternMask2, _PatternMask1, PatternUV(i, _PatternMask2_ST, _Patternuv2, _patternrotator2)).rgb;
-	float3 patternMask3 = SAMPLE_TEX2D_SAMPLER(_PatternMask3, _PatternMask1, PatternUV(i, _PatternMask3_ST, _Patternuv3, _patternrotator3)).rgb;
+	float3 patternMask1 = SAMPLE_TEX2D_SAMPLER(_PatternMask1, _PatternMask1, PatternUV(i, _PatternMask1_ST, _Patternuv1, _patternrotator1, _patternclamp1)).rgb;
+	float3 patternMask2 = SAMPLE_TEX2D_SAMPLER(_PatternMask2, _PatternMask1, PatternUV(i, _PatternMask2_ST, _Patternuv2, _patternrotator2, _patternclamp2)).rgb;
+	float3 patternMask3 = SAMPLE_TEX2D_SAMPLER(_PatternMask3, _PatternMask1, PatternUV(i, _PatternMask3_ST, _Patternuv3, _patternrotator3, _patternclamp3)).rgb;
 	
 	float3 color1col = patternMask1 * _Color.rgb + (1 - patternMask1) * _Color1_2.rgb;
 	float3 color2col = patternMask2 * _Color2.rgb + (1 - patternMask2) * _Color2_2.rgb;
@@ -115,9 +116,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	finalAmbientShadow = saturate(finalAmbientShadow);
 	float3 invertFinalAmbientShadow = 1 - finalAmbientShadow;
 
-	///////
-	shadingAdjustment = shadingAdjustment * finalAmbientShadow;
-	/*bool3 compTest = 0.555555582 < shadingAdjustment;
+	bool3 compTest = 0.555555582 < shadingAdjustment;
 	shadingAdjustment *= finalAmbientShadow;
 	shadingAdjustment *= 1.79999995;
 	float3 diffuseShaded = shadingAdjustment * 0.899999976 - 0.5;
@@ -129,8 +128,14 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 		hlslcc_movcTemp.y = (compTest.y) ? diffuseShaded.y : shadingAdjustment.y;
 		hlslcc_movcTemp.z = (compTest.z) ? diffuseShaded.z : shadingAdjustment.z;
 		
+	#ifdef ALPHA_SHADER
 		shadingAdjustment = saturate(hlslcc_movcTemp);
-	}*/
+	#else
+		float3 shadowCol = lerp(1, _ShadowColor.rgb, 1 - saturate(_ShadowColor.a));
+		shadingAdjustment = saturate(hlslcc_movcTemp * shadowCol);
+	#endif
+	}
+
 	float shadowExtendAnother = 1 - _ShadowExtendAnother;
 	float kkMetal = _AnotherRampFull * (1 - lineMask.r) + lineMask.r;
 
@@ -167,7 +172,6 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float fresnel = max(dot(normal, viewDir), 0.0);
 	fresnel = log2(1 - fresnel);
 
-
 	float specular = dot(normal, halfDir);
 	specular = max(specular, 0.0);
 	float anotherRampSpecularVertex = 0.0;
@@ -185,17 +189,17 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	anotherRamp -= ramp;
 	float finalRamp = kkMetal * anotherRamp + ramp;
 
-	#ifdef SHADOWS_SCREEN
-		float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
-		float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
-		float shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0);
-		finalRamp *= shadowAttenuation;
-	#endif
+#ifdef SHADOWS_SCREEN
+	float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
+	float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
+	float shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0);
+	finalRamp *= shadowAttenuation;
+#endif
 	
 	float rimPlace = lerp(lerp(1 - finalRamp, 1, min(_rimReflectMode+1, 1)), finalRamp, max(0, _rimReflectMode));
 	diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse * rimPlace);
 	
-	diffuseShadow = finalRamp *  diffuseShadowBlended + diffuseShadow;
+	diffuseShadow = (1 - (1 - finalRamp) * (1 - _ShadowColor.rgb)) *  diffuseShadowBlended + diffuseShadow;
 	
 	float specularHeight = _SpeclarHeight  - 1.0;
 	specularHeight *= 0.800000012;
