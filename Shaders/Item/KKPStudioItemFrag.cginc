@@ -277,9 +277,8 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float3 ambientCol = max(lightCol, _ambientshadowG.xyz);
 	diffuseShadow = diffuseShadow * ambientCol;
 	
-	//float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;
-	//float drawnShadow = detailMask.y * (1 - shadowExtend) + shadowExtend;
-	float drawnShadow = 1 - detailMask.y * _ShadowExtend * _EmissionIntensity;
+	float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;
+	float drawnShadow = (1 - detailMask.y) * (1 - shadowExtend) + shadowExtend;
 	
 	float detailLineShadow = 1 - detailMask.x;
 	detailLineShadow = _DetailBLineG * (detailLineShadow - lineMask.y) + lineMask.y;
