@@ -115,6 +115,10 @@
 #ifdef STUDIO_SHADER
 	float _ambientshadowOFF;
 	float _EmissionPower;
+#ifdef ALPHA_SHADER
+	float _alpha;
+	float _AlphaOptionZWrite;
+#endif
 
 	DECLARE_TEX2D(_PatternMask1);
 	DECLARE_TEX2D_NOSAMPLER(_PatternMask2);

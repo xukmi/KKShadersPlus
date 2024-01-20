@@ -50,7 +50,6 @@ float3 ShadeAdjust(float3 col){
 						
 }
 
-
 float3 ShadeAdjustItem(float3 col){
 	float4 u_xlat0;
 	float4 u_xlat1;
