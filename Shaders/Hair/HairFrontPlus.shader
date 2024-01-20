@@ -51,6 +51,9 @@
 		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 		_rimReflectMode ("Rimlight Placement", Float) = 0.0
+		_transparency ("Hair Transparency", Float) = 0.0
+		_src ("Src", Float) = 5.0
+		_dst ("Dst", Float) = 10.0
 	}
 	SubShader
 	{
@@ -196,7 +199,58 @@
 			
 			ENDCG
 		}
+		
+		// Alpha
+		Pass
+		{
+			Name "ALPHA"
+			Tags { "LightMode" = "ForwardBase" "QUEUE" = "AlphaTest-400" "RenderType" = "TransparentCutout" "SHADOWSUPPORT" = "true" }
+			Blend [_src] [_dst], SrcAlpha OneMinusSrcAlpha
+			Cull Off
+			Stencil {
+				Ref 2
+				Comp Equal
+				Pass Keep
+				Fail Keep
+				ZFail Keep
+			}
 
+			CGPROGRAM
+			#pragma target 3.0
+
+			#pragma vertex vert
+			#pragma fragment transparencyFrag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu
+			#pragma multi_compile _ VERTEXLIGHT_ON
+			#pragma multi_compile _ SHADOWS_SCREEN
+			
+			#define KKP_EXPENSIVE_RAMP
+
+			//Unity Includes
+			#include "UnityCG.cginc"
+			#include "AutoLight.cginc"
+			#include "Lighting.cginc"
+
+			#include "KKPHairInput.cginc"
+			#include "KKPHairDiffuse.cginc"
+			#include "KKPHairNormals.cginc"
+			#include "../KKPVertexLights.cginc"
+			#include "../KKPVertexLightsSpecular.cginc"
+			#include "../KKPEmission.cginc"
+			
+			#define HAIR_FRONT
+			#include "KKPHairVertFrag.cginc" //Vert Frag here
+			
+			fixed4 transparencyFrag (Varyings i, int frontFace : VFACE) : SV_Target
+			{
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				AlphaClip(i.uv0, mainTex.a);
+				float4 col = frag(i, frontFace);
+				return float4(col.rgb, 1 - _transparency);
+			}
+
+			ENDCG
+		}
 		
 		//ShadowCaster
 		Pass
@@ -254,5 +308,6 @@
 		}
 		
 	}
+	
 	Fallback "Unlit/Texture"
 }

@@ -625,6 +625,7 @@
 	  <Property Name="CullOption" Type="Float" Range="0, 2" />
 	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
+	  <Property Name="transparency" Type="Float" Range="0, 1" />
     </Shader>
 	<Shader Name="xukmi/HairFrontPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplusupgraded.unity3d" Asset="a_HairFrontPlusTess">
       <Property Name="DetailMask" Type="Texture" />
@@ -695,6 +696,7 @@
       <Property Name="DisplaceNormalMultiplier" Type="Float" />
       <Property Name="DisplaceFull" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
+	  <Property Name="transparency" Type="Float" Range="0, 1" />
     </Shader>
 	<Shader Name="xukmi/HairFrontPlusReflect" AssetBundle="chara/xukmi/shaders/vanillaplusupgraded.unity3d" Asset="a_HairFrontPlusReflect">
       <Property Name="DetailMask" Type="Texture" />
@@ -758,6 +760,7 @@
 	  <Property Name="ReflectMask" Type="Texture" />
 	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
 	  <Property Name="ShadowHSV" Type="Color" />
+	  <Property Name="transparency" Type="Float" Range="0, 1" />
     </Shader>
 	<Shader Name="xukmi/HairFrontPlusTessReflect" AssetBundle="chara/xukmi/shaders/vanillaplusupgraded.unity3d" Asset="a_HairFrontPlusTessReflect">
       <Property Name="DetailMask" Type="Texture" />
@@ -832,6 +835,7 @@
       <Property Name="DisplaceNormalMultiplier" Type="Float" />
       <Property Name="DisplaceFull" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
+	  <Property Name="transparency" Type="Float" Range="0, 1" />
     </Shader>
     <Shader Name="xukmi/EyePlus" AssetBundle="chara/xukmi/shaders/vanillaplusupgraded.unity3d" Asset="a_EyePlus">
       <Property Name="MainTex" Type="Texture" />

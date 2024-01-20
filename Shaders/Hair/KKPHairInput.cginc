@@ -96,6 +96,9 @@
 	int _CullOption;
 	float _Cutoff;
 	float _rimReflectMode;
+	float _transparency;
+	float _src;
+	float _dst;
 	
 	// Required for Matcap light-masking
 	sampler2D _NormalMask;
