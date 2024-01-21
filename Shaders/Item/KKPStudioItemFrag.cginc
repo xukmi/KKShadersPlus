@@ -70,6 +70,12 @@ float3 LightnessAdjustment(float3 x) {
 	return -1.44837 * x * x + 3.80805 * x - 0.736657;
 }
 
+float ShadowExtendAdjustment(float x) {
+	float pol1 = 0.2199 * x * x * x - 0.6290 * x * x + 1.411 * x;
+	float pol2 = -0.0294 * x * x * x + 0.5031 * x * x - 1.4444 * x + 5.5711;
+	return lerp(lerp(pol1, pol2, pow(saturate((x - 1) / 2),2)), x+3, pow(saturate((x - 7) / 2),2));
+}
+
 fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	//Clips based on main texture
 	float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
@@ -107,6 +113,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	color = colorMask.g * (color2col - color) + color;
 	color = colorMask.b * (color3col - color) + color;
 	float3 diffuse = mainTex * color;
+	float3 shadowsOFF = diffuse;
 	
 	float3 normal = NormalAdjust(i, GetNormal(i), faceDir);
 
@@ -123,7 +130,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float4 detailMask = tex2D(_DetailMask, detailUV);
 	float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
 	float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, lineMaskUV);
-	lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;
+	lineMask.r = lerp(lineMask.r, detailMask.r, _DetailRLineR);
 
 	float4 ambientShadow = 1 - _ambientshadowG.wxyz;
 	float3 ambientShadowIntensity = -ambientShadow.x * ambientShadow.yzw + 1;
@@ -147,7 +154,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 #endif
 
 	float shadowExtendAnother = 1 - _ShadowExtendAnother;
-	float kkMetal = _AnotherRampFull * (1 - lineMask.r) + lineMask.r;
+	float kkMetal = lerp(lineMask.r, 1, _AnotherRampFull);
 
 	float kkMetalMap = kkMetal;
 	kkMetal *= _UseKKMetal;
@@ -213,7 +220,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float2 anotherRampUV = max(specular, anotherRampSpecularVertex) * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw;
 	float anotherRamp = tex2D(_AnotherRamp, anotherRampUV);
 	specular = log2(specular);
-	float finalRamp = lerp(ramp, anotherRamp, _AnotherRampFull);
+	float finalRamp = lerp(ramp, anotherRamp, kkMetal);
 
 #ifdef SHADOWS_SCREEN
 	float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
@@ -225,7 +232,11 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float rimPlace = lerp(lerp(1 - finalRamp, 1, min(_rimReflectMode+1, 1)), finalRamp, max(0, _rimReflectMode));
 	diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse * rimPlace);
 	
-	diffuseShadow = lerp(adjustedShadow, diffuseShadowBlended + diffuseShadow, finalRamp);
+	_ShadowExtend = ShadowExtendAdjustment(_ShadowExtend);
+	float sOFFshadowAdjust = 1 + 3.1 * saturate(2 * _ambientshadowOFF);
+	float sOFFlightAdjust = 1 + 0.58 * saturate(2 * _ambientshadowOFF);
+	float lightAmount = finalRamp * (1 - detailMask.g * _ShadowExtend);
+	diffuseShadow = lerp(adjustedShadow * sOFFshadowAdjust, (diffuseShadowBlended + diffuseShadow) * sOFFlightAdjust, lightAmount);
 	
 	float specularHeight = _SpeclarHeight  - 1.0;
 	specularHeight *= 0.800000012;
@@ -237,7 +248,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float drawnSpecular = tex2D(_DetailMask, detailMaskUV2).x;
 	float drawnSpecularSquared = min(drawnSpecular * drawnSpecular, 1.0);
 
-	_SpecularPower *= _UseDetailRAsSpecularMap ? detailMask.x : 1;
+	_SpecularPower *= _UseDetailRAsSpecularMap ? detailMask.r : 1;
 
 	float specularPower = _SpecularPower * 256.0;
 	specular *= specularPower;
@@ -260,8 +271,6 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 
 	float3 ambientShadowAdjust2 = AmbientShadowAdjust();
 
-	//detailMask.rg = 1 - detailMask.bg;
-
 	float rimPow = _rimpower * 9.0 + 1.0;
 	rimPow = rimPow * fresnel;
 	float rim = saturate(exp2(rimPow) * 2.5 - 0.5) * _rimV * rimPlace;
@@ -269,7 +278,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	rim *= rimMask;
 
 	ambientShadowAdjust2 *= rim;
-	ambientShadowAdjust2 *= detailMask.g;
+	ambientShadowAdjust2 *= 1 - detailMask.g;
 	ambientShadowAdjust2 = min(max(ambientShadowAdjust2, 0.0), 0.5);
 	diffuseShadow += ambientShadowAdjust2;
 
@@ -277,16 +286,17 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float3 ambientCol = max(lightCol, _ambientshadowG.xyz);
 	diffuseShadow = diffuseShadow * ambientCol;
 	
-	float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;
-	float drawnShadow = (1 - detailMask.y) * (1 - shadowExtend) + shadowExtend;
-	
-	float detailLineShadow = 1 - detailMask.x;
-	detailLineShadow = _DetailBLineG * (detailLineShadow - lineMask.y) + lineMask.y;
+	float drawnShadow = max(detailMask.g * _ShadowExtend, lineMask.b) * 0.25;
+	float detailLineShadow = lerp(lineMask.g, detailMask.b, _DetailBLineG);
+	float texShadow = max(drawnShadow, detailLineShadow);
 
 	shadingAdjustment = 1 - shadingAdjustment * shadowExtendAnother;
-	shadingAdjustment = drawnShadow * shadingAdjustment + shadowExtendShaded;
-	shadingAdjustment *= diffuseShadow;
+	shadingAdjustment = shadingAdjustment + shadowExtendShaded;
+	shadingAdjustment *= diffuseShadow + specularCol;
 
+	float4 emissionColor = float4(diffuse, 1);
+	float emissionMask = saturate(detailMask.r * 5) * 3;
+	
 	diffuse = diffuse * _LineColorG;
 	float3 lineCol = -diffuse * shadowExtendShaded + 1;
 	diffuse *= shadowExtendShaded;
@@ -300,9 +310,9 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	diffuse = saturate(diffuse);
 	diffuse = -shadingAdjustment + diffuse;
 
-	float3 finalDiffuse = detailLineShadow * diffuse + shadingAdjustment;
+	float3 finalDiffuse = texShadow * diffuse + shadingAdjustment;
 	
-	finalDiffuse += specularCol;
+	//finalDiffuse += specularCol;
 	
 	float3 hsl = RGBtoHSL(finalDiffuse);
 	hsl.x = hsl.x + _ShadowHSV.x;
@@ -315,7 +325,9 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * rimPlace * (1 - _KKPRimAsDiffuse));
 
 	float4 emission = GetEmission(i.uv0);
-	finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
+	finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb) + emissionColor * emissionMask * _EmissionPower;
+	
+	finalDiffuse = lerp(finalDiffuse, shadowsOFF, saturate(2 * _ambientshadowOFF - 1));
 
 	return float4(max(finalDiffuse,1E-06), alpha);
 }
