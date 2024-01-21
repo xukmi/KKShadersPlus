@@ -53,21 +53,67 @@ float3x3 AngleAxis3x3(float angle, float3 axis) {
     );
 }
 
+float2 PatternUV(Varyings i, float4 ST, float4 uv, float rot, float clampuv) {
+	float2 output = (i.uv0 + uv.xy);
+	output = rotateUV(output, float2(0.5, 0.5), -rot * 3.14159265358979);
+	output = (output - 0.5) * uv.zw + 0.5;
+	output = output + (output - saturate(output)) * -clampuv;
+	output = output * ST.xy + ST.zw;
+	return output;
+}
+
+float3 SaturationAdjustment(float3 x) {
+	return -2.39016 * x * x + 4.06485 * x - 0.223603;
+}
+
+float3 LightnessAdjustment(float3 x) {
+	return -1.44837 * x * x + 3.80805 * x - 0.736657;
+}
+
+float ShadowExtendAdjustment(float x) {
+	float pol1 = 0.2199 * x * x * x - 0.6290 * x * x + 1.411 * x;
+	float pol2 = -0.0294 * x * x * x + 0.5031 * x * x - 1.4444 * x + 5.5711;
+	return lerp(lerp(pol1, pol2, pow(saturate((x - 1) / 2),2)), x+3, pow(saturate((x - 7) / 2),2));
+}
+
 fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
-	//Clips based on alpha texture
+	//Clips based on main texture
 	float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
-	AlphaClip(i.uv0, mainTex.a);
+	if (mainTex.a <= _Cutoff) discard;
+	
+	float alpha = 1;
+#ifdef ALPHA_SHADER
+	float2 alphaUV = i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw;
+	float alphaMask = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, alphaUV).a;
+	alpha = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2.0) - (1 - alphaMask) * (floor(_AlphaOptionCutoff) % 2);
+	if (alpha <= _Cutoff) discard;
+	alpha *= _alpha * _alpha;
+	
+	_ShadowColor.rgb = (_ShadowColor.rgb + 1E-06) / MaxGrayscale(_ShadowColor.rgb + 1E-06);
+	_ShadowColor.rgb = lerp(_ShadowColor.rgb, 1, 0.6) * (_ShadowColor.a + 1E-06);
+	_ShadowColor = float4(_ShadowColor.rgb, 1);
+#endif
 
 	float3 worldLightPos = normalize(_WorldSpaceLightPos0.xyz);
 	float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWS);
 	float3 halfDir = normalize(viewDir + worldLightPos);
 
-	float4 colorMask = SAMPLE_TEX2D_SAMPLER(_ColorMask, SAMPLERTEX, i.uv0 * + _ColorMask_ST.xy + _ColorMask_ST.zw);
+	float4 colorMask = SAMPLE_TEX2D_SAMPLER(_ColorMask, SAMPLERTEX, i.uv0 * _ColorMask_ST.xy + _ColorMask_ST.zw);
+	
+	float3 patternMask1 = SAMPLE_TEX2D_SAMPLER(_PatternMask1, _PatternMask1, PatternUV(i, _PatternMask1_ST, _Patternuv1, _patternrotator1, _patternclamp1)).rgb;
+	float3 patternMask2 = SAMPLE_TEX2D_SAMPLER(_PatternMask2, _PatternMask1, PatternUV(i, _PatternMask2_ST, _Patternuv2, _patternrotator2, _patternclamp2)).rgb;
+	float3 patternMask3 = SAMPLE_TEX2D_SAMPLER(_PatternMask3, _PatternMask1, PatternUV(i, _PatternMask3_ST, _Patternuv3, _patternrotator3, _patternclamp3)).rgb;
+	
+	float3 color1col = patternMask1 * _Color.rgb + (1 - patternMask1) * _Color1_2.rgb;
+	float3 color2col = patternMask2 * _Color2.rgb + (1 - patternMask2) * _Color2_2.rgb;
+	float3 color3col = patternMask3 * _Color3.rgb + (1 - patternMask3) * _Color3_2.rgb;
+	
 	float3 color;
-	color = colorMask.r * (_Color.rgb - 1) + 1;
-	color = colorMask.g * (_Color2.rgb - color) + color;
-	color = colorMask.b * (_Color3.rgb - color) + color;
+	color = colorMask.r * (color1col - 1) + 1;
+	color = colorMask.g * (color2col - color) + color;
+	color = colorMask.b * (color3col - color) + color;
 	float3 diffuse = mainTex * color;
+	float3 shadowsOFF = diffuse;
 	
 	float3 normal = NormalAdjust(i, GetNormal(i), faceDir);
 
@@ -80,31 +126,12 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	_KKPRimColor.a *= (_UseKKPRim);
 	float3 kkpFresCol = kkpFres * _KKPRimColor + (1 - kkpFres) * diffuse;
 
-	//Apparently can rotate?
-	float time = _TimeEditor.y + _Time.y;
-	time *= _Clock.z * _Clock.w;
-	float sinTime = sin(time);
-	float cosTime = cos(time);
-	float3 rotVal = float3(-sinTime, cosTime, sinTime);
-	float2 detailUVAdjust = i.uv0 - _Clock.xy;
-	float2 rotatedDetailUV;
-	rotatedDetailUV.x = dot(detailUVAdjust, rotVal.yz); 
-	rotatedDetailUV.y = dot(detailUVAdjust, rotVal.xy);
-	rotatedDetailUV += _Clock.xy;
-	rotatedDetailUV = rotatedDetailUV * _LineMask_ST.xy + _LineMask_ST.zw;
-	float4 lineMaskRot = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, rotatedDetailUV);
-
-	diffuse = lineMaskRot.b * -diffuse + diffuse;
-	float3 shadingAdjustment = ShadeAdjustItem(diffuse);
-
 	float2 detailUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 	float4 detailMask = tex2D(_DetailMask, detailUV);
 	float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
 	float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, lineMaskUV);
-	lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;
+	lineMask.r = lerp(lineMask.r, detailMask.r, _DetailRLineR);
 
-	float3 diffuseShaded = shadingAdjustment * 0.899999976 - 0.5;
-	diffuseShaded = -diffuseShaded * 2 + 1;
 	float4 ambientShadow = 1 - _ambientshadowG.wxyz;
 	float3 ambientShadowIntensity = -ambientShadow.x * ambientShadow.yzw + 1;
 	float ambientShadowAdjust = _ambientshadowG.w * 0.5 + 0.5;
@@ -115,25 +142,19 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	finalAmbientShadow = saturate(finalAmbientShadow);
 	float3 invertFinalAmbientShadow = 1 - finalAmbientShadow;
 
-	bool3 compTest = 0.555555582 < shadingAdjustment;
+	float3 shadingAdjustment = diffuse * _ShadowColor.rgb;
 	shadingAdjustment *= finalAmbientShadow;
 	shadingAdjustment *= 1.79999995;
-	diffuseShaded = -diffuseShaded * invertFinalAmbientShadow + 1;
-	{
-		float3 hlslcc_movcTemp = shadingAdjustment;
-		hlslcc_movcTemp.x = (compTest.x) ? diffuseShaded.x : shadingAdjustment.x;
-		hlslcc_movcTemp.y = (compTest.y) ? diffuseShaded.y : shadingAdjustment.y;
-		hlslcc_movcTemp.z = (compTest.z) ? diffuseShaded.z : shadingAdjustment.z;
-		
-	#ifdef ALPHA_SHADER
-		shadingAdjustment = saturate(hlslcc_movcTemp);
-	#else
-		float3 shadowCol = lerp(1, _ShadowColor.rgb+1E-06, 1 - saturate(_ShadowColor.a+1E-06));
-		shadingAdjustment = saturate(hlslcc_movcTemp * shadowCol);
-	#endif
-	}
+	
+#ifdef ALPHA_SHADER
+	shadingAdjustment = saturate(shadingAdjustment);
+#else
+	float3 shadowCol = lerp(1, _ShadowColor.rgb, 1 - saturate(_ShadowColor.a));
+	shadingAdjustment = saturate(shadingAdjustment * shadowCol);
+#endif
+
 	float shadowExtendAnother = 1 - _ShadowExtendAnother;
-	float kkMetal = _AnotherRampFull * (1 - lineMask.r) + lineMask.r;
+	float kkMetal = lerp(lineMask.r, 1, _AnotherRampFull);
 
 	float kkMetalMap = kkMetal;
 	kkMetal *= _UseKKMetal;
@@ -143,9 +164,26 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	shadowExtendAnother = saturate(shadowExtendAnother) * 0.670000017 + 0.330000013;
 
 	float3 shadowExtendShaded = shadowExtendAnother * shadingAdjustment;
-	shadingAdjustment = -shadingAdjustment * shadowExtendAnother + 1;
 	float3 diffuseShadow = diffuse * shadowExtendShaded;
 	float3 diffuseShadowBlended = -shadowExtendShaded * diffuse + diffuse;
+	
+	float3 adjustedShadow;
+	{
+		bool3 compTest = _ShadowColor.rgb > 0.555555582;
+		float3 hsl = RGBtoHSL(shadowExtendShaded.rgb);
+		float3 hsl_r = hsl;
+		float3 hsl_g = hsl;
+		float3 hsl_b = hsl;
+		float3 saturation = SaturationAdjustment(_ShadowColor);
+		float3 lightness = LightnessAdjustment(_ShadowColor);
+		hsl_r.y *= compTest.x ? saturation.r : 1.3;
+		hsl_r.z *= compTest.x ? lightness.r : 0.91;
+		hsl_g.y *= compTest.y ? saturation.g : 1.3;
+		hsl_g.z *= compTest.y ? lightness.g : 0.91;
+		hsl_b.y *= compTest.z ? saturation.b : 1.3;
+		hsl_b.z *= compTest.z ? lightness.b : 0.91;
+		adjustedShadow = float3(HSLtoRGB(hsl_r).r, HSLtoRGB(hsl_g).g, HSLtoRGB(hsl_b).b);
+	}
 
 	KKVertexLight vertexLights[4];
 #ifdef VERTEXLIGHT_ON
@@ -168,7 +206,6 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float fresnel = max(dot(normal, viewDir), 0.0);
 	fresnel = log2(1 - fresnel);
 
-
 	float specular = dot(normal, halfDir);
 	specular = max(specular, 0.0);
 	float anotherRampSpecularVertex = 0.0;
@@ -183,20 +220,23 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float2 anotherRampUV = max(specular, anotherRampSpecularVertex) * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw;
 	float anotherRamp = tex2D(_AnotherRamp, anotherRampUV);
 	specular = log2(specular);
-	anotherRamp -= ramp;
-	float finalRamp = kkMetal * anotherRamp + ramp;
+	float finalRamp = lerp(ramp, anotherRamp, kkMetal);
 
-	#ifdef SHADOWS_SCREEN
-		float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
-		float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
-		float shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0);
-		finalRamp *= shadowAttenuation;
-	#endif
+#ifdef SHADOWS_SCREEN
+	float2 shadowMapUV = i.shadowCoordinate.xy / i.shadowCoordinate.ww;
+	float4 shadowMap = tex2D(_ShadowMapTexture, shadowMapUV);
+	float shadowAttenuation = saturate(shadowMap.x * 2.0 - 1.0);
+	finalRamp *= shadowAttenuation;
+#endif
 	
 	float rimPlace = lerp(lerp(1 - finalRamp, 1, min(_rimReflectMode+1, 1)), finalRamp, max(0, _rimReflectMode));
 	diffuse = lerp(diffuse, kkpFresCol, _KKPRimColor.a * kkpFres * _KKPRimAsDiffuse * rimPlace);
 	
-	diffuseShadow = finalRamp *  diffuseShadowBlended + diffuseShadow;
+	_ShadowExtend = ShadowExtendAdjustment(_ShadowExtend);
+	float sOFFshadowAdjust = 1 + 3.1 * saturate(2 * _ambientshadowOFF);
+	float sOFFlightAdjust = 1 + 0.58 * saturate(2 * _ambientshadowOFF);
+	float lightAmount = finalRamp * (1 - detailMask.g * _ShadowExtend);
+	diffuseShadow = lerp(adjustedShadow * sOFFshadowAdjust, (diffuseShadowBlended + diffuseShadow) * sOFFlightAdjust, lightAmount);
 	
 	float specularHeight = _SpeclarHeight  - 1.0;
 	specularHeight *= 0.800000012;
@@ -208,7 +248,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float drawnSpecular = tex2D(_DetailMask, detailMaskUV2).x;
 	float drawnSpecularSquared = min(drawnSpecular * drawnSpecular, 1.0);
 
-	_SpecularPower *= _UseDetailRAsSpecularMap ? detailMask.x : 1;
+	_SpecularPower *= _UseDetailRAsSpecularMap ? detailMask.r : 1;
 
 	float specularPower = _SpecularPower * 256.0;
 	specular *= specularPower;
@@ -231,32 +271,32 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 
 	float3 ambientShadowAdjust2 = AmbientShadowAdjust();
 
-	detailMask.rg = 1 - detailMask.bg;
-
 	float rimPow = _rimpower * 9.0 + 1.0;
 	rimPow = rimPow * fresnel;
 	float rim = saturate(exp2(rimPow) * 2.5 - 0.5) * _rimV * rimPlace;
-	float rimMask = detailMask.x * 9.99999809 + -8.99999809;
+	float rimMask = (1 - detailMask.b) * 9.99999809 + -8.99999809;
 	rim *= rimMask;
 
 	ambientShadowAdjust2 *= rim;
-	ambientShadowAdjust2 *= detailMask.g;
+	ambientShadowAdjust2 *= 1 - detailMask.g;
 	ambientShadowAdjust2 = min(max(ambientShadowAdjust2, 0.0), 0.5);
 	diffuseShadow += ambientShadowAdjust2;
 
 	float3 lightCol = (_LightColor0.xyz + vertexLighting.rgb * vertexLightRamp) * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 	float3 ambientCol = max(lightCol, _ambientshadowG.xyz);
 	diffuseShadow = diffuseShadow * ambientCol;
-	float shadowExtend = _ShadowExtend * -1.20000005 + 1.0;
-	float drawnShadow = detailMask.y * (1 - shadowExtend) + shadowExtend;
 	
-	float detailLineShadow = 1 - detailMask.x;
-	detailLineShadow -= lineMask.y;
-	detailLineShadow = _DetailBLineG * detailLineShadow + lineMask.y;
+	float drawnShadow = max(detailMask.g * _ShadowExtend * 0.25, lineMask.b);
+	float detailLineShadow = lerp(lineMask.g, detailMask.b, _DetailBLineG);
+	float texShadow = max(drawnShadow, detailLineShadow);
 
-	shadingAdjustment = drawnShadow * shadingAdjustment + shadowExtendShaded;
-	shadingAdjustment *= diffuseShadow;
+	shadingAdjustment = 1 - shadingAdjustment * shadowExtendAnother;
+	shadingAdjustment = shadingAdjustment + shadowExtendShaded;
+	shadingAdjustment *= diffuseShadow + specularCol;
 
+	float4 emissionColor = float4(diffuse, 1);
+	float emissionMask = saturate(detailMask.r * 5) * 3;
+	
 	diffuse = diffuse * _LineColorG;
 	float3 lineCol = -diffuse * shadowExtendShaded + 1;
 	diffuse *= shadowExtendShaded;
@@ -270,8 +310,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	diffuse = saturate(diffuse);
 	diffuse = -shadingAdjustment + diffuse;
 
-	float3 finalDiffuse = detailLineShadow * diffuse + shadingAdjustment;
-	finalDiffuse += specularCol;
+	float3 finalDiffuse = texShadow * diffuse + shadingAdjustment;
 	
 	float3 hsl = RGBtoHSL(finalDiffuse);
 	hsl.x = hsl.x + _ShadowHSV.x;
@@ -284,17 +323,9 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	finalDiffuse = lerp(finalDiffuse, kkpFresCol, _KKPRimColor.a * kkpFres * rimPlace * (1 - _KKPRimAsDiffuse));
 
 	float4 emission = GetEmission(i.uv0);
-	finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb);
+	finalDiffuse = finalDiffuse * (1 - emission.a) + (emission.a*emission.rgb) + emissionColor * emissionMask * _EmissionPower;
 	
-	float alpha = 1;
-	#ifdef ALPHA_SHADER
-	float2 maskUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-	float alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, maskUV).r;
-	alphaMask = 1 - (1 - (alphaMask - _Cutoff + 0.0001) / (1.0001 - _Cutoff)) * floor(_AlphaOptionCutoff/2.0);
-	alpha = mainTex.a * _Alpha * alphaMask;
-	
-	if (alpha <= 0) discard;
-	#endif
+	finalDiffuse = lerp(finalDiffuse, shadowsOFF, saturate(2 * _ambientshadowOFF - 1));
 
 	return float4(max(finalDiffuse,1E-06), alpha);
 }
