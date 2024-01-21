@@ -286,7 +286,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float3 ambientCol = max(lightCol, _ambientshadowG.xyz);
 	diffuseShadow = diffuseShadow * ambientCol;
 	
-	float drawnShadow = max(detailMask.g * _ShadowExtend, lineMask.b) * 0.25;
+	float drawnShadow = max(detailMask.g * _ShadowExtend * 0.25, lineMask.b);
 	float detailLineShadow = lerp(lineMask.g, detailMask.b, _DetailBLineG);
 	float texShadow = max(drawnShadow, detailLineShadow);
 
@@ -311,8 +311,6 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	diffuse = -shadingAdjustment + diffuse;
 
 	float3 finalDiffuse = texShadow * diffuse + shadingAdjustment;
-	
-	//finalDiffuse += specularCol;
 	
 	float3 hsl = RGBtoHSL(finalDiffuse);
 	hsl.x = hsl.x + _ShadowHSV.x;
