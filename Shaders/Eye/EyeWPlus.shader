@@ -75,7 +75,7 @@
 				o.posCS = mul(UNITY_MATRIX_VP, o.posWS);
 				o.normalWS = UnityObjectToWorldNormal(v.normal);
 				o.uv0 = v.uv0;
-				111111;
+				1;
 				return o;
 			}
 

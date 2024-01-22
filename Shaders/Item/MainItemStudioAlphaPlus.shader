@@ -166,7 +166,7 @@
 				o.shadowCoordinate.zw = projPos.zw;
 				o.shadowCoordinate.xy = projbiTan.zz + projbiTan.xw;
 			#endif
-				1111111111111111;
+				1;
 				return o;
 			}
 

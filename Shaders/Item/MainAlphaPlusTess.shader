@@ -163,7 +163,7 @@ Shader "xukmi/MainAlphaPlusTess"
 				if(!_OutlineOn)
 					o.posCS = float4(2,2,2,1);
 				o.uv0 = v.uv0;
-				11111;
+				1;
 				return o;
 			}
 			

@@ -151,7 +151,7 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
-				11111;
+				1;
 				return o;
 			}
 			

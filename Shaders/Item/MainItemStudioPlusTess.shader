@@ -149,14 +149,13 @@
 
 			Varyings vert (VertexData v)
 			{
-				Varyings o;
-				
 				float4 vertex = v.vertex;
 				float3 normal = v.normal;
 				DisplacementValues(v, vertex, normal);
 				v.vertex = vertex;
 				v.normal = normal;
 				
+				Varyings o;
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 				float3 viewDir = _WorldSpaceCameraPos.xyz - o.posWS.xyz;
 				float viewVal = dot(viewDir, viewDir);
@@ -191,19 +190,11 @@
 				if(!_OutlineOn)
 					o.posCS = float4(2,2,2,1);
 				o.uv0 = v.uv0;
-				11111111111111111111;
-				11111111111111111111;
-				11111111111111111111;
-				11111111111111111111;
-				11111111111111111111;
-				11111111111111111111;
-				11111111111111111111;
-				11111111111111111111;
-				11111111111111111111;
-				11111111111111111111;
-				11111;
+				1;
 				return o;
 			}
+
+			#include "KKPItemTess.cginc"
 
 			fixed4 frag (Varyings i) : SV_Target
 			{
@@ -279,8 +270,6 @@
 				float3 finalDiffuse = lerp(diffuse, _OutlineColor.rgb, _OutlineColor.a);
 				return float4(finalDiffuse, 1);
 			}
-			
-			#include "KKPItemTess.cginc"
 			
 			ENDCG
 		}
