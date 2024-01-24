@@ -56,6 +56,7 @@
 	float _ExpressionSize;
 	float _ExpressionDepth;
 	float _rotation;
+	float _Cutoff;
 
 	//Global light params set by KK
 	float4 _ambientshadowG;

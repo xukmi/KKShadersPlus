@@ -2,7 +2,7 @@ fixed4 frag (Varyings i) : SV_Target
 {
 
 	float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
-	float alpha = mainTex.a - 0.5;
+	float alpha = mainTex.a - _Cutoff;
 
 	//Because of the stencil the shader needs to alpha cilp otherwise the whole mesh shows over the hair
 	float clipVal = alpha < 0.0f;
@@ -81,5 +81,5 @@ fixed4 frag (Varyings i) : SV_Target
 	float4 emission = GetEmission(i.uv0);
 	finalCol = finalCol * (1 - emission.a) + (emission.a * emission.rgb);
 	
-	return float4(finalCol, 1);
+	return float4(max(finalCol, 1E-06), alpha);
 }

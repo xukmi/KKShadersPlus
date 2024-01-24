@@ -5,7 +5,7 @@
 		[Gamma]_Color ("Color", Vector) = (0.5,0.5,0.5,1)
 		_MainTex ("MainTex", 2D) = "white" {}
 		[Gamma]_shadowcolor ("shadowcolor", Vector) = (0.6298235,0.6403289,0.747,1)
-		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
+		_Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
@@ -75,7 +75,7 @@
 				o.posCS = mul(UNITY_MATRIX_VP, o.posWS);
 				o.normalWS = UnityObjectToWorldNormal(v.normal);
 				o.uv0 = v.uv0;
-				1;
+				111111111111111;
 				return o;
 			}
 

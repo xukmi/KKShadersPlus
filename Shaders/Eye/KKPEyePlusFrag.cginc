@@ -54,11 +54,11 @@ fixed4 frag (Varyings i) : SV_Target {
 	overTex1 = overTex1.a * _overcolor1.rgba;
 	float4 overTex2 = SAMPLE_TEX2D_SAMPLER(_overtex2, _overtex2, i.uv2 * _overtex2_ST + _overtex2_ST.zw);
 	overTex2 = overTex2.a * _overcolor2.rgba;
-	float4 overTex = max(overTex1, overTex2);
+	float4 overTex = 1 - (1 - overTex1) * (1- overTex2);
 	float3 blendOverTex = overTex.rgb - diffuse;
 	overTex.a = saturate(overTex.a * _isHighLight);
 	diffuse = overTex.a * blendOverTex + diffuse;
-	float alpha = saturate(max(max(overTex.a, expression.a), iris.a));
+	float alpha = saturate(overTex.a + expression.a + iris.a);
 	if (alpha < 0.01) discard;
 
 	float3 shadedDiffuse = diffuse * finalAmbientShadow;
@@ -103,5 +103,5 @@ fixed4 frag (Varyings i) : SV_Target {
 	float4 emission = GetEmission(expressionUV);
 	finalCol = finalCol * (1 - emission.a) + (emission.a * emission.rgb);
 	
-	return float4(finalCol, alpha);
+	return float4(max(finalCol, 1E-06), alpha);
 }

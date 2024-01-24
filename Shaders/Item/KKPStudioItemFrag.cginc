@@ -82,6 +82,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	if (mainTex.a <= _Cutoff) discard;
 	
 	float alpha = 1;
+	_ShadowColor = max(_ShadowColor, 1E-06);
 #ifdef ALPHA_SHADER
 	float2 alphaUV = i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw;
 	float alphaMask = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, alphaUV).a;
@@ -89,8 +90,8 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	if (alpha <= _Cutoff) discard;
 	alpha *= _alpha * _alpha;
 	
-	_ShadowColor.rgb = (_ShadowColor.rgb + 1E-06) / MaxGrayscale(_ShadowColor.rgb + 1E-06);
-	_ShadowColor.rgb = lerp(_ShadowColor.rgb, 1, 0.6) * (_ShadowColor.a + 1E-06);
+	_ShadowColor.rgb = (_ShadowColor.rgb) / MaxGrayscale(_ShadowColor.rgb);
+	_ShadowColor.rgb = lerp(_ShadowColor.rgb, 1, 0.6) * (_ShadowColor.a);
 	_ShadowColor = float4(_ShadowColor.rgb, 1);
 #endif
 

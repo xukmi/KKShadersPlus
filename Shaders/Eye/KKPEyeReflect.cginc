@@ -1,5 +1,5 @@
-﻿#ifndef KKP_HAIR_REFLECT
-#define KKP_HAIR_REFLECT
+﻿#ifndef KKP_EYE_REFLECT
+#define KKP_EYE_REFLECT
 			sampler2D _ReflectMap;
 			float4 _ReflectMap_ST;
 			sampler2D _ReflectionMapCap;
@@ -110,6 +110,9 @@
 				}
 				
 				env *= matcapAttenuation * matcap.a;
+				
+				float2 mainUV = i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw;
+				_ReflectionVal *= SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, mainUV).a;
 
 				float3 reflCol = lerp(env, reflectMulOrAdd, 1-_ReflectionVal * reflectMap * matcapAttenuation * matcap.a * alphaLerp);
 			
