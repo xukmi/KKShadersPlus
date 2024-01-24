@@ -111,7 +111,7 @@
 				u_xlat0.xyz = v.normal.xyz * alpha + v.vertex.xyz;
 				o.posCS = UnityObjectToClipPos(u_xlat0.xyz);
 				o.uv0 = v.uv0;
-				111;
+				1;
 				return o;
 			}
 
@@ -201,7 +201,6 @@
 				u_xlat0.xyz = v.normal.xyz * alpha + v.vertex.xyz;
 				o.posCS = UnityObjectToClipPos(u_xlat0.xyz);
 				o.uv0 = v.uv0;
-				1;
 				return o;
 			}
 

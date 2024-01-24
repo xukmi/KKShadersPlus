@@ -115,7 +115,7 @@
 				o.uv0 = v.uv0;
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
-				1111;
+				1;
 				return o;
 			}
 			
