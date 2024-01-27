@@ -92,7 +92,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	rotatedDetailUV.y = dot(detailUVAdjust, rotVal.xy);
 	rotatedDetailUV += _Clock.xy;
 	rotatedDetailUV = rotatedDetailUV * _LineMask_ST.xy + _LineMask_ST.zw;
-	float4 lineMaskRot = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, rotatedDetailUV);
+	float4 lineMaskRot = SAMPLE_TEX2D_SAMPLER(_LineMask, _LineMask, rotatedDetailUV);
 
 	diffuse = lineMaskRot.b * -diffuse + diffuse;
 	float3 shadingAdjustment = ShadeAdjustItem(diffuse);
@@ -100,7 +100,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float2 detailUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
 	float4 detailMask = tex2D(_DetailMask, detailUV);
 	float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-	float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, SAMPLERTEX, lineMaskUV);
+	float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, _LineMask, lineMaskUV);
 	lineMask.r = _DetailRLineR * (detailMask.r - lineMask.r) + lineMask.r;
 
 	float3 diffuseShaded = shadingAdjustment * 0.899999976 - 0.5;
