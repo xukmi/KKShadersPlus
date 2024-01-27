@@ -170,17 +170,17 @@
 			ENDCG
 		}
 		
-		// Outline Alpha
+		// Outline Alpha 1
 		Pass
 		{
-			Name "OutlineAlpha"
+			Name "OutlineAlpha1"
 			Tags { "QUEUE" = "AlphaTest-400" "RenderType" = "Transparent" "SHADOWSUPPORT" = "true" }
 			Blend [_src] [_dst], SrcAlpha OneMinusSrcAlpha
 			Cull Front
 			Stencil {
 				Ref 2
 				Comp Equal
-				Pass Keep
+				Pass IncrSat
 				Fail Keep
 				ZFail Keep
 			}
@@ -220,6 +220,89 @@
 				//Not too sure what's going on, some viewspace based outlines?
 				float4 u_xlat0;
 				u_xlat0.xyz = v.normal.xyz * alpha + v.vertex.xyz;
+				o.posCS = UnityObjectToClipPos(u_xlat0.xyz);
+				o.uv0 = v.uv0;
+				return o;
+			}
+
+			fixed4 frag (Varyings i) : SV_Target
+			{
+				
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float alpha = AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
+
+				float3 diffuse = GetDiffuse(i.uv0);
+				float3 diffuseMainTex = -diffuse * mainTex.xyz + 1;
+				diffuse = mainTex * diffuse;
+				diffuse *= _LineColor.rgb;
+				diffuse += diffuse;
+				float3 lineColor = _LineColor.rgb - 0.5;
+				lineColor = -lineColor * 2 + 1;
+				lineColor = -lineColor * diffuseMainTex + 1;
+			
+				bool3 colCheck = 0.5 < _LineColor.rgb;		
+				{
+					float3 hlslcc_movcTemp = diffuse;
+					hlslcc_movcTemp.x = (colCheck.x) ? lineColor.x : diffuse.x;
+					hlslcc_movcTemp.y = (colCheck.y) ? lineColor.y : diffuse.y;
+					hlslcc_movcTemp.z = (colCheck.z) ? lineColor.z : diffuse.z;
+					diffuse = hlslcc_movcTemp;
+				}	
+				diffuse = saturate(diffuse);
+				float3 lightCol = _LightColor0.xyz * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
+				diffuse *= lightCol;
+
+				return float4(diffuse, 1);
+
+			}
+			
+			fixed4 transparencyFrag(Varyings i) : SV_Target
+			{
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				AlphaClip(i.uv0, mainTex.a);
+				float4 col = frag(i);
+				return float4(col.rgb, 1 - _transparency);
+			}
+			
+			ENDCG
+		}
+
+		// Outline Alpha 2
+		Pass
+		{
+			Name "OutlineAlpha2"
+			Tags { "QUEUE" = "AlphaTest-400" "RenderType" = "Transparent" "SHADOWSUPPORT" = "true" }
+			Blend [_src] [_dst]
+			Cull Front
+			
+			Stencil {
+				Ref 2
+				Comp Equal
+				Pass Keep
+				Fail DecrSat
+				ZFail Keep
+			}
+
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment transparencyFrag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
+			
+			#include "UnityCG.cginc"
+			#include "Lighting.cginc"
+
+			#include "KKPHairInput.cginc"
+			#include "KKPHairDiffuse.cginc"
+
+			Varyings vert (VertexData v)
+			{
+				Varyings o;
+
+				o.posWS = mul(unity_ObjectToWorld, v.vertex);
+
+				//Not too sure what's going on, some viewspace based outlines?
+				float4 u_xlat0;
+				u_xlat0.xyz = v.vertex.xyz;
 				o.posCS = UnityObjectToClipPos(u_xlat0.xyz);
 				o.uv0 = v.uv0;
 				return o;
