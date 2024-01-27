@@ -118,6 +118,9 @@
 		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
 		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
 		_rimReflectMode ("Rimlight Placement", Float) = 0.0
+		
+		_SpecularNormalScale ("Specular Normal Map Relative Scale", Float) = 1
+		_SpecularDetailNormalScale ("Specular Detail Normal Map Relative Scale", Float) = 1
 	}
 	SubShader
 	{
@@ -192,7 +195,7 @@
 				o.shadowCoordinate.zw = projPos.zw;
 				o.shadowCoordinate.xy = projbiTan.zz + projbiTan.xw;
 			#endif
-				11;
+				1;
 				return o;
 			}
 

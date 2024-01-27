@@ -2,8 +2,8 @@
 <manifest schema-ver="1">
   <guid>xukmi.Shaders.VanillaPlus</guid>
   <name>Vanilla Plus</name>
-  <version>1.5.0</version>
-  <author>xukmi</author>
+  <version>1.5.1</version>
+  <author>xukmi &amp; Starstorm</author>
   <description>Vanilla KK Shaders with more features</description>
   <website>https://www.pixiv.net/en/users/66587336</website>
   <KK_MaterialEditor>
@@ -30,7 +30,7 @@
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="linetexon" Type="Float" Range="0,1" />
@@ -45,9 +45,11 @@
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="SpecularPowerNail" Type="Float" Range="0, 1" />
       <Property Name="tex1mask" Type="Float" Range="0, 1" />
@@ -71,7 +73,7 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/SkinPlusReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_SkinPlusReflect">
       <Property Name="DetailMask" Type="Texture" />
@@ -96,8 +98,8 @@
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="linetexon" Type="Float" Range="0,1" />
@@ -112,9 +114,11 @@
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="SpecularPowerNail" Type="Float" Range="0, 1" />
       <Property Name="tex1mask" Type="Float" Range="0, 1" />
@@ -147,10 +151,10 @@
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
       <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/SkinPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_SkinPlusTess">
       <Property Name="DetailMask" Type="Texture" />
@@ -175,7 +179,7 @@
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="linetexon" Type="Float" Range="0,1" />
@@ -190,9 +194,11 @@
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="SpecularPowerNail" Type="Float" Range="0, 1" />
       <Property Name="tex1mask" Type="Float" Range="0, 1" />
@@ -227,7 +233,7 @@
       <Property Name="DisplaceNormalMultiplier" Type="Float" />
       <Property Name="DisplaceFull" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/SkinPlusTessReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_SkinPlusTessReflect">
       <Property Name="DetailMask" Type="Texture" />
@@ -252,8 +258,8 @@
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="linetexon" Type="Float" Range="0,1" />
@@ -268,9 +274,11 @@
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="SpecularPowerNail" Type="Float" Range="0, 1" />
       <Property Name="tex1mask" Type="Float" Range="0, 1" />
@@ -314,10 +322,10 @@
       <Property Name="DisplaceNormalMultiplier" Type="Float" />
       <Property Name="DisplaceFull" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/HairPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairPlus">
       <Property Name="DetailMask" Type="Texture" />
@@ -334,14 +342,15 @@
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
       <Property Name="UseRampForSpecular" Type="Float" Range="0, 1" />
@@ -364,12 +373,12 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="CullOption" Type="Float" Range="0, 2" />
-	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/HairPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairPlusTess">
+    <Shader Name="xukmi/HairPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairPlusTess">
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="MainTex" Type="Texture" />
       <Property Name="AlphaMask" Type="Texture" />
@@ -384,14 +393,15 @@
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
       <Property Name="UseRampForSpecular" Type="Float" Range="0, 1" />
@@ -414,11 +424,11 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="CullOption" Type="Float" Range="0, 2" />
-	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -430,7 +440,7 @@
       <Property Name="DisplaceFull" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/HairPlusReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairPlusReflect">
+    <Shader Name="xukmi/HairPlusReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairPlusReflect">
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="MainTex" Type="Texture" />
       <Property Name="AlphaMask" Type="Texture" />
@@ -445,15 +455,16 @@
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
       <Property Name="UseRampForSpecular" Type="Float" Range="0, 1" />
@@ -476,7 +487,7 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -485,15 +496,15 @@
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
       <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="CullOption" Type="Float" Range="0, 2" />
-	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/HairPlusTessReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairPlusTessReflect">
+    <Shader Name="xukmi/HairPlusTessReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairPlusTessReflect">
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="MainTex" Type="Texture" />
       <Property Name="AlphaMask" Type="Texture" />
@@ -508,15 +519,16 @@
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
       <Property Name="UseRampForSpecular" Type="Float" Range="0, 1" />
@@ -539,7 +551,7 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -548,14 +560,14 @@
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
       <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="CullOption" Type="Float" Range="0, 2" />
-	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -582,15 +594,16 @@
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
       <Property Name="UseRampForSpecular" Type="Float" Range="0, 1" />
@@ -613,7 +626,7 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -621,13 +634,13 @@
       <Property Name="ReflBlendVal" Type="Float" Range="0, 1" />
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="CullOption" Type="Float" Range="0, 2" />
-	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="transparency" Type="Float" Range="0, 1" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="transparency" Type="Float" Range="0, 1" />
     </Shader>
-	<Shader Name="xukmi/HairFrontPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairFrontPlusTess">
+    <Shader Name="xukmi/HairFrontPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairFrontPlusTess">
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="MainTex" Type="Texture" />
       <Property Name="AlphaMask" Type="Texture" />
@@ -642,15 +655,16 @@
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
       <Property Name="UseRampForSpecular" Type="Float" Range="0, 1" />
@@ -673,7 +687,7 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -681,11 +695,11 @@
       <Property Name="ReflBlendVal" Type="Float" Range="0, 1" />
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="CullOption" Type="Float" Range="0, 2" />
-	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -696,9 +710,9 @@
       <Property Name="DisplaceNormalMultiplier" Type="Float" />
       <Property Name="DisplaceFull" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
-	  <Property Name="transparency" Type="Float" Range="0, 1" />
+      <Property Name="transparency" Type="Float" Range="0, 1" />
     </Shader>
-	<Shader Name="xukmi/HairFrontPlusReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairFrontPlusReflect">
+    <Shader Name="xukmi/HairFrontPlusReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairFrontPlusReflect">
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="MainTex" Type="Texture" />
       <Property Name="AlphaMask" Type="Texture" />
@@ -713,16 +727,17 @@
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
       <Property Name="UseRampForSpecular" Type="Float" Range="0, 1" />
@@ -745,7 +760,7 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -753,16 +768,16 @@
       <Property Name="ReflBlendVal" Type="Float" Range="0, 1" />
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="CullOption" Type="Float" Range="0, 2" />
-	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="transparency" Type="Float" Range="0, 1" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="transparency" Type="Float" Range="0, 1" />
     </Shader>
-	<Shader Name="xukmi/HairFrontPlusTessReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairFrontPlusTessReflect">
+    <Shader Name="xukmi/HairFrontPlusTessReflect" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_HairFrontPlusTessReflect">
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="MainTex" Type="Texture" />
       <Property Name="AlphaMask" Type="Texture" />
@@ -777,16 +792,17 @@
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="LineColor" Type="Color" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularHairPower" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
       <Property Name="UseRampForSpecular" Type="Float" Range="0, 1" />
@@ -809,7 +825,7 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -817,14 +833,14 @@
       <Property Name="ReflBlendVal" Type="Float" Range="0, 1" />
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="CullOption" Type="Float" Range="0, 2" />
-	  <Property Name="Cutoff" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="CullOption" Type="Float" Range="0, 2" />
+      <Property Name="Cutoff" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -835,7 +851,7 @@
       <Property Name="DisplaceNormalMultiplier" Type="Float" />
       <Property Name="DisplaceFull" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
-	  <Property Name="transparency" Type="Float" Range="0, 1" />
+      <Property Name="transparency" Type="Float" Range="0, 1" />
     </Shader>
     <Shader Name="xukmi/EyePlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyePlus">
       <Property Name="MainTex" Type="Texture" />
@@ -855,9 +871,9 @@
       <Property Name="ExpressionDepth" Type="Float" Range="0, 2" />
       <Property Name="CustomAmbient" Type="Color" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -866,12 +882,12 @@
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
       <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/EyePlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyePlusTess">
+    <Shader Name="xukmi/EyePlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyePlusTess">
       <Property Name="MainTex" Type="Texture" />
       <Property Name="overtex1" Type="Texture" />
       <Property Name="overtex2" Type="Texture" />
@@ -889,9 +905,9 @@
       <Property Name="ExpressionDepth" Type="Float" Range="0, 2" />
       <Property Name="CustomAmbient" Type="Color" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -900,11 +916,11 @@
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
       <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -923,12 +939,12 @@
       <Property Name="CustomAmbient" Type="Color" />
       <Property Name="Cutoff" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
-	  <Property Name="EmissionMask" Type="Texture" />
+      <Property Name="EmissionMask" Type="Texture" />
       <Property Name="EmissionColor" Type="Color" />
       <Property Name="EmissionIntensity" Type="Float" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -937,24 +953,24 @@
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
       <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/EyeWPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyeWPlusTess">
+    <Shader Name="xukmi/EyeWPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_EyeWPlusTess">
       <Property Name="MainTex" Type="Texture" />
       <Property Name="Color" Type="Color" />
       <Property Name="shadowcolor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
       <Property Name="Cutoff" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
-	  <Property Name="EmissionMask" Type="Texture" />
+      <Property Name="EmissionMask" Type="Texture" />
       <Property Name="EmissionColor" Type="Color" />
       <Property Name="EmissionIntensity" Type="Float" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectMap" Type="Texture" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectMap" Type="Texture" />
       <Property Name="ReflectionMapCap" Type="Texture" />
       <Property Name="UseMatCapReflection" Type="Float" Range="0, 1" />
       <Property Name="ReflBlendSrc" Type="Float" Range="0, 10" />
@@ -963,11 +979,11 @@
       <Property Name="Roughness" Type="Float" Range="0, 1" />
       <Property Name="ReflectionVal" Type="Float" Range="0, 1" />
       <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMask" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMask" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -997,9 +1013,9 @@
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="liquidftop" Type="Float" Range="0, 2" />
@@ -1012,10 +1028,12 @@
       <Property Name="DetailRLineR" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="SpecularPowerNail" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1043,11 +1061,11 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/MainOpaquePlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainOpaquePlusTess">
       <Property Name="AnotherRamp" Type="Texture" />
@@ -1067,9 +1085,9 @@
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="liquidftop" Type="Float" Range="0, 2" />
@@ -1082,10 +1100,12 @@
       <Property Name="DetailRLineR" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="SpecularPowerNail" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1126,11 +1146,11 @@
       <Property Name="ShrinkVal" Type="Float" Range="0, 1" />
       <Property Name="ShrinkVerticalAdjust" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/MainAlphaPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainAlphaPlus">
       <Property Name="AnotherRamp" Type="Texture" />
@@ -1150,9 +1170,9 @@
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="liquidftop" Type="Float" Range="0, 2" />
@@ -1165,10 +1185,12 @@
       <Property Name="DetailRLineR" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="SpecularPowerNail" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1198,11 +1220,11 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/MainAlphaPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainAlphaPlusTess">
       <Property Name="AnotherRamp" Type="Texture" />
@@ -1222,9 +1244,9 @@
       <Property Name="ShadowColor" Type="Color" />
       <Property Name="SpecularColor" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="liquidftop" Type="Float" Range="0, 2" />
@@ -1237,10 +1259,12 @@
       <Property Name="DetailRLineR" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="SpecularPowerNail" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1283,11 +1307,11 @@
       <Property Name="ShrinkVal" Type="Float" Range="0, 1" />
       <Property Name="ShrinkVerticalAdjust" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" DefaultValue="(0, 0, 0, 1)" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
     <Shader Name="xukmi/MainItemPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemPlus">
       <Property Name="AnotherRamp" Type="Texture" />
@@ -1306,9 +1330,9 @@
       <Property Name="Color2" Type="Color" />
       <Property Name="Color3" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
@@ -1317,10 +1341,12 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="LineWidthS" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1346,13 +1372,13 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/MainItemPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemPlusTess">
+    <Shader Name="xukmi/MainItemPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemPlusTess">
       <Property Name="AnotherRamp" Type="Texture" />
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="LineMask" Type="Texture" />
@@ -1369,9 +1395,9 @@
       <Property Name="Color2" Type="Color" />
       <Property Name="Color3" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
@@ -1380,10 +1406,12 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="LineWidthS" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1409,12 +1437,12 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -1445,9 +1473,9 @@
       <Property Name="Color2" Type="Color" />
       <Property Name="Color3" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
@@ -1456,10 +1484,12 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="LineWidthS" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1487,13 +1517,13 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/MainItemAlphaPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemAlphaPlusTess">
+    <Shader Name="xukmi/MainItemAlphaPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemAlphaPlusTess">
       <Property Name="AnotherRamp" Type="Texture" />
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="LineMask" Type="Texture" />
@@ -1510,9 +1540,9 @@
       <Property Name="Color2" Type="Color" />
       <Property Name="Color3" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
@@ -1521,10 +1551,12 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="LineWidthS" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1552,12 +1584,12 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -1571,7 +1603,7 @@
       <Property Name="ShrinkVerticalAdjust" Type="Float" Range="-1, 1" />
       <Property Name="ClockDisp" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/MainItemStudioPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemStudioPlus">
+    <Shader Name="xukmi/MainItemStudioPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemStudioPlus">
       <Property Name="AnotherRamp" Type="Texture" />
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="LineMask" Type="Texture" />
@@ -1588,9 +1620,9 @@
       <Property Name="Color2" Type="Color" />
       <Property Name="Color3" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
@@ -1599,10 +1631,12 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="LineWidthS" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1627,28 +1661,27 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-
-	  <Property Name="PatternMask1" Type="Texture" />
-	  <Property Name="PatternMask2" Type="Texture" />
-	  <Property Name="PatternMask3" Type="Texture" />
-	  <Property Name="Patternuv1" Type="Color"/>
-	  <Property Name="Patternuv2" Type="Color"/>
-	  <Property Name="Patternuv3" Type="Color"/>
-	  <Property Name="patternrotator1" Type="Float" Range="-1, 1" />
-	  <Property Name="patternrotator2" Type="Float" Range="-1, 1" />
-	  <Property Name="patternrotator3" Type="Float" Range="-1, 1" />
-	  <Property Name="patternclamp1" Type="Float" Range="0, 1" />
-	  <Property Name="patternclamp2" Type="Float" Range="0, 1" />
-	  <Property Name="patternclamp3" Type="Float" Range="0, 1" />
-	  <Property Name="ambientshadowOFF" Type="Float" Range="0, 1" />
-	  <Property Name="EmissionPower" Type="Float" Range="0, 1" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="PatternMask1" Type="Texture" />
+      <Property Name="PatternMask2" Type="Texture" />
+      <Property Name="PatternMask3" Type="Texture" />
+      <Property Name="Patternuv1" Type="Color" />
+      <Property Name="Patternuv2" Type="Color" />
+      <Property Name="Patternuv3" Type="Color" />
+      <Property Name="patternrotator1" Type="Float" Range="-1, 1" />
+      <Property Name="patternrotator2" Type="Float" Range="-1, 1" />
+      <Property Name="patternrotator3" Type="Float" Range="-1, 1" />
+      <Property Name="patternclamp1" Type="Float" Range="0, 1" />
+      <Property Name="patternclamp2" Type="Float" Range="0, 1" />
+      <Property Name="patternclamp3" Type="Float" Range="0, 1" />
+      <Property Name="ambientshadowOFF" Type="Float" Range="0, 1" />
+      <Property Name="EmissionPower" Type="Float" Range="0, 1" />
     </Shader>
-	<Shader Name="xukmi/MainItemStudioPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemStudioPlusTess">
+    <Shader Name="xukmi/MainItemStudioPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemStudioPlusTess">
       <Property Name="AnotherRamp" Type="Texture" />
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="LineMask" Type="Texture" />
@@ -1665,9 +1698,9 @@
       <Property Name="Color2" Type="Color" />
       <Property Name="Color3" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
@@ -1676,10 +1709,12 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="LineWidthS" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1704,27 +1739,26 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-
-	  <Property Name="PatternMask1" Type="Texture" />
-	  <Property Name="PatternMask2" Type="Texture" />
-	  <Property Name="PatternMask3" Type="Texture" />
-	  <Property Name="Patternuv1" Type="Color"/>
-	  <Property Name="Patternuv2" Type="Color"/>
-	  <Property Name="Patternuv3" Type="Color"/>
-	  <Property Name="patternrotator1" Type="Float" Range="-1, 1" />
-	  <Property Name="patternrotator2" Type="Float" Range="-1, 1" />
-	  <Property Name="patternrotator3" Type="Float" Range="-1, 1" />
-	  <Property Name="patternclamp1" Type="Float" Range="0, 1" />
-	  <Property Name="patternclamp2" Type="Float" Range="0, 1" />
-	  <Property Name="patternclamp3" Type="Float" Range="0, 1" />
-	  <Property Name="ambientshadowOFF" Type="Float" Range="0, 1" />
-	  <Property Name="EmissionPower" Type="Float" Range="0, 1" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="PatternMask1" Type="Texture" />
+      <Property Name="PatternMask2" Type="Texture" />
+      <Property Name="PatternMask3" Type="Texture" />
+      <Property Name="Patternuv1" Type="Color" />
+      <Property Name="Patternuv2" Type="Color" />
+      <Property Name="Patternuv3" Type="Color" />
+      <Property Name="patternrotator1" Type="Float" Range="-1, 1" />
+      <Property Name="patternrotator2" Type="Float" Range="-1, 1" />
+      <Property Name="patternrotator3" Type="Float" Range="-1, 1" />
+      <Property Name="patternclamp1" Type="Float" Range="0, 1" />
+      <Property Name="patternclamp2" Type="Float" Range="0, 1" />
+      <Property Name="patternclamp3" Type="Float" Range="0, 1" />
+      <Property Name="ambientshadowOFF" Type="Float" Range="0, 1" />
+      <Property Name="EmissionPower" Type="Float" Range="0, 1" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -1738,7 +1772,7 @@
       <Property Name="ShrinkVerticalAdjust" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/MainItemStudioAlphaPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemStudioAlphaPlus">
+    <Shader Name="xukmi/MainItemStudioAlphaPlus" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemStudioAlphaPlus">
       <Property Name="AnotherRamp" Type="Texture" />
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="LineMask" Type="Texture" />
@@ -1755,9 +1789,9 @@
       <Property Name="Color2" Type="Color" />
       <Property Name="Color3" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
@@ -1766,10 +1800,12 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="LineWidthS" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1794,31 +1830,30 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-
-	  <Property Name="PatternMask1" Type="Texture" />
-	  <Property Name="PatternMask2" Type="Texture" />
-	  <Property Name="PatternMask3" Type="Texture" />
-	  <Property Name="Patternuv1" Type="Color"/>
-	  <Property Name="Patternuv2" Type="Color"/>
-	  <Property Name="Patternuv3" Type="Color"/>
-	  <Property Name="patternrotator1" Type="Float" Range="-1, 1" />
-	  <Property Name="patternrotator2" Type="Float" Range="-1, 1" />
-	  <Property Name="patternrotator3" Type="Float" Range="-1, 1" />
-	  <Property Name="patternclamp1" Type="Float" Range="0, 1" />
-	  <Property Name="patternclamp2" Type="Float" Range="0, 1" />
-	  <Property Name="patternclamp3" Type="Float" Range="0, 1" />
-	  <Property Name="ambientshadowOFF" Type="Float" Range="0, 1" />
-	  <Property Name="EmissionPower" Type="Float" Range="0, 1" />
-	  <Property Name="alpha" Type="Float" Range="0, 1" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="PatternMask1" Type="Texture" />
+      <Property Name="PatternMask2" Type="Texture" />
+      <Property Name="PatternMask3" Type="Texture" />
+      <Property Name="Patternuv1" Type="Color" />
+      <Property Name="Patternuv2" Type="Color" />
+      <Property Name="Patternuv3" Type="Color" />
+      <Property Name="patternrotator1" Type="Float" Range="-1, 1" />
+      <Property Name="patternrotator2" Type="Float" Range="-1, 1" />
+      <Property Name="patternrotator3" Type="Float" Range="-1, 1" />
+      <Property Name="patternclamp1" Type="Float" Range="0, 1" />
+      <Property Name="patternclamp2" Type="Float" Range="0, 1" />
+      <Property Name="patternclamp3" Type="Float" Range="0, 1" />
+      <Property Name="ambientshadowOFF" Type="Float" Range="0, 1" />
+      <Property Name="EmissionPower" Type="Float" Range="0, 1" />
+      <Property Name="alpha" Type="Float" Range="0, 1" />
       <Property Name="AlphaOptionCutoff" Type="Float" Range="0, 2" />
       <Property Name="AlphaOptionZWrite" Type="Float" Range="0, 1" />
     </Shader>
-	<Shader Name="xukmi/MainItemStudioAlphaPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemStudioAlphaPlusTess">
+    <Shader Name="xukmi/MainItemStudioAlphaPlusTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_MainItemStudioAlphaPlusTess">
       <Property Name="AnotherRamp" Type="Texture" />
       <Property Name="DetailMask" Type="Texture" />
       <Property Name="LineMask" Type="Texture" />
@@ -1835,9 +1870,9 @@
       <Property Name="Color2" Type="Color" />
       <Property Name="Color3" Type="Color" />
       <Property Name="CustomAmbient" Type="Color" />
-	  <Property Name="ReflectCol" Type="Color" />
-	  <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
-	  <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
+      <Property Name="ReflectCol" Type="Color" />
+      <Property Name="DisablePointLights" Type="Float" Range="0, 1" />
+      <Property Name="DisableShadowedMatcap" Type="Float" Range="0, 1" />
       <Property Name="NormalMapScale" Type="Float" Range="0, 1" />
       <Property Name="DetailNormalMapScale" Type="Float" Range="0,1" />
       <Property Name="notusetexspecular" Type="Float" Range="0, 1" />
@@ -1846,10 +1881,12 @@
       <Property Name="AnotherRampFull" Type="Float" Range="0, 1" />
       <Property Name="rimpower" Type="Float" Range="0, 1" />
       <Property Name="rimV" Type="Float" Range="0, 1" />
-	  <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
+      <Property Name="rimReflectMode" Type="Float" Range="-1, 1" />
       <Property Name="ShadowExtend" Type="Float" Range="0, 1" />
       <Property Name="ShadowExtendAnother" Type="Float" Range="0, 1" />
       <Property Name="SpeclarHeight" Type="Float" Range="0, 1" />
+      <Property Name="SpecularNormalScale" Type="Float" Range="0, 1" />
+      <Property Name="SpecularDetailNormalScale" Type="Float" Range="0, 1" />
       <Property Name="SpecularPower" Type="Float" Range="0, 1" />
       <Property Name="LineWidthS" Type="Float" Range="0, 1" />
       <Property Name="UseRampForLights" Type="Float" Range="0, 1" />
@@ -1874,30 +1911,29 @@
       <Property Name="KKPRimAsDiffuse" Type="Float" Range="0, 1" />
       <Property Name="KKPRimRotateX" Type="Float" Range="-2, 2" />
       <Property Name="KKPRimRotateY" Type="Float" Range="-2, 2" />
-	  <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
-	  <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
-	  <Property Name="ReflectMapDetail" Type="Texture" />
-	  <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
-	  <Property Name="ShadowHSV" Type="Color" />
-
-	  <Property Name="PatternMask1" Type="Texture" />
-	  <Property Name="PatternMask2" Type="Texture" />
-	  <Property Name="PatternMask3" Type="Texture" />
-	  <Property Name="Patternuv1" Type="Color"/>
-	  <Property Name="Patternuv2" Type="Color"/>
-	  <Property Name="Patternuv3" Type="Color"/>
-	  <Property Name="patternrotator1" Type="Float" Range="-1, 1" />
-	  <Property Name="patternrotator2" Type="Float" Range="-1, 1" />
-	  <Property Name="patternrotator3" Type="Float" Range="-1, 1" />
-	  <Property Name="patternclamp1" Type="Float" Range="0, 1" />
-	  <Property Name="patternclamp2" Type="Float" Range="0, 1" />
-	  <Property Name="patternclamp3" Type="Float" Range="0, 1" />
-	  <Property Name="ambientshadowOFF" Type="Float" Range="0, 1" />
-	  <Property Name="EmissionPower" Type="Float" Range="0, 1" />
-	  <Property Name="alpha" Type="Float" Range="0, 1" />
+      <Property Name="AdjustBackfaceNormals" Type="Float" Range="0, 1" />
+      <Property Name="ReflectRotation" Type="Float" Range="0, 360" />
+      <Property Name="ReflectMapDetail" Type="Texture" />
+      <Property Name="ReflectColMix" Type="Float" Range="0, 1" />
+      <Property Name="ShadowHSV" Type="Color" />
+      <Property Name="PatternMask1" Type="Texture" />
+      <Property Name="PatternMask2" Type="Texture" />
+      <Property Name="PatternMask3" Type="Texture" />
+      <Property Name="Patternuv1" Type="Color" />
+      <Property Name="Patternuv2" Type="Color" />
+      <Property Name="Patternuv3" Type="Color" />
+      <Property Name="patternrotator1" Type="Float" Range="-1, 1" />
+      <Property Name="patternrotator2" Type="Float" Range="-1, 1" />
+      <Property Name="patternrotator3" Type="Float" Range="-1, 1" />
+      <Property Name="patternclamp1" Type="Float" Range="0, 1" />
+      <Property Name="patternclamp2" Type="Float" Range="0, 1" />
+      <Property Name="patternclamp3" Type="Float" Range="0, 1" />
+      <Property Name="ambientshadowOFF" Type="Float" Range="0, 1" />
+      <Property Name="EmissionPower" Type="Float" Range="0, 1" />
+      <Property Name="alpha" Type="Float" Range="0, 1" />
       <Property Name="AlphaOptionCutoff" Type="Float" Range="0, 2" />
       <Property Name="AlphaOptionZWrite" Type="Float" Range="0, 1" />
-	  <Property Name="TessTex" Type="Texture" />
+      <Property Name="TessTex" Type="Texture" />
       <Property Name="DisplaceTex" Type="Texture" />
       <Property Name="TessMax" Type="Float" Range="1, 25" />
       <Property Name="TessMin" Type="Float" Range="1, 25" />
@@ -1911,7 +1947,7 @@
       <Property Name="ShrinkVerticalAdjust" Type="Float" Range="-1, 1" />
       <Property Name="Clock" Type="Color" />
     </Shader>
-	<Shader Name="xukmi/Debug/WireframeTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_WireframeTess">
+    <Shader Name="xukmi/Debug/WireframeTess" AssetBundle="chara/xukmi/shaders/vanillaplus.unity3d" Asset="a_WireframeTess">
       <Property Name="LineColor" Type="Color" />
       <Property Name="FillColor" Type="Color" />
       <Property Name="WireThickness" Type="Float" Range="0, 1" />

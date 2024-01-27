@@ -89,6 +89,8 @@
 	float _rimV;
 	float4 _SpecularColor;
 	float4 _ShadowHSV;
+	float _SpecularNormalScale;
+	float _SpecularDetailNormalScale;
 	float _SpeclarHeight;
 	float _SpecularPower;
 	float _SpecularPowerNail;

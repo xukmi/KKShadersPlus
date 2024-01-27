@@ -42,6 +42,7 @@
 	bool _SpecularHeightInvert;
 
 	float _NormalMapScale;
+	float _SpecularNormalScale;
 
 	bool _UseKKPRim;
 	float4 _KKPRimColor;
@@ -60,6 +61,7 @@
 	sampler2D _DetailMask;
 	sampler2D _RampG;
 	sampler2D _AnotherRamp;
+
 	//UV Offsets
 	float4 _MainTex_ST;
 	float4 _AlphaMask_ST;

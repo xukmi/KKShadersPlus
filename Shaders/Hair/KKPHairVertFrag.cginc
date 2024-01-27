@@ -77,10 +77,9 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	float3 ambientShadowExtendAdjust;
 	AmbientShadowAdjust(ambientShadowExtendAdjust);
 
-	float3 normal = GetNormal(i);
-
-	float3 adjustedNormal = NormalAdjust(i, normal, frontFace);
-	
+	float3 adjustedNormal = NormalAdjust(i, GetNormal(i), frontFace);
+	_NormalMapScale *= _SpecularNormalScale;
+	float3 specularNormal = NormalAdjust(i, GetNormal(i), frontFace);
 	
 
 	float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
@@ -119,7 +118,7 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 #endif
 
 	float3 halfVector = normalize(viewDir + worldLight);
-	float specularMesh = max(dot(halfVector, adjustedNormal), 0.0);
+	float specularMesh = max(dot(halfVector, specularNormal), 0.0);
 	specularMesh = log2(specularMesh);
 	float specularPowerMesh = _SpecularHairPower * 256;
 	specularPowerMesh = specularPowerMesh * specularMesh;
@@ -141,7 +140,7 @@ fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 	specularColorMesh.a = specularMask;
 #ifdef VERTEXLIGHT_ON
 	float3 specularColorVertex = 0;
-	specularColorMesh += GetVertexSpecularHair(vertexLights, adjustedNormal, viewDir, _SpecularIsHighLightsPow, _SpecularHairPower);
+	specularColorMesh += GetVertexSpecularHair(vertexLights, specularNormal, viewDir, _SpecularIsHighLightsPow, _SpecularHairPower);
 #endif
 	float specular = specularColorMesh.a; //Mask
 	float3 specularColor = specularColorMesh.rgb; //Color

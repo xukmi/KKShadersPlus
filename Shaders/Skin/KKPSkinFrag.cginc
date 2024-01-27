@@ -37,8 +37,10 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 
 				//Normals from texture
 				float3 normal = GetNormal(i);
+				_NormalMapScale *= _SpecularNormalScale;
+				_DetailNormalMapScale *= _SpecularDetailNormalScale;
+				float3 specularNormal = NormalAdjust(i, GetNormal(i), frontFace);
 
-				//return float4(normal, 1);
 				// Cum
 				float liquidFinalMask;
 				float3 liquidNormal;
@@ -112,7 +114,7 @@ float3x3 AngleAxis3x3(float angle, float3 axis)
 				
 				
 				float3 specularColorMesh;
-				float specularMesh = GetMeshSpecular(i, vertexLights, normal, viewDir, worldLightPos, specularColorMesh);
+				float specularMesh = GetMeshSpecular(i, vertexLights, specularNormal, viewDir, worldLightPos, specularColorMesh);
 				float3 specularDiffuse = saturate((1 - _notusetexspecular) * specularFromDetail.xyz) + (_notusetexspecular * (specularColorMesh + diffuse));	
 			
 				//Shading

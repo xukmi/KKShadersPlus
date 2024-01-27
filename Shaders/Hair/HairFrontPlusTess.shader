@@ -65,6 +65,8 @@
 		_transparency ("Hair Transparency", Float) = 1.0
 		_src ("Src", Float) = 5.0
 		_dst ("Dst", Float) = 10.0
+		
+		_SpecularNormalScale ("Specular Normal Map Relative Scale", Float) = 1
 	}
 	SubShader
 	{

@@ -96,6 +96,8 @@
 	float4 _SpecularColor;
 	float4 _ShadowHSV;
 	float _SpeclarHeight;
+	float _SpecularNormalScale;
+	float _SpecularDetailNormalScale;
 	float _SpecularPower;
 	float _SpecularPowerNail;
 	float _ShadowExtend;

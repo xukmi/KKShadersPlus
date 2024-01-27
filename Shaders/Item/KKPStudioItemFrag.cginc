@@ -117,6 +117,9 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float3 shadowsOFF = diffuse;
 	
 	float3 normal = NormalAdjust(i, GetNormal(i), faceDir);
+	_NormalMapScale *= _SpecularNormalScale;
+	_DetailNormalMapScale *= _SpecularDetailNormalScale;
+	float3 specularNormal = NormalAdjust(i, GetNormal(i), faceDir);
 
 	float3x3 rotX = AngleAxis3x3(_KKPRimRotateX, float3(0, 1, 0));
 	float3x3 rotY = AngleAxis3x3(_KKPRimRotateY, float3(1, 0, 0));
@@ -207,7 +210,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float fresnel = max(dot(normal, viewDir), 0.0);
 	fresnel = log2(1 - fresnel);
 
-	float specular = dot(normal, halfDir);
+	float specular = dot(specularNormal, halfDir);
 	specular = max(specular, 0.0);
 	float anotherRampSpecularVertex = 0.0;
 #ifdef VERTEXLIGHT_ON
@@ -215,7 +218,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	for(int j = 0; j < 4; j++){
 		KKVertexLight light = vertexLights[j];
 		float3 halfVector = normalize(viewDir + light.dir) * saturate(MaxGrayscale(light.col));
-		anotherRampSpecularVertex = max(anotherRampSpecularVertex, dot(halfVector, normal));
+		anotherRampSpecularVertex = max(anotherRampSpecularVertex, dot(halfVector, specularNormal));
 	}
 #endif
 	float2 anotherRampUV = max(specular, anotherRampSpecularVertex) * _AnotherRamp_ST.xy + _AnotherRamp_ST.zw;
@@ -265,7 +268,7 @@ fixed4 frag (Varyings i, int faceDir : VFACE) : SV_Target {
 	float specularVertex = 0.0;
 	float3 specularVertexCol = 0.0;
 #ifdef VERTEXLIGHT_ON
-	specularVertex = GetVertexSpecularDiffuse(vertexLights, normal, viewDir, _SpecularPower, specularVertexCol);
+	specularVertex = GetVertexSpecularDiffuse(vertexLights, specularNormal, viewDir, _SpecularPower, specularVertexCol);
 #endif
 	float3 specularCol = saturate(specular) * _SpecularColor.rgb + saturate(specularVertex) * specularVertexCol * _notusetexspecular;
 	specularCol *= _SpecularColor.a;
