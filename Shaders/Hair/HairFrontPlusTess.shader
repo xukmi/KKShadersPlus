@@ -72,12 +72,13 @@
 	{
 		LOD 600
 		Tags {"Queue" = "AlphaTest+25" "RenderType" = "Transparent" }
-		//Outline
+		// Outline
 		Pass
 		{
 			Name "Outline"
 			LOD 600
 			Tags {"Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
 			Cull Front
 			Stencil {
 				Ref 2
@@ -336,13 +337,13 @@
 			ENDCG
 		}
 		
-		// Alpha
+		// Main Alpha
 		Pass
 		{
 			Name "ALPHA"
 			Tags { "LightMode" = "ForwardBase" "QUEUE" = "AlphaTest-400" "RenderType" = "TransparentCutout" "SHADOWSUPPORT" = "true" }
 			Blend [_src] [_dst], SrcAlpha OneMinusSrcAlpha
-			Cull Off
+			Cull Back
 			Stencil {
 				Ref 2
 				Comp Equal
