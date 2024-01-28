@@ -42,8 +42,6 @@ float _TessBias;
 float _TessSmooth;
 float _Tolerance;
 
-
-
 bool ShouldBackFaceCull(float4 p0PositionCS, float4 p1PositionCS, float4 p2PositionCS) {
     float3 point0 = p0PositionCS.xyz / p0PositionCS.w;
     float3 point1 = p1PositionCS.xyz / p1PositionCS.w;
@@ -101,8 +99,6 @@ float EdgeTessellationFactor(float3 p0PositionWS, float2 p0UV, float3 p1Position
     return max(_TessMin, factor * tessTex * multiplier);
 }
 
-
-
 float3 CalculateBezierControlPoint(float3 p0PositionWS, float3 aNormalWS, float3 p1PositionWS, float3 bNormalWS) {
     float w = dot(p1PositionWS - p0PositionWS, aNormalWS);
     return (p0PositionWS * 2 + p1PositionWS - w * aNormalWS) / 3.0;
@@ -145,7 +141,6 @@ TessellationFactors patchFunc(InputPatch<TessellationControlPoint , 3> patch){
     return f;
 }
 
-
 float3 PhongProjectedPosition(float3 flatPosition, float3 cornerPosition, float3 normal) {
     return flatPosition - dot(flatPosition - cornerPosition, normal) * normal;
 }
@@ -183,28 +178,13 @@ float3 CalculateBezierPosition(float3 bary, float smoothing, float3 bezierPoints
 
 #define INTERPOLATE_TRI(param) data.param = patch[0].param * barycentricCoordinates.x + patch[1].param * barycentricCoordinates.y + patch[2].param * barycentricCoordinates.z;
 
+[UNITY_domain("tri")]
 #ifdef SHADOW_CASTER_PASS
-[UNITY_domain("tri")]
-v2f domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3> patch, float3 barycentricCoordinates : SV_DomainLocation){
-    VertexData data;
-    float smoothing = _TessSmooth;
-    float3 pos = CalculatePhongPosition(barycentricCoordinates, smoothing, 
-      patch[0].vertex, patch[0].normal, 
-      patch[1].vertex, patch[1].normal, 
-      patch[2].vertex, patch[2].normal);
-    float4 vertex = float4(pos, 1);
-    data.vertex = vertex;
-
-
-    INTERPOLATE_TRI(normal);
-    INTERPOLATE_TRI(tangent);
-    INTERPOLATE_TRI(uv0);
-
-    return vert(data);
-}
+v2f 
 #else
-[UNITY_domain("tri")]
-Varyings domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3> patch, float3 barycentricCoordinates : SV_DomainLocation){
+Varyings
+#endif
+domain(TessellationFactors factors, OutputPatch<TessellationControlPoint , 3> patch, float3 barycentricCoordinates : SV_DomainLocation){
     VertexData data;
     float smoothing = _TessSmooth;
     float3 pos = CalculatePhongPosition(barycentricCoordinates, smoothing, 
@@ -214,16 +194,10 @@ Varyings domain(TessellationFactors factors, OutputPatch<TessellationControlPoin
     float4 vertex = float4(pos, 1);
     data.vertex = vertex;
 
-
     INTERPOLATE_TRI(normal);
     INTERPOLATE_TRI(tangent);
     INTERPOLATE_TRI(uv0);
 
     return vert(data);
 }
-#endif
-
-
-
-
 #endif

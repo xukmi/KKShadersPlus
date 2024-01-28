@@ -21,9 +21,10 @@
 		[Gamma]_SpecularColor ("SpecularColor", Vector) = (1.0,1.0,1.0,1.0)
 		[Gamma]_LineColor ("LineColor", Vector) = (0.5,0.5,0.5,1)
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		_NormalMapScale ("NormalMapScale", Float) = 1
-		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
+		_Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _SpecularIsHighlights ("Specular is highlight", Float) = 0
@@ -46,6 +47,13 @@
 		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
+		
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
+		
+		_SpecularNormalScale ("Specular Normal Map Relative Scale", Float) = 1
 	}
 	SubShader
 	{
@@ -62,6 +70,7 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
@@ -74,8 +83,8 @@
 			{
 				Varyings o;
 				
-				float alphaMask = tex2Dlod(_AlphaMask, float4(v.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw, 0, 0)).r;
-				float mainAlpha = tex2Dlod(_MainTex, float4(v.uv0 * _MainTex_ST.xy + _MainTex_ST.zw, 0, 0)).a;
+				float alphaMask = SAMPLE_TEX2D_SAMPLER_LOD(_AlphaMask, SAMPLERTEX, v.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw, 0).r;
+				float mainAlpha = SAMPLE_TEX2D_LOD(_MainTex, v.uv0 * _MainTex_ST.xy + _MainTex_ST.zw, 0).a;
 				float alpha = alphaMask * mainAlpha;
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 
@@ -96,7 +105,7 @@
 				u_xlat0.xyz = v.normal.xyz * alpha + v.vertex.xyz;
 				o.posCS = UnityObjectToClipPos(u_xlat0.xyz);
 				o.uv0 = v.uv0;
-
+				1;
 				return o;
 			}
 			
@@ -106,7 +115,7 @@
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				
-				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				float alpha = AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
 
 				float3 diffuse = GetDiffuse(i.uv0);
@@ -145,7 +154,7 @@
 			Name "Forward"
 			LOD 600
 			Tags { "LightMode" = "ForwardBase" "RenderType" = "Opaque" "ShadowSupport" = "true" }
-			Cull Off
+			Cull [_CullOption]
 
 
 			CGPROGRAM
@@ -153,6 +162,7 @@
 
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 			
@@ -165,6 +175,7 @@
 
 			#include "KKPHairInput.cginc"
 			#include "KKPHairDiffuse.cginc"
+			#include "KKPHairNormals.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
@@ -190,13 +201,16 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#include "UnityCG.cginc"
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			sampler2D _AlphaMask;
-			float4 _AlphaMask_ST;
+			#include "KKPHairInput.cginc"
+
+			//sampler2D _MainTex;
+			//float4 _MainTex_ST;
+			//sampler2D _AlphaMask;
+			//float4 _AlphaMask_ST;
 
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
@@ -214,11 +228,11 @@
             float4 frag(v2f i) : SV_Target
             {
 
-				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+				float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV);
 				float alphaVal = alphaMask.x * mainTex.a;
-				float clipVal = (alphaVal.x - 0.5) < 0.0f;
+				float clipVal = (alphaVal.x - _Cutoff) < 0.0f;
 				if(clipVal * int(0xffffffffu) != 0)
 					discard;
 

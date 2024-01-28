@@ -13,6 +13,7 @@ Shader "xukmi/MainAlphaPlus"
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,1)
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
 		_SpecularPower ("Specular Power", Range(0, 1)) = 0
@@ -45,12 +46,13 @@ Shader "xukmi/MainAlphaPlus"
 		[MaterialToggle] _UseLightColorSpecular ("Use Light Color Specular", Float) = 1
 		[MaterialToggle] _UseDetailRAsSpecularMap ("Use DetailR as Specular Map", Float) = 0
 		[Enum(Off,0,On,1)]_AlphaOptionZWrite ("ZWrite", Float) = 1.0
-		[Enum(Off,0,On,1)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
+		[Enum(Off,0,On,1,Smooth,2)]_AlphaOptionCutoff ("Cutoff On", Float) = 1.0
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 0.0
 		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 2
 		_LineWidthS ("LineWidthS", Float) = 1
 		_Reflective("Reflective", Range(0, 1)) = 0.75
+		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
 		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
@@ -65,6 +67,18 @@ Shader "xukmi/MainAlphaPlus"
 		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
+		
+		_ReflectColMix ("Reflection Color Mix Amount", Range(0,1)) = 1
+		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
+		_ReflectMapDetail ("Reflect Body Mask/Map", 2D) = "white" {}
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		[Enum(Off,0,On,1)]_ReflectiveOverlayed ("Reflections Overlayed", Float) = 0.0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
+		
+		_SpecularNormalScale ("Specular Normal Map Relative Scale", Float) = 1
+		_SpecularDetailNormalScale ("Specular Detail Normal Map Relative Scale", Float) = 1
 	}
 	SubShader
 	{
@@ -81,6 +95,7 @@ Shader "xukmi/MainAlphaPlus"
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
@@ -91,6 +106,7 @@ Shader "xukmi/MainAlphaPlus"
 			Varyings vert (VertexData v)
 			{
 				Varyings o;
+				
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 				float3 viewDir = _WorldSpaceCameraPos.xyz - o.posWS.xyz;
 				float viewVal = dot(viewDir, viewDir);
@@ -125,6 +141,7 @@ Shader "xukmi/MainAlphaPlus"
 				if(!_OutlineOn)
 					o.posCS = float4(2,2,2,1);
 				o.uv0 = v.uv0;
+				1;
 				return o;
 			}
 			
@@ -133,7 +150,7 @@ Shader "xukmi/MainAlphaPlus"
 
 			fixed4 frag (Varyings i) : SV_Target
 			{
-				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				AlphaClip(i.uv0, _OutlineOn ? mainTex.a * _Alpha : 0);
 
 				float3 diffuse = mainTex.rgb;
@@ -170,7 +187,7 @@ Shader "xukmi/MainAlphaPlus"
 				_SpecularPower *= specularMap;
 				
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMask = tex2D(_LineMask, lineMaskUV);
+				float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, _LineMask, lineMaskUV);
 
 				float detailLine = detailMask.x - lineMask.x;
 				detailLine = _DetailRLineR * detailLine + lineMask;
@@ -208,7 +225,7 @@ Shader "xukmi/MainAlphaPlus"
 		{
 			Name "Forward"
 			LOD 600
-			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent+40" "RenderType" = "TransparentCutout" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent+40" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
 			Cull [_CullOption]
 			ZWrite [_AlphaOptionZWrite]
@@ -217,6 +234,7 @@ Shader "xukmi/MainAlphaPlus"
 
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 			
@@ -231,7 +249,7 @@ Shader "xukmi/MainAlphaPlus"
 			#include "KKPItemInput.cginc"
 			#include "KKPItemDiffuse.cginc"
 			#include "KKPItemNormals.cginc"
-			#include "KKPItemCoom.cginc"
+			#include "../KKPCoom.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
@@ -280,18 +298,11 @@ Shader "xukmi/MainAlphaPlus"
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#include "UnityCG.cginc"
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			sampler2D _AlphaMask;
-			float4 _AlphaMask_ST;
-
-			float _alpha_a;
-			float _alpha_b;
-			float _Cutoff;
-			bool _AlphaOptionCutoff;
+			#include "KKPItemInput.cginc"
 
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
@@ -309,9 +320,9 @@ Shader "xukmi/MainAlphaPlus"
             float4 frag(v2f i) : SV_Target
             {
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+				float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV);
 				float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
-				float mainTexAlpha = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw).a;
+				float mainTexAlpha = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw).a;
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);
 				alphaVal *= mainTexAlpha;

@@ -21,9 +21,10 @@
 		[Gamma]_SpecularColor ("SpecularColor", Vector) = (1.0,1.0,1.0,1.0)
 		[Gamma]_LineColor ("LineColor", Vector) = (0.5,0.5,0.5,1)
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_CustomAmbient("Custom Ambient", Color) = (0.666666666, 0.666666666, 0.666666666, 1)
 		_NormalMapScale ("NormalMapScale", Float) = 1
-		[HideInInspector] _Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
+		_Cutoff ("Alpha cutoff", Range(0, 1)) = 0.5
 		[MaterialToggle] _UseRampForLights ("Use Ramp For Light", Float) = 1
 		[MaterialToggle] _UseRampForSpecular ("Use Ramp For Specular", Float) = 0
 		[MaterialToggle] _SpecularIsHighlights ("Specular is highlight", Float) = 0
@@ -46,17 +47,27 @@
 		_KKPRimAsDiffuse ("Body Rim As Diffuse", Range(0, 1)) = 0.0
 		_KKPRimRotateX("Body Rim Rotate X", Float) = 0.0
 		_KKPRimRotateY("Body Rim Rotate Y", Float) = 0.0
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
+		_transparency ("Hair Transparency", Float) = 1.0
+		_src ("Src", Float) = 5.0
+		_dst ("Dst", Float) = 10.0
+		
+		_SpecularNormalScale ("Specular Normal Map Relative Scale", Float) = 1
 	}
 	SubShader
 	{
 		LOD 600
-		Tags {"Queue" = "Transparent+40" "RenderType" = "Transparent" }
-		//Outline
+		Tags {"Queue" = "AlphaTest+25" "RenderType" = "Transparent" }
+		// Outline
 		Pass
 		{
 			Name "Outline"
 			LOD 600
-			Tags {"Queue" = "Transparent+40" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags {"Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
 			Cull Front
 			Stencil {
 				Ref 2
@@ -65,9 +76,11 @@
 				Fail Keep
 				ZFail Keep
 			}
+			
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
@@ -79,8 +92,8 @@
 			{
 				Varyings o;
 				
-				float alphaMask = tex2Dlod(_AlphaMask, float4(v.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw, 0, 0)).r;
-				float mainAlpha = tex2Dlod(_MainTex, float4(v.uv0 * _MainTex_ST.xy + _MainTex_ST.zw, 0, 0)).a;
+				float alphaMask = SAMPLE_TEX2D_SAMPLER_LOD(_AlphaMask, SAMPLERTEX, v.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw, 0).r;
+				float mainAlpha = SAMPLE_TEX2D_LOD(_MainTex, v.uv0 * _MainTex_ST.xy + _MainTex_ST.zw, 0).a;
 				float alpha = alphaMask * mainAlpha;
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 
@@ -101,17 +114,14 @@
 				u_xlat0.xyz = v.normal.xyz * alpha + v.vertex.xyz;
 				o.posCS = UnityObjectToClipPos(u_xlat0.xyz);
 				o.uv0 = v.uv0;
-
+				1;
 				return o;
 			}
-			
-
-			
 
 			fixed4 frag (Varyings i) : SV_Target
 			{
 				
-				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				float alpha = AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
 
 				float3 diffuse = GetDiffuse(i.uv0);
@@ -138,20 +148,199 @@
 				return float4(diffuse, 1);
 
 			}
-
 			
 			ENDCG
 		}
 		
+		// Outline Alpha 1
+		Pass
+		{
+			Name "OutlineAlpha1"
+			Tags { "QUEUE" = "AlphaTest-400" "RenderType" = "Transparent" "SHADOWSUPPORT" = "true" }
+			Blend [_src] [_dst], SrcAlpha OneMinusSrcAlpha
+			Cull Front
+			
+			Stencil {
+				Ref 2
+				Comp Equal
+				Pass IncrSat
+				Fail Keep
+				ZFail Keep
+			}
 
-		//Main Pass
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment transparencyFrag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
+			
+			#include "UnityCG.cginc"
+			#include "Lighting.cginc"
+
+			#include "KKPHairInput.cginc"
+			#include "KKPHairDiffuse.cginc"
+
+			Varyings vert (VertexData v)
+			{
+				Varyings o;
+				
+				float alphaMask = SAMPLE_TEX2D_SAMPLER_LOD(_AlphaMask, SAMPLERTEX, v.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw, 0).r;
+				float mainAlpha = SAMPLE_TEX2D_LOD(_MainTex, v.uv0 * _MainTex_ST.xy + _MainTex_ST.zw, 0).a;
+				float alpha = alphaMask * mainAlpha;
+				o.posWS = mul(unity_ObjectToWorld, v.vertex);
+
+				float3 viewDir = o.posWS - _WorldSpaceCameraPos.xyz; //This is inverted?
+				float viewVal = dot(viewDir, viewDir);
+				viewVal = sqrt(viewVal);
+				viewVal = viewVal * 0.0999999866 + 0.300000012;
+				float lineVal = _linewidthG * 0.00499999989;
+				viewVal *= lineVal * _LineWidthS;
+				alpha *= viewVal;
+
+				float4 detailMask = tex2Dlod(_DetailMask, float4(v.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw, 0, 0));
+				float inverseMask = 1 - detailMask.z;
+				alpha *= inverseMask;
+
+				//Not too sure what's going on, some viewspace based outlines?
+				float4 u_xlat0;
+				u_xlat0.xyz = v.normal.xyz * alpha + v.vertex.xyz;
+				o.posCS = UnityObjectToClipPos(u_xlat0.xyz);
+				o.uv0 = v.uv0;
+				return o;
+			}
+
+			fixed4 frag (Varyings i) : SV_Target
+			{
+				
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float alpha = AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
+
+				float3 diffuse = GetDiffuse(i.uv0);
+				float3 diffuseMainTex = -diffuse * mainTex.xyz + 1;
+				diffuse = mainTex * diffuse;
+				diffuse *= _LineColor.rgb;
+				diffuse += diffuse;
+				float3 lineColor = _LineColor.rgb - 0.5;
+				lineColor = -lineColor * 2 + 1;
+				lineColor = -lineColor * diffuseMainTex + 1;
+			
+				bool3 colCheck = 0.5 < _LineColor.rgb;		
+				{
+					float3 hlslcc_movcTemp = diffuse;
+					hlslcc_movcTemp.x = (colCheck.x) ? lineColor.x : diffuse.x;
+					hlslcc_movcTemp.y = (colCheck.y) ? lineColor.y : diffuse.y;
+					hlslcc_movcTemp.z = (colCheck.z) ? lineColor.z : diffuse.z;
+					diffuse = hlslcc_movcTemp;
+				}	
+				diffuse = saturate(diffuse);
+				float3 lightCol = _LightColor0.xyz * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
+				diffuse *= lightCol;
+
+				return float4(diffuse, 1);
+
+			}
+			
+			fixed4 transparencyFrag(Varyings i) : SV_Target
+			{
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				AlphaClip(i.uv0, mainTex.a);
+				float4 col = frag(i);
+				return float4(col.rgb, 1 - _transparency);
+			}
+			
+			ENDCG
+		}
+		
+		// Outline Alpha 2
+		Pass
+		{
+			Name "OutlineAlpha2"
+			Tags { "QUEUE" = "AlphaTest-400" "RenderType" = "Transparent" "SHADOWSUPPORT" = "true" }
+			Blend [_src] [_dst]
+			Cull Front
+			
+			Stencil {
+				Ref 2
+				Comp Equal
+				Pass Keep
+				Fail DecrSat
+				ZFail Keep
+			}
+
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment transparencyFrag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
+			
+			#include "UnityCG.cginc"
+			#include "Lighting.cginc"
+
+			#include "KKPHairInput.cginc"
+			#include "KKPHairDiffuse.cginc"
+
+			Varyings vert (VertexData v)
+			{
+				Varyings o;
+
+				o.posWS = mul(unity_ObjectToWorld, v.vertex);
+
+				//Not too sure what's going on, some viewspace based outlines?
+				float4 u_xlat0;
+				u_xlat0.xyz = v.vertex.xyz;
+				o.posCS = UnityObjectToClipPos(u_xlat0.xyz);
+				o.uv0 = v.uv0;
+				return o;
+			}
+
+			fixed4 frag (Varyings i) : SV_Target
+			{
+				
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				float alpha = AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
+
+				float3 diffuse = GetDiffuse(i.uv0);
+				float3 diffuseMainTex = -diffuse * mainTex.xyz + 1;
+				diffuse = mainTex * diffuse;
+				diffuse *= _LineColor.rgb;
+				diffuse += diffuse;
+				float3 lineColor = _LineColor.rgb - 0.5;
+				lineColor = -lineColor * 2 + 1;
+				lineColor = -lineColor * diffuseMainTex + 1;
+			
+				bool3 colCheck = 0.5 < _LineColor.rgb;		
+				{
+					float3 hlslcc_movcTemp = diffuse;
+					hlslcc_movcTemp.x = (colCheck.x) ? lineColor.x : diffuse.x;
+					hlslcc_movcTemp.y = (colCheck.y) ? lineColor.y : diffuse.y;
+					hlslcc_movcTemp.z = (colCheck.z) ? lineColor.z : diffuse.z;
+					diffuse = hlslcc_movcTemp;
+				}	
+				diffuse = saturate(diffuse);
+				float3 lightCol = _LightColor0.xyz * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
+				diffuse *= lightCol;
+
+				return float4(diffuse, 1);
+
+			}
+			
+			fixed4 transparencyFrag(Varyings i) : SV_Target
+			{
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				AlphaClip(i.uv0, mainTex.a);
+				float4 col = frag(i);
+				return float4(col.rgb, 1 - _transparency);
+			}
+			
+			ENDCG
+		}
+		
+		// Main Pass
 		Pass
 		{
 			Name "Forward"
 			LOD 600
-			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent+40" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ForwardBase" "Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
-			Cull Off
+			Cull [_CullOption]
 			Stencil {
 				Ref 2
 				Comp NotEqual
@@ -165,6 +354,7 @@
 
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 			
@@ -177,6 +367,7 @@
 
 			#include "KKPHairInput.cginc"
 			#include "KKPHairDiffuse.cginc"
+			#include "KKPHairNormals.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
@@ -188,14 +379,66 @@
 			
 			ENDCG
 		}
-
 		
-		//ShadowCaster
+		// Main Alpha
+		Pass
+		{
+			Name "MainAlpha"
+			Tags { "LightMode" = "ForwardBase" "QUEUE" = "AlphaTest-400" "RenderType" = "TransparentCutout" "SHADOWSUPPORT" = "true" }
+			Blend [_src] [_dst], SrcAlpha OneMinusSrcAlpha
+			Cull Back
+			
+			Stencil {
+				Ref 2
+				Comp Equal
+				Pass Keep
+				Fail Keep
+				ZFail Keep
+			}
+
+			CGPROGRAM
+			#pragma target 3.0
+
+			#pragma vertex vert
+			#pragma fragment transparencyFrag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu
+			#pragma multi_compile _ VERTEXLIGHT_ON
+			#pragma multi_compile _ SHADOWS_SCREEN
+			
+			#define KKP_EXPENSIVE_RAMP
+
+			//Unity Includes
+			#include "UnityCG.cginc"
+			#include "AutoLight.cginc"
+			#include "Lighting.cginc"
+
+			#include "KKPHairInput.cginc"
+			#include "KKPHairDiffuse.cginc"
+			#include "KKPHairNormals.cginc"
+			#include "../KKPVertexLights.cginc"
+			#include "../KKPVertexLightsSpecular.cginc"
+			#include "../KKPEmission.cginc"
+			
+			#define HAIR_FRONT
+			#include "KKPHairVertFrag.cginc" //Vert Frag here
+			
+			fixed4 transparencyFrag (Varyings i, int frontFace : VFACE) : SV_Target
+			{
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				AlphaClip(i.uv0, mainTex.a);
+				float4 col = frag(i, frontFace);
+				return float4(col.rgb, 1 - _transparency);
+			}
+
+			ENDCG
+		}
+		
+		// ShadowCaster
 		Pass
 		{
 			Name "ShadowCaster"
 			LOD 600
-			Tags { "LightMode" = "ShadowCaster" "Queue" = "Transparent+40" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ShadowCaster" "Queue" = "AlphaTest+25" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Offset 1, 1
 			Cull Back
 
@@ -203,13 +446,16 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#include "UnityCG.cginc"
+			
+			#include "KKPHairInput.cginc"
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			sampler2D _AlphaMask;
-			float4 _AlphaMask_ST;
+			//sampler2D _MainTex;
+			//float4 _MainTex_ST;
+			//sampler2D _AlphaMask;
+			//float4 _AlphaMask_ST;
 
             struct v2f { 
 				float2 uv0 : TEXCOORD1;
@@ -226,12 +472,12 @@
 
             float4 frag(v2f i) : SV_Target
             {
-
-				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				
+				float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+				float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV);
 				float alphaVal = alphaMask.x * mainTex.a;
-				float clipVal = (alphaVal.x - 0.5) < 0.0f;
+				float clipVal = (alphaVal.x - _Cutoff) < 0.0f;
 				if(clipVal * int(0xffffffffu) != 0)
 					discard;
 
@@ -243,5 +489,6 @@
 		}
 		
 	}
+	
 	Fallback "Unlit/Texture"
 }

@@ -101,7 +101,7 @@ void MapValuesOutline(float3 col, out float3 a){
 void AlphaClip(float2 uv, bool outline){
 	//Body alpha mask from outfits
 	float2 alphaUV = uv * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-	float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+	float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV);
 	float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
 	alphaVal = max(alphaVal, alphaMask.xy);
 	alphaVal = min(alphaVal.y, alphaVal.x) * outline;
@@ -109,6 +109,39 @@ void AlphaClip(float2 uv, bool outline){
 	float clipVal = alphaVal.x < 0.0f;
 	if(clipVal * int(0xffffffffu) != 0)
 		discard;
+}
+
+float3 HUEtoRGB(in float H)
+{
+	float R = abs(H * 6 - 3) - 1;
+	float G = 2 - abs(H * 6 - 2);
+	float B = 2 - abs(H * 6 - 4);
+	return saturate(float3(R,G,B));
+}
+
+float Epsilon = 1e-10;
+float3 RGBtoHCV(in float3 RGB)
+{
+	// Based on work by Sam Hocevar and Emil Persson
+	float4 P = (RGB.g < RGB.b) ? float4(RGB.bg, -1.0, 2.0/3.0) : float4(RGB.gb, 0.0, -1.0/3.0);
+	float4 Q = (RGB.r < P.x) ? float4(P.xyw, RGB.r) : float4(RGB.r, P.yzx);
+	float C = Q.x - min(Q.w, Q.y);
+	float H = abs((Q.w - Q.y) / (6 * C + Epsilon) + Q.z);
+	return float3(H, C, Q.x);
+}
+
+float3 RGBtoHSL(in float3 RGB)
+{
+	float3 HCV = RGBtoHCV(RGB);
+	float L = HCV.z - HCV.y * 0.5;
+	float S = HCV.y / (1 - abs(L * 2 - 1) + Epsilon);
+	return float3(HCV.x, S, L);
+}
+float3 HSLtoRGB(in float3 HSL)
+{
+	float3 RGB = HUEtoRGB(HSL.x);
+	float C = (1 - abs(2 * HSL.z - 1)) * HSL.y;
+	return (RGB - 0.5) * C + HSL.z;
 }
 
 //Anything affected by lighting
@@ -126,7 +159,7 @@ float3 GetDiffuse(Varyings i){
 	//Nipple for body, lipstick for face 
 	float2 overtex1UV = _nip * nippleUV2 + nippleMaskUV;
 	overtex1UV = overtex1UV * _overtex1_ST.xy + _overtex1_ST.zw;
-	float4 overTex1 = tex2D(_overtex1, overtex1UV);
+	float4 overTex1 = SAMPLE_TEX2D_SAMPLER(_overtex1, _overtex1, overtex1UV);
 	float nipSpec = overTex1.y * _nip_specular;
 	float3 overTex1Spec = nipSpec * float3(0.330000013, 0.330000013, 0.330000013) + _overcolor1.xyz;
 	float4 overTex1Col = overTex1 * _overcolor1;
@@ -136,21 +169,21 @@ float3 GetDiffuse(Varyings i){
 
 	//Maintex and blend overTex1
 	float2 mainTexUV = i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw;
-	float4 mainTex = tex2D(_MainTex, mainTexUV);
+	float4 mainTex = SAMPLE_TEX2D_SAMPLER(_MainTex, SAMPLERTEX, mainTexUV);
 	overTex1.rgb -= mainTex.rgb;
 	overTex1.rgb = overTex1Col.a * overTex1.rgb + mainTex.rgb;
 
 	//Pubes for body, blush for face
 	float2 overTex2UV = i.uv2 * i.color.b;
 	overTex2UV = overTex2UV * _overtex2_ST.xy + _overtex2_ST.zw;
-	float4 overTex2 = tex2D(_overtex2, overTex2UV); 
+	float4 overTex2 = SAMPLE_TEX2D_SAMPLER(_overtex2, _overtex2, overTex2UV); 
 	overTex2.rgb = _overcolor2.rgb * overTex2.rgb - overTex1.rgb;
 	float overTex2Blend = overTex2.a * _overcolor2.a;
 	overTex1.rgb = overTex2Blend * overTex2.rgb + overTex1.rgb;
 
 	//Eyeshadow for face, seems to just be another nipple for the body
 	float2 overTex3UV = i.uv3 * _overtex3_ST.xy + _overtex3_ST.zw;
-	float4 overTex3 = tex2D(_overtex3, overTex3UV);
+	float4 overTex3 = SAMPLE_TEX2D_SAMPLER(_overtex3, _overtex3, overTex3UV);
 	overTex3.rgb = overTex3.rgb * _overcolor3.rgb - overTex1.rgb;
 	float overTex3Blend = overTex3.a * _overcolor3.a;
 	overTex1.rgb = overTex3Blend * overTex3.rgb + overTex1.rgb;

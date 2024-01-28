@@ -1,5 +1,9 @@
 ﻿#ifndef KKP_HAIR_INPUT
 #define KKP_HAIR_INPUT
+
+#include "../KKPDeclarations.cginc"
+#define SAMPLERTEX _MainTex
+
 	struct VertexData
 	{
 		float4 vertex : POSITION;
@@ -38,6 +42,7 @@
 	bool _SpecularHeightInvert;
 
 	float _NormalMapScale;
+	float _SpecularNormalScale;
 
 	bool _UseKKPRim;
 	float4 _KKPRimColor;
@@ -48,14 +53,15 @@
 	float _KKPRimRotateY;
 
 	//Input Textures
-	sampler2D _MainTex;
-	sampler2D _AlphaMask;
-	sampler2D _NormalMap;
-	sampler2D _ColorMask;
-	sampler2D _HairGloss;
+	DECLARE_TEX2D(_MainTex);
+	DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
+	DECLARE_TEX2D_NOSAMPLER(_NormalMap);
+	DECLARE_TEX2D_NOSAMPLER(_ColorMask);
+	DECLARE_TEX2D_NOSAMPLER(_HairGloss);
 	sampler2D _DetailMask;
 	sampler2D _RampG;
 	sampler2D _AnotherRamp;
+
 	//UV Offsets
 	float4 _MainTex_ST;
 	float4 _AlphaMask_ST;
@@ -65,7 +71,6 @@
 	float4 _DetailMask_ST;
 	float4 _RampG_ST;
 	float4 _AnotherRamp_ST;
-
 
 	float _rimpower;
 	float _rimV;
@@ -77,6 +82,7 @@
 
 	float4 _SpecularColor;
 	float4 _ShadowColor;
+	float4 _ShadowHSV;
 	float _SpeclarHeight;
 	float _ShadowExtend;
 
@@ -85,5 +91,21 @@
 	//Global light params set by KK 
 	float _linewidthG; 
 	float4 _ambientshadowG;
-
+	
+	float _AdjustBackfaceNormals;
+	float _DisablePointLights;
+	float _DisableShadowedMatcap;
+	int _CullOption;
+	float _Cutoff;
+	float _rimReflectMode;
+	float _transparency;
+	float _src;
+	float _dst;
+	
+	// Required for Matcap light-masking
+	sampler2D _NormalMask;
+	float4 _NormalMask_ST;
+	float _FaceShadowG;
+	float _FaceNormalG;
+	bool _UseRampForShadows;
 #endif

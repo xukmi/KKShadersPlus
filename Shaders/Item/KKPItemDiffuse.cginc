@@ -50,7 +50,6 @@ float3 ShadeAdjust(float3 col){
 						
 }
 
-
 float3 ShadeAdjustItem(float3 col){
 	float4 u_xlat0;
 	float4 u_xlat1;
@@ -97,11 +96,43 @@ float3 ShadeAdjustItem(float3 col){
 	return u_xlat1.xyz;
 }
 
+float3 HUEtoRGB(in float H)
+{
+	float R = abs(H * 6 - 3) - 1;
+	float G = 2 - abs(H * 6 - 2);
+	float B = 2 - abs(H * 6 - 4);
+	return saturate(float3(R,G,B));
+}
+
+float Epsilon = 1e-10;
+float3 RGBtoHCV(in float3 RGB)
+{
+	// Based on work by Sam Hocevar and Emil Persson
+	float4 P = (RGB.g < RGB.b) ? float4(RGB.bg, -1.0, 2.0/3.0) : float4(RGB.gb, 0.0, -1.0/3.0);
+	float4 Q = (RGB.r < P.x) ? float4(P.xyw, RGB.r) : float4(RGB.r, P.yzx);
+	float C = Q.x - min(Q.w, Q.y);
+	float H = abs((Q.w - Q.y) / (6 * C + Epsilon) + Q.z);
+	return float3(H, C, Q.x);
+}
+
+float3 RGBtoHSL(in float3 RGB)
+{
+	float3 HCV = RGBtoHCV(RGB);
+	float L = HCV.z - HCV.y * 0.5;
+	float S = HCV.y / (1 - abs(L * 2 - 1) + Epsilon);
+	return float3(HCV.x, S, L);
+}
+float3 HSLtoRGB(in float3 HSL)
+{
+	float3 RGB = HUEtoRGB(HSL.x);
+	float C = (1 - abs(2 * HSL.z - 1)) * HSL.y;
+	return (RGB - 0.5) * C + HSL.z;
+}
 
 void AlphaClip(float2 uv, float texAlpha){
 	//Body alpha mask from outfits
 	float2 alphaUV = uv * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-	float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+	float4 alphaMask = SAMPLE_TEX2D_SAMPLER(_AlphaMask, SAMPLERTEX, alphaUV);
 	float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
 	alphaVal = max(alphaVal, alphaMask.xy);
 	alphaVal = min(alphaVal.y, alphaVal.x);

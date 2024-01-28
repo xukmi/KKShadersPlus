@@ -1,6 +1,10 @@
 ﻿#ifndef KKP_MAIN_INPUT
 #define KKP_MAIN_INPUT
 
+#include "../KKPDeclarations.cginc"
+#define SAMPLERTEX _NormalMap
+#define SAMPLERTEX2 _NormalMap
+
 	struct VertexData
 	{
 		float4 vertex : POSITION;
@@ -47,28 +51,27 @@
 	float _KKPRimRotateX;
 	float _KKPRimRotateY;
 
-
 	float4 _ShadowColor;
 	float4 _OutlineColor;
-
 
 	//KK Inputs
 
 	//Input Textures
-	sampler2D _MainTex;
-	sampler2D _AlphaMask;
-	sampler2D _NormalMap;
-	sampler2D _NormalMapDetail;
-	sampler2D _liquidmask;
-	sampler2D _Texture2; //Liquid Tex
-	sampler2D _Texture3; //Liquid Normal
-	sampler2D _overtex1;
-	sampler2D _overtex2;
-	sampler2D _overtex3;
+	DECLARE_TEX2D_NOSAMPLER(_MainTex);
+	DECLARE_TEX2D_NOSAMPLER(_AlphaMask);
+	DECLARE_TEX2D(_NormalMap);
+	DECLARE_TEX2D_NOSAMPLER(_NormalMapDetail);
+	DECLARE_TEX2D_NOSAMPLER(_liquidmask);
+	DECLARE_TEX2D_NOSAMPLER(_Texture2); //Liquid Tex
+	DECLARE_TEX2D_NOSAMPLER(_Texture3); //Liquid Normal
+	//DECLARE_TEX2D_NOSAMPLER(_SpecularMap);
+	DECLARE_TEX2D(_overtex1);
+	DECLARE_TEX2D(_overtex2);
+	DECLARE_TEX2D(_overtex3);
+	DECLARE_TEX2D_NOSAMPLER(_LineMask);
 	sampler2D _DetailMask;
 	sampler2D _NormalMask;
 	sampler2D _RampG;
-	sampler2D _LineMask;
 	//UV Offsets
 	float4 _MainTex_ST;
 	float4 _AlphaMask_ST;
@@ -77,6 +80,7 @@
 	float4 _liquidmask_ST;
 	float4 _Texture2_ST; //Liquid Tex
 	float4 _Texture3_ST; //Liquid Normal
+	//float4 _SpecularMap_ST;
 	float4 _overtex1_ST;
 	float4 _overtex2_ST;
 	float4 _overtex3_ST;
@@ -91,7 +95,10 @@
 	float _rimpower;
 	float _rimV;
 	float4 _SpecularColor;
+	float4 _ShadowHSV;
 	float _SpeclarHeight;
+	float _SpecularNormalScale;
+	float _SpecularDetailNormalScale;
 	float _SpecularPower;
 	float _SpecularPowerNail;
 	float _ShadowExtend;
@@ -113,11 +120,16 @@
 
 	float _LineWidthS;
 	bool _OutlineOn;
+	
 	//Global light params set by KK 
 	float4 _LineColorG;
 	float _linewidthG; 
 	float4 _ambientshadowG; //Shadow color 
 	float _FaceShadowG;
 	float _FaceNormalG;
-
+	
+	float _AdjustBackfaceNormals;
+	float _DisablePointLights;
+	float _DisableShadowedMatcap;
+	float _rimReflectMode;
 #endif
