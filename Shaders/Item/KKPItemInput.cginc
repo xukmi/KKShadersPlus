@@ -3,6 +3,7 @@
 
 #include "../KKPDeclarations.cginc"
 #define SAMPLERTEX _MainTex
+#define SAMPLERTEX2 _LineMask
 
 	struct VertexData
 	{

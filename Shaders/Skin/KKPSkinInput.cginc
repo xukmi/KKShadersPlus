@@ -3,6 +3,7 @@
 
 #include "../KKPDeclarations.cginc"
 #define SAMPLERTEX _NormalMap
+#define SAMPLERTEX2 _NormalMap
 
 	struct VertexData
 	{
