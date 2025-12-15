@@ -2,6 +2,12 @@
 {
 	Properties
 	{
+		_ColMask ("Color Mask", 2D) = "black" {}
+		[Gamma]_Col0 ("Color 0", Color) = (1, 1, 1, 1)
+		[Gamma]_Col1 ("Color 1", Color) = (1, 1, 1, 1)
+		[Gamma]_Col2 ("Color 2", Color) = (1, 1, 1, 1)
+		[Gamma]_Col3 ("Color 3", Color) = (1, 1, 1, 1)
+		
 		_MainTex ("MainTex", 2D) = "white" {}
 		[Gamma]_overcolor1 ("Over Color1", Vector) = (1,1,1,1)
 		_overtex1 ("Over Tex1", 2D) = "black" {}
@@ -17,7 +23,10 @@
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
-		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_EmissionMaskMode("Emission Mask Mode", Float) = 0
+		_EmissionKeepCol("Emission Keep Base Color", Float) = 0
+		[Gamma]_ShadowColor ("Shadow Color", Color) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
 		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 1
 		_NormalMapScale ("NormalMapScale", Float) = 1
@@ -74,6 +83,15 @@
 		_DisplaceNormalMultiplier("DisplaceNormalMultiplier", float) = 1
 		_DisplaceFull("Displace Full", Range(-1, 1)) = 0
 		_Clock ("W is for displacement multiplier for animation", Vector) = (0,0,0,1)
+		
+		_DisablePointLights ("Disable Point Lights", Float) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
+		
+		_SpecularNormalScale ("Specular Normal Map Relative Scale", Float) = 1
+		_SpecularDetailNormalScale ("Specular Detail Normal Map Relative Scale", Float) = 1
+		
+		_Saturation ("Saturation", Float) = 1
 	}
 	SubShader
 	{
@@ -94,6 +112,7 @@
 			#pragma fragment frag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
@@ -118,7 +137,7 @@
 				float lineVal = _linewidthG * 0.00499999989;
 				viewVal *= lineVal * _LineWidthS;
 				float2 detailMaskUV = v.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float4 detailMask = tex2Dlod(_DetailMask, float4(detailMaskUV, 0, 0));
+				float4 detailMask = SAMPLE_TEX2D_LOD(_DetailMask, float4(detailMaskUV, 0, 0), 0);
 				float detailB = 1 - detailMask.b;
 				viewVal *= detailB;
 				float3 invertSquare;
@@ -145,6 +164,7 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
+				1;
 				return o;
 			}
 			
@@ -152,6 +172,8 @@
 
 			fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 			{
+
+				
 				//Defined in Diffuse.cginc
 				AlphaClip(i.uv0, _OutlineOn ? 1 : 0);	
 				float3 diffuse = GetDiffuse(i);
@@ -185,7 +207,7 @@
 				}
 				float3 finalDiffuse = diffuse * u_xlat1;
 				float2 detailMaskUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float4 detailMask = tex2D(_DetailMask, detailMaskUV);
+				float4 detailMask = SAMPLE_TEX2D(_DetailMask, detailMaskUV);
 
 				float detailGInv = 1 - detailMask.g;
 				detailGInv = detailGInv * 0.5 + 0.5;
@@ -203,10 +225,8 @@
 				outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 
 				float3 finalColor = finalDiffuse * outLineCol;
-				finalColor = lerp(finalColor, _OutlineColor.rgb, _OutlineColor.a);
-				return float4(finalColor, 1.0);
-
-
+				finalColor = applySaturation(lerp(finalColor, _OutlineColor.rgb, _OutlineColor.a), _Saturation);
+				return float4(max(finalColor, 1e-06), 1.0);
 			}
 
 			
@@ -230,6 +250,7 @@
 			#pragma fragment frag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 
@@ -248,9 +269,9 @@
 			#include "KKPNormals.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
-			#include "KKPLighting.cginc"
+			#include "../KKPLighting.cginc"
 			#include "../KKPEmission.cginc"
-			#include "KKPCoom.cginc"
+			#include "../KKPCoom.cginc"
 
 			#include "KKPSkinFrag.cginc"
 
@@ -314,6 +335,7 @@
 			#pragma hull hull
 			#pragma domain domain
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#define SHADOW_CASTER_PASS
 
@@ -342,8 +364,9 @@
 			#include "KKPTess.cginc"
             float4 frag(v2f i) : SV_Target
             {
+
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+				float4 alphaMask = SAMPLE_TEX2D(_AlphaMask, alphaUV);
 				float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);

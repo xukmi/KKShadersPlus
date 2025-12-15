@@ -2,6 +2,12 @@
 {
 	Properties
 	{
+		_ColMask ("Color Mask", 2D) = "black" {}
+		[Gamma]_Col0 ("Color 0", Color) = (1, 1, 1, 1)
+		[Gamma]_Col1 ("Color 1", Color) = (1, 1, 1, 1)
+		[Gamma]_Col2 ("Color 2", Color) = (1, 1, 1, 1)
+		[Gamma]_Col3 ("Color 3", Color) = (1, 1, 1, 1)
+
 		_MainTex ("MainTex", 2D) = "white" {}
 		[Gamma]_overcolor1 ("Over Color1", Vector) = (1,1,1,1)
 		_overtex1 ("Over Tex1", 2D) = "black" {}
@@ -17,8 +23,11 @@
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
+		_EmissionMaskMode("Emission Mask Mode", Float) = 0
+		_EmissionKeepCol("Emission Keep Base Color", Float) = 0
 		[Gamma]_ShadowColor ("Shadow Color", Color) = (0.628,0.628,0.628,1)
-		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
+		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,0)
 		_DetailNormalMapScale ("DetailNormalMapScale", Range(0, 1)) = 1
 		_NormalMapScale ("NormalMapScale", Float) = 1
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
@@ -55,6 +64,7 @@
 		_LineWidthS ("LineWidthS", Float) = 1
 		[Enum(Off,0,On,1)]_OutlineOn ("Outline On", Float) = 1.0
 		[Gamma]_OutlineColor ("Outline Color", Color) = (0, 0, 0, 0)
+
 		_UseKKPRim ("Use KKP Rim", Range(0 ,1)) = 0
 		[Gamma]_KKPRimColor ("Body Rim Color", Color) = (1.0, 1.0, 1.0, 1.0)
 		_KKPRimSoft ("Body Rim Softness", Float) = 1.5
@@ -65,11 +75,25 @@
 		_ReflectMap ("Reflect Body Map", 2D) = "white" {}
 		_Roughness ("Roughness", Range(0, 1)) = 0.75
 		_ReflectionVal ("ReflectionVal", Range(0, 1)) = 1.0
+		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
 		_ReflectionMapCap ("Matcap", 2D) = "white" {}
 		_UseMatCapReflection ("Use Matcap or Env", Range(0, 1)) = 1.0
 		_ReflBlendSrc ("Reflect Blend Src", Float) = 2.0
 		_ReflBlendDst ("Reflect Blend Dst", Float) = 0.0
 		_ReflBlendVal ("Reflect Blend Val", Range(0, 1)) = 1.0
+		_ReflectColMix ("Reflection Color Mix Amount", Range(0,1)) = 1
+		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
+		_ReflectMask ("Reflect Body Mask", 2D) = "white" {}
+
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
+
+		_SpecularNormalScale ("Specular Normal Map Relative Scale", Float) = 1
+		_SpecularDetailNormalScale ("Specular Detail Normal Map Relative Scale", Float) = 1
+		
+		_Saturation ("Saturation", Float) = 1
 	}
 	SubShader
 	{
@@ -86,7 +110,8 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu
+
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
@@ -95,6 +120,7 @@
 			Varyings vert (VertexData v)
 			{
 				Varyings o;
+
 				o.posWS = mul(unity_ObjectToWorld, v.vertex);
 				float3 viewDir = _WorldSpaceCameraPos.xyz - o.posWS.xyz;
 				float viewVal = dot(viewDir, viewDir);
@@ -103,7 +129,7 @@
 				float lineVal = _linewidthG * 0.00499999989;
 				viewVal *= lineVal * _LineWidthS;
 				float2 detailMaskUV = v.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float4 detailMask = tex2Dlod(_DetailMask, float4(detailMaskUV, 0, 0));
+				float4 detailMask = SAMPLE_TEX2D_LOD(_DetailMask, float4(detailMaskUV, 0, 0), 0);
 				float detailB = 1 - detailMask.b;
 				viewVal *= detailB;
 				float3 invertSquare;
@@ -130,21 +156,22 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
+				1;
 				return o;
 			}
-			
 
-			
+
+
 
 			fixed4 frag (Varyings i, int frontFace : VFACE) : SV_Target
 			{
+
+
 				//Defined in Diffuse.cginc
-				AlphaClip(i.uv0, _OutlineOn ? 1 : 0);	
+				AlphaClip(i.uv0, _OutlineOn ? 1 : 0);
 				float3 diffuse = GetDiffuse(i);
 				float3 u_xlat1;
 				MapValuesOutline(diffuse, u_xlat1);
-
-
 
 				bool3 compTest = 0.555555582 < u_xlat1.xyz;
 				float3 diffuseShaded = u_xlat1.xyz * 0.899999976 - 0.5;
@@ -171,7 +198,7 @@
 				}
 				float3 finalDiffuse = diffuse * u_xlat1;
 				float2 detailMaskUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float4 detailMask = tex2D(_DetailMask, detailMaskUV);
+				float4 detailMask = SAMPLE_TEX2D(_DetailMask, detailMaskUV);
 
 				float detailGInv = 1 - detailMask.g;
 				detailGInv = detailGInv * 0.5 + 0.5;
@@ -189,13 +216,11 @@
 				outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 
 				float3 finalColor = finalDiffuse * outLineCol;
-				finalColor = lerp(finalColor, _OutlineColor.rgb, _OutlineColor.a);
-				return float4(finalColor, 1.0);
-
-
+				finalColor = applySaturation(lerp(finalColor, _OutlineColor.rgb, _OutlineColor.a), _Saturation);
+				return float4(max(finalColor, 1E-06), 1.0);
 			}
 
-			
+
 			ENDCG
 		}
 
@@ -208,17 +233,17 @@
 			Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
 			Cull Off
 
-
 			CGPROGRAM
 			#pragma target 3.0
 
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 
 			#define KKP_EXPENSIVE_RAMP
-			
+
 			//Unity Includes
 			#include "UnityCG.cginc"
 			#include "AutoLight.cginc"
@@ -226,14 +251,14 @@
 
 
 			#include "KKPSkinInput.cginc"
-	
+
 			#include "KKPDiffuse.cginc"
 			#include "KKPNormals.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
-			#include "KKPLighting.cginc"
+			#include "../KKPLighting.cginc"
 			#include "../KKPEmission.cginc"
-			#include "KKPCoom.cginc"
+			#include "../KKPCoom.cginc"
 
 			#include "KKPSkinFrag.cginc"
 
@@ -251,7 +276,7 @@
 				o.uv1 = v.uv1;
 				o.uv2 = v.uv2;
 				o.uv3 = v.uv3;
-				
+
 			#ifdef SHADOWS_SCREEN
 				float4 projPos = o.posCS;
 				projPos.y *= _ProjectionParams.x;
@@ -263,27 +288,39 @@
 			#endif
 				return o;
 			}
-			
-			
+
+
 			ENDCG
 		}
 
 		//Reflection Pass
-		Pass{
+		Pass {
 			Name "Reflect"
 			LOD 600
-			Tags { "LightMode" = "Always" "Queue" = "Transparent-100" "RenderType" = "Transparent" "ShadowSupport" = "true" }
+			Tags { "LightMode" = "ForwardBase" "Queue" = "Transparent-100" "RenderType" = "Transparent" "ShadowSupport" = "true" }
 			Blend [_ReflBlendSrc] [_ReflBlendDst]
+
 			CGPROGRAM
 			#pragma target 3.0
 			#pragma vertex vert
 			#pragma fragment reflectfrag
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu
+
+			#pragma multi_compile _ VERTEXLIGHT_ON
+			#pragma multi_compile _ SHADOWS_SCREEN
 
 			#include "UnityCG.cginc"
+			#include "AutoLight.cginc"
 			#include "Lighting.cginc"
+
 			#include "KKPSkinInput.cginc"
 			#include "KKPDiffuse.cginc"
 			#include "KKPNormals.cginc"
+			#include "../KKPCoom.cginc"
+			#include "../KKPVertexLights.cginc"
+			#include "../KKPVertexLightsSpecular.cginc"
+			#include "../KKPLighting.cginc"
+
 			#include "KKPSkinReflect.cginc"
 
 			Varyings vert (VertexData v)
@@ -296,14 +333,24 @@
 				float3 biTan = cross(o.tanWS, o.normalWS);
 				o.bitanWS = normalize(biTan);
 				o.uv0 = v.uv0;
+
+                #ifdef SHADOWS_SCREEN
+                    float4 projPos = o.posCS;
+                    projPos.y *= _ProjectionParams.x;
+                    float4 projbiTan;
+                    projbiTan.xyz = biTan;
+                    projbiTan.xzw = projPos.xwy * 0.5;
+                    o.shadowCoordinate.zw = projPos.zw;
+                    o.shadowCoordinate.xy = projbiTan.zz + projbiTan.xw;
+                #endif
 				return o;
 			}
-			
+
 
 			ENDCG
 
 		}
-		
+
 		//ShadowCaster
 		Pass
 		{
@@ -317,17 +364,13 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu
 
 			#include "UnityCG.cginc"
 
-			sampler2D _AlphaMask;
-			float4 _AlphaMask_ST;
+			#include "KKPSkinInput.cginc"
 
-			float _alpha_a;
-			float _alpha_b;
-
-
-            struct v2f { 
+            struct v2f {
 				float2 uv0 : TEXCOORD1;
                 V2F_SHADOW_CASTER;
             };
@@ -342,8 +385,9 @@
 
             float4 frag(v2f i) : SV_Target
             {
+
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+				float4 alphaMask = SAMPLE_TEX2D(_AlphaMask, alphaUV);
 				float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);
@@ -355,10 +399,10 @@
                 SHADOW_CASTER_FRAGMENT(i)
             }
 
-			
+
 			ENDCG
 		}
-		
+
 	}
 	Fallback "Unlit/Texture"
 }

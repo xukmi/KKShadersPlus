@@ -1,5 +1,8 @@
 ﻿#ifndef KKP_EYE_INPUT
 #define KKP_EYE_INPUT
+
+#include "../KKPDeclarations.cginc"
+
 	struct VertexData
 	{
 		float4 vertex : POSITION;
@@ -20,19 +23,18 @@
 		float3 normalWS : TEXCOORD4;
 		float4 tanWS    : TEXCOORD5;
 		float3 bitanWS  : TEXCOORD6;
+	#ifdef SHADOWS_SCREEN
+		float4 shadowCoordinate : TEXCOORD7;
+	#endif
 	};
 
-
-
-
-
 	//Input Textures
-	sampler2D _MainTex;
-	sampler2D _overtex1;
-	sampler2D _overtex2;
-	sampler2D _expression;
+	DECLARE_TEX2D(_MainTex);
+	DECLARE_TEX2D(_expression);
+	DECLARE_TEX2D(_overtex1);
+	DECLARE_TEX2D(_overtex2);
 
-	sampler2D _RampG;
+	DECLARE_TEX2D(_RampG);
 
 	bool _UseRampForLights;
 	//UV Offsets
@@ -47,14 +49,17 @@
 	float4 _CustomAmbient;
 	
 	float4 _shadowcolor;
+	float4 _ShadowHSV;
 	float _isHighLight;
 	float _exppower;
 	float _ExpressionSize;
 	float _ExpressionDepth;
 	float _rotation;
+	float _Cutoff;
 
 	//Global light params set by KK
 	float4 _ambientshadowG;
 	
-
+	float _DisablePointLights;
+	float _DisableShadowedMatcap;
 #endif

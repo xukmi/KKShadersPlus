@@ -1,7 +1,13 @@
 ﻿Shader "xukmi/MainOpaquePlusTess"
 {
 	Properties
-	{
+	{	
+		_ColMask ("Color Mask", 2D) = "black" {}
+		[Gamma]_Col0 ("Color 0", Color) = (1, 1, 1, 1)
+		[Gamma]_Col1 ("Color 1", Color) = (1, 1, 1, 1)
+		[Gamma]_Col2 ("Color 2", Color) = (1, 1, 1, 1)
+		[Gamma]_Col3 ("Color 3", Color) = (1, 1, 1, 1)
+
 		_AnotherRamp ("Another Ramp(LineR)", 2D) = "white" {}
 		_MainTex ("MainTex", 2D) = "white" {}
 		_NormalMap ("Normal Map", 2D) = "bump" {}
@@ -12,7 +18,10 @@
 		_EmissionMask ("Emission Mask", 2D) = "black" {}
 		[Gamma]_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		_EmissionIntensity("Emission Intensity", Float) = 1
+		_EmissionMaskMode("Emission Mask Mode", Float) = 0
+		_EmissionKeepCol("Emission Keep Base Color", Float) = 0
 		[Gamma]_ShadowColor ("Shadow Color", Vector) = (0.628,0.628,0.628,1)
+		_ShadowHSV ("Shadow HSV", Vector) = (0, 0, 0, 0)
 		[Gamma]_SpecularColor ("Specular Color", Vector) = (1,1,1,1)
 		_SpeclarHeight ("Speclar Height", Range(0, 1)) = 0.98
 		_SpecularPower ("Specular Power", Range(0, 1)) = 0
@@ -50,6 +59,7 @@
 		[Enum(Off,0,Front,1,Back,2)] _CullOption ("Cull Option", Range(0, 2)) = 0
 		_LineWidthS ("LineWidthS", Float) = 1
 		_Reflective("Reflective", Range(0, 1)) = 0.75
+		[Gamma]_ReflectCol("Reflection Color", Color) = (1, 1, 1, 1)
 		_ReflectiveBlend("Reflective Blend", Range(0, 1)) = 0.05
 		_ReflectiveMulOrAdd("Mul Or Add", Range(0, 1)) = 1
 		_UseKKMetal("Use KK Metal", Range(0, 1)) = 1
@@ -79,8 +89,19 @@
 		_ShrinkVal("ShrinkVal", Range(0, 1)) = 1
 		_ShrinkVerticalAdjust("Vertical Pos", Range(-1, 1)) = 0
 		_Clock ("W is for displacement multiplier for animation", Vector) = (0,0,0,1)
-
-
+		
+		_ReflectColMix ("Reflection Color Mix Amount", Range(0,1)) = 1
+		_ReflectRotation ("Matcap Rotation", Range(0, 360)) = 0
+		_ReflectMapDetail ("Reflect Body Mask/Map", 2D) = "white" {}
+		_DisablePointLights ("Disable Point Lights", Range(0,1)) = 0.0
+		_DisableShadowedMatcap ("Disable Shadowed Matcap", Range(0,1)) = 0.0
+		[MaterialToggle] _AdjustBackfaceNormals ("Adjust Backface Normals", Float) = 0.0
+		[Enum(Off,0,On,1)]_ReflectiveOverlayed ("Reflections Overlayed", Float) = 0.0
+		_rimReflectMode ("Rimlight Placement", Float) = 0.0
+		
+		_SpecularNormalScale ("Specular Normal Map Relative Scale", Float) = 1
+		_SpecularDetailNormalScale ("Specular Detail Normal Map Relative Scale", Float) = 1
+		_Saturation ("Saturation", Float) = 1
 	}
 	SubShader
 	{
@@ -98,9 +119,10 @@
 			#pragma target 5.0
 
 			#pragma vertex TessVert
-			#pragma fragment frag
+			#pragma fragment outlineFrag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
@@ -126,7 +148,7 @@
 				float lineVal = _linewidthG * 0.00499999989;
 				viewVal *= lineVal;
 				float2 detailMaskUV = v.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float4 detailMask = tex2Dlod(_DetailMask, float4(detailMaskUV, 0, 0));
+				float4 detailMask = SAMPLE_TEX2D_LOD(_DetailMask, float4(detailMaskUV, 0, 0), 0);
 				float detailB = 1 - detailMask.b;
 				viewVal *= detailB * _LineWidthS;
 				float3 invertSquare;
@@ -152,15 +174,17 @@
 				if(!_OutlineOn)
 					o.posCS = float4(2,2,2,1);
 				o.uv0 = v.uv0;
+				1;
 				return o;
 			}
 			
 
 			#include "KKPItemTess.cginc"
 
-			fixed4 frag (Varyings i) : SV_Target
+			fixed4 outlineFrag (Varyings i) : SV_Target
 			{
-				float4 mainTex = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
+				//Clips based on alpha texture
+				float4 mainTex = SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw);
 				AlphaClip(i.uv0, _OutlineOn ? mainTex.a : 0);
 
 				float3 diffuse = mainTex.rgb;
@@ -191,13 +215,13 @@
 					shadingAdjustment = saturate(hlslcc_movcTemp);
 				}
 				float2 detailMaskUV = i.uv0 * _DetailMask_ST.xy + _DetailMask_ST.zw;
-				float4 detailMask = tex2D(_DetailMask, detailMaskUV);
+				float4 detailMask = SAMPLE_TEX2D(_DetailMask, detailMaskUV);
 
 				float specularMap = _UseDetailRAsSpecularMap ? detailMask.r : 1;
 				_SpecularPower *= specularMap;
 
 				float2 lineMaskUV = i.uv0 * _LineMask_ST.xy + _LineMask_ST.zw;
-				float4 lineMask = tex2D(_LineMask, lineMaskUV);
+				float4 lineMask = SAMPLE_TEX2D_SAMPLER(_LineMask, _DetailMask, lineMaskUV);
 
 				float detailLine = detailMask.x - lineMask.x;
 				detailLine = _DetailRLineR * detailLine + lineMask;
@@ -223,7 +247,7 @@
 				float3 outLineCol = _LightColor0.rgb * float3(0.600000024, 0.600000024, 0.600000024) + _CustomAmbient.rgb;
 
 				float3 finalColor = finalDiffuse * outLineCol;
-				finalColor = lerp(finalColor, _OutlineColor.rgb, _OutlineColor.a);
+				finalColor = applySaturation(lerp(finalColor, _OutlineColor.rgb, _OutlineColor.a), _Saturation);
 				return float4(finalColor, 1.0);
 
 
@@ -251,6 +275,7 @@
 			#pragma fragment frag
 			#pragma hull hull
 			#pragma domain domain
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 			#pragma multi_compile _ VERTEXLIGHT_ON
 			#pragma multi_compile _ SHADOWS_SCREEN
 			
@@ -265,7 +290,7 @@
 			#include "../KKPDisplace.cginc"
 			#include "KKPItemDiffuse.cginc"
 			#include "KKPItemNormals.cginc"
-			#include "KKPItemCoom.cginc"
+			#include "../KKPCoom.cginc"
 			#include "../KKPVertexLights.cginc"
 			#include "../KKPVertexLightsSpecular.cginc"
 			#include "../KKPEmission.cginc"
@@ -321,10 +346,11 @@
 			#pragma target 5.0
 
 			#pragma vertex TessVert
-			#pragma fragment frag
+			#pragma fragment shadowFrag
 			#pragma hull hull
 			#pragma domain domain
 			#pragma multi_compile_shadowcaster
+			#pragma only_renderers d3d11 glcore gles gles3 metal d3d11_9x xboxone ps4 psp2 n3ds wiiu 
 
 			#define SHADOW_CASTER_PASS
 
@@ -350,12 +376,12 @@
                 return o;
             }
 			#include "KKPItemTess.cginc"
-            float4 frag(v2f i) : SV_Target
+            float4 shadowFrag(v2f i) : SV_Target
             {
 				float2 alphaUV = i.uv0 * _AlphaMask_ST.xy + _AlphaMask_ST.zw;
-				float4 alphaMask = tex2D(_AlphaMask, alphaUV);
+				float4 alphaMask = SAMPLE_TEX2D(_AlphaMask, alphaUV);
 				float2 alphaVal = -float2(_alpha_a, _alpha_b) + float2(1.0f, 1.0f);
-				float mainTexAlpha = tex2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw).a;
+				float mainTexAlpha = SAMPLE_TEX2D(_MainTex, i.uv0 * _MainTex_ST.xy + _MainTex_ST.zw).a;
 				alphaVal = max(alphaVal, alphaMask.xy);
 				alphaVal = min(alphaVal.y, alphaVal.x);
 				alphaVal *= mainTexAlpha;

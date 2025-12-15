@@ -10,9 +10,6 @@
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 
-# Asset meta data should only be ignored when the corresponding asset is also ignored
-!/[Aa]ssets/**/*.meta
-
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
 
@@ -43,18 +40,9 @@ ExportedObj/
 *.opendb
 *.VC.db
 
-# Unity3D generated meta files
-*.pidb.meta
-*.pdb.meta
-*.mdb.meta
-
-#Ignore all .meta file
-*.meta
-#But not source file with postfix. which is everything but a folder
-!*.*.meta
-*.shader.meta
-*.md.meta
-*.cginc.meta
+# Backup files
+.bak
+.bkp
 
 # Unity3D generated file on crash reports
 sysinfo.txt
@@ -65,4 +53,3 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
-

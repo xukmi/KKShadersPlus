@@ -17,10 +17,10 @@ float GetVertexSpecularDiffuse(KKVertexLight lights[4], float3 normal, float3 vi
 		vertexSpecularPower = saturate(exp2(vertexSpecularPower) * specularPower * _SpecularColor.a);
 		vertexLightSpecular = exp2(vertexLightSpecular * 256) * 1;
 
-		float3 vertexSpecularColor = _UseLightColorSpecular ? light.col.rgb * _SpecularColor.a: light.lightVal * _SpecularColor.rgb * _SpecularColor.a;
+		float3 vertexSpecularColor = _UseLightColorSpecular ? light.col.rgb * _SpecularColor.a : light.lightVal * _SpecularColor.rgb * _SpecularColor.a;
 	#ifdef KKP_EXPENSIVE_RAMP
 		float2 lightRampUV = vertexSpecularPower * _RampG_ST.xy + _RampG_ST.zw;
-		vertexSpecularPower = tex2D(_RampG, lightRampUV) * _UseRampForSpecular + vertexSpecularPower * (1 - _UseRampForSpecular);
+		vertexSpecularPower = SAMPLE_TEX2D(_RampG, lightRampUV) * _UseRampForSpecular + vertexSpecularPower * (1 - _UseRampForSpecular);
 	#endif
 		vertexSpecularColor = vertexSpecularPower * vertexSpecularColor;
 
@@ -52,7 +52,7 @@ float4 GetVertexSpecularHair(KKVertexLight lights[4], float3 normal, float3 view
 		float3 vertexSpecularColor = _UseLightColorSpecular ? light.col.rgb * _SpecularColor.a: light.lightVal * _SpecularColor.rgb * _SpecularColor.a;
 	#ifdef KKP_EXPENSIVE_RAMP
 		float2 lightRampUV = vertexSpecularPower * _RampG_ST.xy + _RampG_ST.zw;
-		vertexSpecularPower = tex2D(_RampG, lightRampUV) * _UseRampForSpecular + vertexSpecularPower * (1 - _UseRampForSpecular);
+		vertexSpecularPower = SAMPLE_TEX2D(_RampG, lightRampUV) * _UseRampForSpecular + vertexSpecularPower * (1 - _UseRampForSpecular);
 	#endif
 		vertexSpecularColor = vertexSpecularPower * vertexSpecularColor * light.lightVal;
 		
@@ -79,7 +79,7 @@ float4 GetVertexSpecular(KKVertexLight lights[4], float3 normal, float3 viewDir,
 		float3 vertexSpecularColor = _UseLightColorSpecular ? light.col.rgb * _SpecularColor.a: light.lightVal * _SpecularColor.rgb * _SpecularColor.a;
 	#ifdef KKP_EXPENSIVE_RAMP
 		float2 lightRampUV = vertexSpecularPower * _RampG_ST.xy + _RampG_ST.zw;
-		vertexSpecularPower = tex2D(_RampG, lightRampUV) * _UseRampForSpecular + vertexSpecularPower * (1 - _UseRampForSpecular);
+		vertexSpecularPower = SAMPLE_TEX2D(_RampG, lightRampUV) * _UseRampForSpecular + vertexSpecularPower * (1 - _UseRampForSpecular);
 	#endif
 		vertexSpecularColor = vertexSpecularPower * vertexSpecularColor * light.lightVal;
 		
